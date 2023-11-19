@@ -8,6 +8,8 @@ struct WebView: NSViewRepresentable {
 	func makeNSView(context: Context) -> WKWebView {
 		let view = WKWebView()
 		view.setValue(true, forKey: "drawsTransparentBackground")
+		view.configuration.preferences.isElementFullscreenEnabled = true
+		view.configuration.preferences.setValue(true, forKey: "allowsPictureInPictureMediaPlayback")
 		return view
 	}
 	

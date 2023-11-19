@@ -14,18 +14,26 @@ struct ItemView: View {
 		VStack(spacing: .zero) {
 			switch display {
 			case .html:
-				if let title = item.title {
-					Text(title).font(.title).padding(16)
+#if os(iOS)
+				ScrollView {
+					VStack(alignment: .leading, spacing: .zero) {
+						if let title = item.title {
+							Text(title).font(.largeTitle).bold().padding(.horizontal, 16)
+						}
+						if let content = item.content {
+							HtmlView(body: content).border(.red)
+						}
+					}
 				}
-				if let html = item.content {
-					WebView(html: .html(html)).ignoresSafeArea()
-				}
+#elseif os(macOS)
+				WebView(html: .html(content)).ignoresSafeArea()
+#endif
 			case .link:
 				if let url = item.url {
 #if os(iOS)
 					SafariWebView(url: url).ignoresSafeArea()
 #elseif os(macOS)
-					WebView(html: .url(url)).ignoresSafeArea()
+					WebView(html: .url(url))
 #endif
 				} else {
 					Spacer()
@@ -33,7 +41,7 @@ struct ItemView: View {
 			}
 		}
 #if os(iOS)
-		.background(Color(.systemBackground))
+		.background(Color(uiColor: .systemBackground))
 #elseif os(macOS)
 		.background(Color(.textBackgroundColor))
 #endif

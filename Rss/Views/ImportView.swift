@@ -18,25 +18,24 @@ struct ImportView: View {
 				TextField("Feed URLs", text: $input, axis: .vertical)
 				Spacer()
 				Button("Import") {
-					importFeed(input: input)
+					Task { await importFeed(input: input) }
 				}.buttonStyle(.borderedProminent)
 			}.padding()
 				.frame(idealWidth: 800, idealHeight: 600)
 		}
 	}
 	
-	private func importFeed(input: String) {
-		Task {
-			if let url = URL(string: input) {
-				isImporting = true
-				do {
-					let feed = try await Feed(url: url)
-					modelContext.insert(feed)
-				} catch {
-					test = "Could not import: \(error)"
-				}
-				isImporting = false
+	@MainActor
+	private func importFeed(input: String) async {
+		if let url = URL(string: input) {
+			isImporting = true
+			do {
+				let feed = try await Feed(url: url)
+				modelContext.insert(feed)
+			} catch {
+				test = "Could not import: \(error)"
 			}
+			isImporting = false
 		}
 	}
 }

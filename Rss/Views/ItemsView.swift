@@ -17,22 +17,22 @@ struct ItemsView: View {
 		List(selection: $selection) {
 			ForEach(items) { item in
 				NavigationLink(value: item) {
-					VStack(alignment: .leading) {
-						HStack {
-							if showsIcon, let feed = item.feed {
-								IconView(feed: feed, size: 28)
-							}
+					HStack(spacing: 8) {
+						if showsIcon, let feed = item.feed {
+							IconView(feed: feed, size: 28)
+						}
+						VStack(alignment: .leading) {
 							Text(item.title ?? item.id)
-						}.layoutPriority(1)
-						HStack {
-							if let author = item.author {
-								Text(author)
-							}
-							Spacer()
-							if let date = item.date {
-								Text(date, format: Date.FormatStyle(date: .abbreviated, time: .shortened))
-							}
-						}.font(.caption).foregroundColor(.secondary)
+							HStack {
+								if let author = item.author {
+									Text(author)
+								}
+								Spacer()
+								if let date = item.date {
+									Text(date, format: Date.FormatStyle(date: .abbreviated, time: .shortened))
+								}
+							}.font(.caption).foregroundColor(.secondary)
+						}
 					}
 				}
 			}

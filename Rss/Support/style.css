@@ -32,6 +32,8 @@ a {
 }
 a:hover { text-decoration: underline; }
 body {
+	-webkit-text-size-adjust: none;
+	word-wrap: break-word;
 	background-color: var(--background);
 	color: var(--primary);
 	font-family: -apple-system;
