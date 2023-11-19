@@ -5,15 +5,9 @@ struct IconView: View {
 	let size: Double
 	
 	var image: Image? {
-#if os(iOS)
 		feed.icon
 			.flatMap { UIImage(data: $0) }
 			.flatMap { Image(uiImage: $0) }
-#elseif os(macOS)
-		feed.icon
-			.flatMap { NSImage(data: $0) }
-			.flatMap { Image(nsImage: $0) }
-#endif
 	}
 	
 	var body: some View {

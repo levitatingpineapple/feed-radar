@@ -14,7 +14,6 @@ struct ItemView: View {
 		VStack(spacing: .zero) {
 			switch display {
 			case .html:
-#if os(iOS)
 				ScrollView {
 					VStack(alignment: .leading, spacing: .zero) {
 						if let title = item.title {
@@ -25,26 +24,15 @@ struct ItemView: View {
 						}
 					}
 				}
-#elseif os(macOS)
-				WebView(html: .html(content)).ignoresSafeArea()
-#endif
 			case .link:
 				if let url = item.url {
-#if os(iOS)
 					SafariWebView(url: url).ignoresSafeArea()
-#elseif os(macOS)
-					WebView(html: .url(url))
-#endif
 				} else {
 					Spacer()
 				}
 			}
 		}
-#if os(iOS)
 		.background(Color(uiColor: .systemBackground))
-#elseif os(macOS)
-		.background(Color(.textBackgroundColor))
-#endif
 		.toolbar {
 			ToolbarItem {
 				Button {

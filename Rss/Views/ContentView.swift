@@ -37,7 +37,7 @@ struct ContentView: View {
 				}
 			}
 			.toolbar {
-				ToolbarItem(placement: placement) {
+				ToolbarItem(placement: .topBarLeading) {
 					Button {
 						Task { await fetch() }
 					} label: {
@@ -54,9 +54,7 @@ struct ContentView: View {
 			if let filter {
 				ItemsView(filter: filter, selection: $item)
 					.navigationTitle(filter.title)
-#if os(iOS)
 					.navigationBarTitleDisplayMode(.inline)
-#endif
 			}
 		} detail: {
 			if let item = item {
@@ -64,14 +62,6 @@ struct ContentView: View {
 			}
 		}
 		.task { await fetch() }
-	}
-	
-	private var placement: ToolbarItemPlacement {
-#if os(iOS)
-		ToolbarItemPlacement.topBarLeading
-#elseif os(macOS)
-		ToolbarItemPlacement.automatic
-#endif
 	}
 	
 	@MainActor

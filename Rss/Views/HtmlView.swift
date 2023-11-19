@@ -1,8 +1,6 @@
 import SwiftUI
 import WebKit
 
-#if os(iOS)
-
 struct HtmlView: UIViewRepresentable {
 	let body: String
 	
@@ -28,16 +26,16 @@ extension HtmlView {
 		
 		init() {
 			super.init(frame: .zero, configuration: .init())
-			scrollView.isScrollEnabled = false
 			isOpaque = false
 			backgroundColor = .clear
 			navigationDelegate = self
-			
+
+			scrollView.isScrollEnabled = false
 			observer = scrollView.observe(
 				\UIScrollView.contentSize,
 				 options: [NSKeyValueObservingOptions.new]
 			) { [weak self] (scrollView: UIScrollView, change: NSKeyValueObservedChange<CGSize>) in
-				if let contentSize = change.newValue, let self, contentSize.height > self.bounds.height * 1.4 {
+				if let contentSize = change.newValue, let self, contentSize.height > self.bounds.height {
 					self.invalidateIntrinsicContentSize()
 				}
 			}
@@ -62,8 +60,6 @@ extension HtmlView {
 	}
 }
 
-#endif
-
 
 extension String {
 	
@@ -72,7 +68,7 @@ extension String {
 	<html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.2">
+		<meta name="viewport" content="initial-scale=1.5">
 		<style>
 			\(try! String(contentsOf: Bundle.main.url(forResource: "style", withExtension: "css")!))
 		</style>
