@@ -14,7 +14,7 @@ struct IconView: View {
 		(image ?? Image(systemName: "globe"))
 			.resizable()
 			.scaledToFit()
-			.frame(maxWidth: size, maxHeight: size)
+//			.frame(maxWidth: size, maxHeight: size)
 			.clipShape(RoundedRectangle(cornerRadius: size / 4, style: .continuous))
 	}
 }

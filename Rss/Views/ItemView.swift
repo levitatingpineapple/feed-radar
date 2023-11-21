@@ -1,48 +1,46 @@
 import SwiftUI
 
 struct ItemView: View {
-	enum Display {
-		case html
-		case link
-	}
-	
-	@State private var display: Display = .html
+	@AppStorage var showWeb: Bool
+	@AppStorage("scaling") private var scale: Double = 1
 	
 	let item: Item
 	
+	init(item: Item) {
+		self.item = item
+		self._showWeb = .init(wrappedValue: false, item.feedUrl.absoluteString, store: .standard)
+	}
+	
 	var body: some View {
 		VStack(spacing: .zero) {
-			switch display {
-			case .html:
-				ScrollView {
-					VStack(alignment: .leading, spacing: .zero) {
-						if let title = item.title {
-							Text(title).font(.largeTitle).bold().padding(.horizontal, 16)
-						}
-						if let content = item.content {
-							HtmlView(body: content).border(.red)
-						}
-					}
-				}
-			case .link:
-				if let url = item.url {
-					SafariWebView(url: url).ignoresSafeArea()
-				} else {
-					Spacer()
-				}
+			if showWeb, let url = item.url {
+				SafariViewController (url: url).ignoresSafeArea()
+			} else {
+				WebViewController(
+					content: item.content ?? "NO CONTENT",
+					title: item.title ?? "NO TITLE", 
+					request: Attachment.Request(feedUrl: item.feedUrl, itemId: item.itemId),
+					scale: $scale
+				)
 			}
 		}
 		.background(Color(uiColor: .systemBackground))
 		.toolbar {
-			ToolbarItem {
-				Button {
-					display = switch display {
-					case .html: .link
-					case .link: .html
-					}
-				} label: {
-					Image(systemName: "eye")
-				}
+			if !showWeb {
+				toolbarItem(image: "plus") { scale += 0.1 }
+				toolbarItem(image: "minus") { scale -= 0.1 }
+			}
+			toolbarItem(image: showWeb ?  "doc.plaintext" : "globe") { showWeb.toggle() }
+		}
+	}
+	
+	private func toolbarItem(
+		image: String,
+		action: @escaping () -> Void
+	) ->  ToolbarItem<Void, some View> {
+		ToolbarItem {
+			Button(action: action) {
+				Image(systemName: image)
 			}
 		}
 	}
