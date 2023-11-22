@@ -2,15 +2,18 @@ import Foundation
 import FeedKit
 import GRDB
 
-
 enum Filter: Hashable {
 	case all
 	case feed(Feed)
 }
 
-class Store {
+class Store: ObservableObject {
 	static let shared = try! Store()
 	let queue: DatabaseQueue
+	
+	@Published var fetching = Set<URL>()
+	@Published var filter: Filter?
+	@Published var item: Item?
 	
 	init() throws {
 		var configuration = Configuration()
@@ -42,29 +45,47 @@ class Store {
 	func fetch(_ filter: Filter) {
 		switch filter {
 		case .all:
-			print("TODO")
+			do {
+				let feeds = try queue
+					.write { try Feed.fetchAll($0) }
+					.filter { !fetching.contains($0.url) }
+				self.fetching = Set<URL>(feeds.map { $0.url })
+				feeds.forEach { fetch(feedUrl: $0.url) }
+			} catch {
+				
+			}
 		case let .feed(feed):
-			fetch(url: feed.url)
+			if !fetching.contains(feed.url) {
+				fetching.insert(feed.url)
+				fetch(feedUrl: feed.url)
+			}
 		}
 	}
 	
-	func fetch(url: URL) {
+	func fetch(feedUrl: URL) {
 		Task {
 			do {
-				switch FeedParser(URL: url).parse() {
+				switch FeedParser(URL: feedUrl).parse() {
 				case let .success(feed):
 					try await queue.write { db in
-						let mapped = Mapped(feed: feed, at: url)
+						let mapped = Mapped(feed: feed, at: feedUrl)
 						try mapped.feed.insert(db)
 						for item in mapped.items { try item.insert(db) }
 						for attachment in mapped.attachments { try attachment.insert(db) }
 					}
+					DispatchQueue.main.async { self.fetching.remove(feedUrl) }
 				case let .failure(parserError):
+					DispatchQueue.main.async { self.fetching.remove(feedUrl) }
 					throw parserError
 				}
 			} catch {
+				// TODO: Surface import errors to user
 				print("‼️ ", error)
 			}
 		}
+	}
+	
+	func delete(feed: Feed) {
+		try? queue.write { let _ = try feed.delete($0) }
 	}
 }

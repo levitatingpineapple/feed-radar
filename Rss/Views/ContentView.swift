@@ -2,23 +2,18 @@ import SwiftUI
 import GRDBQuery
 
 struct ContentView: View {
-	@State private var filter: Filter?
-	@State private var item: Item?
+	@ObservedObject var store: Store = .shared
+	
 	
 	var body: some View {
 		NavigationSplitView(columnVisibility: .constant(.all)) {
-			FeedsView(filter: $filter)
+			FeedsView()
 		} content: {
-			if let filter {
-				ItemsView(
-					request: Item.Request(filter: filter),
-					item: $item
-				)
+			if let filter = store.filter {
+				ItemsView(filter: filter)
 			}
 		} detail: {
-			if let item = item {
-				ItemView(item: item)
-			}
+			
 		}
 		.task { Store.shared.fetch(.all) }
 	}

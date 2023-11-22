@@ -3,10 +3,10 @@ import GRDBQuery
 
 struct FeedsView: View {
 	@Query(Feed.Request(), in: \.store) private var feeds: Array<Feed>
-	@Binding var filter: Filter?
+	@ObservedObject var store: Store = .shared
 	
 	var body: some View {
-		List(selection: $filter) {
+		List(selection: $store.filter) {
 			Section {
 				NavigationLink(value: Filter.all) {
 					Label {
@@ -21,28 +21,21 @@ struct FeedsView: View {
 			}
 			Section {
 				ForEach(feeds, id: \.url) { feed in
-					FeedView(feed: feed)
-						.swipeActions(edge: .leading, allowsFullSwipe: true) {
-							Button("Fetch") {
-								Store.shared.fetch(.feed(feed))
-							}.tint(.accentColor)
-						}
+					NavigationLink(value: Filter.feed(feed)) {
+						FeedView(url: feed.url)
+					}
+					.swipeActions(edge: .leading, allowsFullSwipe: true) {
+						Button("Fetch") {
+							Store.shared.fetch(.feed(feed))
+						}.tint(.accentColor)
+					}
 				}
 				.onDelete {
-					$0.forEach { feed in
-						// TODO: Delete
-					}
+					$0.forEach { Store.shared.delete(feed: feeds[$0]) }
 				}
 			}
 		}
 		.toolbar {
-			ToolbarItem(placement: .topBarLeading) {
-				Button {
-					Store.shared.fetch(.all)
-				} label: {
-					Label("Reload", systemImage: "arrow.clockwise")
-				}
-			}
 			ToolbarItem {
 				ImportView()
 			}

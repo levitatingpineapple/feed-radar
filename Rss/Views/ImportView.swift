@@ -18,11 +18,10 @@ struct ImportView: View {
 				Spacer()
 				Button("Import") {
 					if let url = URL(string: input) {
-						Store.shared.fetch(url: url)
+						Store.shared.fetch(feedUrl: url)
 					}
 				}.buttonStyle(.borderedProminent)
 			}.padding()
-				.frame(idealWidth: 800, idealHeight: 600)
 		}
 	}
 }

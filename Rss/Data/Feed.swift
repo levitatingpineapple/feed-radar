@@ -35,4 +35,19 @@ extension Feed {
 				.eraseToAnyPublisher()
 		}
 	}
+	
+	struct RequestSingle: Queryable {
+		static var defaultValue: Feed? = nil
+		let url: URL
+		
+		func publisher(in store: Store) -> AnyPublisher<Feed?, Error> {
+			ValueObservation.tracking {
+				try Feed
+					.filter(GRDB.Column(Column.url.rawValue) == url.absoluteString)
+					.fetchOne($0)
+			}
+				.publisher(in: store.queue, scheduling: .immediate)
+				.eraseToAnyPublisher()
+		}
+	}
 }

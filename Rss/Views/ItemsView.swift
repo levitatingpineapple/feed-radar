@@ -2,55 +2,62 @@ import SwiftUI
 import GRDBQuery
 
 struct ItemsView: View {
+	let filter: Filter
 	@Query<Item.Request> var items: Array<Item>
-	@Binding var item: Item?
+	@ObservedObject var store: Store = .shared
 	
-	init(request: Item.Request, item: Binding<Item?>) {
-		_item = item
+	init(filter: Filter) {
+		self.filter = filter
 		_items = Query(
-			Binding(get: { request }, set: { _ in }),
+			Binding(get: { Item.Request(filter: filter) }, set: { _ in }),
 			in: \.store
 		)
 	}
 	
 	var body: some View {
-		List(selection: $item) {
-			ForEach(items) { item in
-				ZStack {
-					NavigationLink(value: item) {
-						EmptyView()
-					}.opacity(.zero)
-					
-					HStack(spacing: 8) {
-						VStack(alignment: .leading) {
-							Text(item.title ?? item.itemId)
-							HStack {
-								if let author = item.author {
-									Text(author)
-								}
-								Spacer()
-								if let time = item.time {
-									Text(
-										Date(
-											timeIntervalSince1970: time),
-										format: Date.FormatStyle(date: .abbreviated, time: .shortened))
-								}
-							}.font(.caption).foregroundColor(.secondary)
+		List(items) { item in
+			ZStack {
+				// Hiding disclosure indicator
+				NavigationLink {
+					ItemView(item: item)
+				} label: {
+					EmptyView()
+				}.opacity(.zero)
+				VStack(alignment: .leading, spacing: 8) {
+					if filter == .all { FeedView(url: item.feedUrl) }
+					Text(item.title ?? item.itemId).bold()
+					HStack {
+						if let time = item.time {
+							Text(
+								Date(timeIntervalSince1970: time),
+								format: Date.FormatStyle(date: .abbreviated, time: .shortened)
+							)
 						}
-					}
+						Spacer()
+						if let author = item.author { Text(author) }
+					}.font(.caption).foregroundColor(.secondary)
 				}
-				
-				
-
 			}
 		}
+		.refreshable { Store.shared.fetch(store.filter ?? .all) }
 		.listStyle(.plain)
 		.navigationTitle(title)
+		.toolbar {
+			ToolbarItem(placement: .principal) {
+				if case let .feed(feed) = filter {
+					FeedView(url: feed.url)
+				} else {
+					Text("All")
+				}
+				
+			}
+		}
+		
 		.navigationBarTitleDisplayMode(.inline)
 	}
 	
 	var title: String {
-		switch $items.request.filter.wrappedValue {
+		switch filter {
 		case .all: "All"
 		case let .feed(feed): feed.title ?? feed.url.absoluteString
 		}
