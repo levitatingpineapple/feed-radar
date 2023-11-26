@@ -20,6 +20,13 @@ extension URL {
 			return components.url
 		}
 	}
+	
+	static var documents: URL {
+		FileManager.default.urls(
+			for: .documentDirectory,
+			in: .userDomainMask
+		).first!
+	}
 }
 
 extension String {

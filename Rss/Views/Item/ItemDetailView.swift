@@ -1,8 +1,11 @@
 import SwiftUI
 
-struct ItemView: View {
+struct ItemDetailView: View {
 	@AppStorage var showWeb: Bool
 	@AppStorage("scaling") private var scale: Double = 1
+	@Environment(\.colorScheme) var colorScheme
+	
+	@State private var showsPopover: Bool = false
 	
 	let item: Item
 	
@@ -17,20 +20,21 @@ struct ItemView: View {
 				SafariViewController (url: url).ignoresSafeArea()
 			} else {
 				WebViewController(
-					content: item.content ?? "NO CONTENT",
-					title: item.title ?? "NO TITLE", 
+					content: item.content ?? String(),
+					title: item.title ?? item.itemId,
 					request: Attachment.Request(feedUrl: item.feedUrl, itemId: item.itemId),
 					scale: $scale
-				)
+				).ignoresSafeArea(edges: [.bottom, .horizontal])
 			}
 		}
-		.background(Color(uiColor: .systemBackground))
+		.background(
+			colorScheme == .dark ? .black : .white
+		)
+		
 		.toolbar {
-			if !showWeb {
-				toolbarItem(image: "plus") { scale += 0.1 }
-				toolbarItem(image: "minus") { scale -= 0.1 }
+			if let url = item.url {
+				toolbarItem(image: "safari") { UIApplication.shared.open(url) }
 			}
-			toolbarItem(image: showWeb ?  "doc.plaintext" : "globe") { showWeb.toggle() }
 		}
 	}
 	

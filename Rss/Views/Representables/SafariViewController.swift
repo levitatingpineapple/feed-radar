@@ -5,19 +5,15 @@ import SafariServices
 struct SafariViewController: UIViewControllerRepresentable {
 	let url: URL
 	
-	func makeUIViewController(context: Context) -> SafariViewController.Container {
-		Container()
-	}
+	func makeUIViewController(
+		context: Context
+	) -> SafariViewController.Container { Container() }
 	
 	func updateUIViewController(
-		_ viewController: SafariViewController.Container,
+		_ container: SafariViewController.Container,
 		context: Context
-	) {
-		viewController.load(url: url)
-	}
+	) { container.load(url: url) }
 }
-
-
 
 extension SafariViewController {
 	class Container: UIViewController {

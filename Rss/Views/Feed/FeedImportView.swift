@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ImportView: View {
+struct FeedImportView: View {
 	@State var isPresented = false
 	@State var isImporting = false
 	@State var input = String()
@@ -12,7 +12,7 @@ struct ImportView: View {
 		} label: {
 			Label("Add Item", systemImage: "plus")
 		}
-		.sheet(isPresented: $isPresented) {
+		.popover(isPresented: $isPresented) {
 			VStack {
 				TextField("Feed URLs", text: $input, axis: .vertical)
 				Spacer()
@@ -21,7 +21,7 @@ struct ImportView: View {
 						Store.shared.fetch(feedUrl: url)
 					}
 				}.buttonStyle(.borderedProminent)
-			}.padding()
+			}.padding().frame(idealWidth: 400, idealHeight: 600)
 		}
 	}
 }

@@ -32,7 +32,7 @@ struct FeedView: View {
 						.frame(width: 32, height: 32)
 						.opacity(isFetching ? 1 : 0)
 				}
-				Text(feed.title ?? feed.url.absoluteString)
+				Text(feed.title ?? feed.url.absoluteString).lineLimit(1)
 			}
 		}
 	}

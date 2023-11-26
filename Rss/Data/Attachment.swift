@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import GRDB
 import GRDBQuery
+import CryptoKit
 import UniformTypeIdentifiers
 
 struct Attachment: Hashable, Identifiable {
@@ -16,6 +17,14 @@ struct Attachment: Hashable, Identifiable {
 	let title: String?
 	
 	var id: Int { .hashValues(feedUrl, itemId, url) }
+	var localUrl: URL {
+		URL.documents.appendingPathComponent(
+			SHA256.hash(data: url.dataRepresentation)
+				.compactMap { String(format: "%02x", $0) }
+				.joined() + "/" + url.lastPathComponent,
+			conformingTo: type
+		)
+	}
 	
 	static func createTable(database: Database) throws {
 		try database.create(table: "attachment", options: .ifNotExists) {
@@ -25,7 +34,7 @@ struct Attachment: Hashable, Identifiable {
 			$0.column(Column.type.rawValue)
 			$0.column(Column.title.rawValue)
 			$0.primaryKey([Column.feedUrl.rawValue, Column.itemId.rawValue, Column.url.rawValue], onConflict: .replace)
-			$0.foreignKey([Column.feedUrl.rawValue, Column.itemId.rawValue], references: "item")
+			$0.foreignKey([Column.feedUrl.rawValue, Column.itemId.rawValue], references: "item", onDelete: .cascade)
 		}
 	}
 }
@@ -36,7 +45,7 @@ extension Attachment: FetchableRecord {
 		itemId = row[Column.itemId.rawValue]
 		url = row[Column.url.rawValue]
 		type = UTType(row[Column.type.rawValue])!
-		title = row[Column.url.rawValue]
+		title = row[Column.title.rawValue]
 	}
 }
 
@@ -70,3 +79,36 @@ extension Attachment {
 		}
 	}
 }
+
+
+//		if case let .remote(url) = model {
+//			model = .progress(.zero)
+//			dataTask = URLSession.shared.dataTask(with: url) { data, _, _ in
+//				if let data {
+//					let hash = SHA256
+//						.hash(data: data)
+//						.compactMap { String(format: "%02x", $0) }
+//						.joined()
+//
+//					let directoryUrl = FileManager.default
+//						.temporaryDirectory
+//						.appendingPathComponent(hash)
+//
+//					let fileUrl = directoryUrl
+//						.appendingPathComponent(url.lastPathComponent, conformingTo: type)
+//
+//					try! FileManager.default.createDirectory(at: directoryUrl, withIntermediateDirectories: true)
+//					try! data.write(to: fileUrl)
+//					DispatchQueue.main.async {
+//						model = .local(fileUrl)
+//						quickLook = fileUrl
+//					}
+//				} else {
+//					DispatchQueue.main.async { model = .error }
+//				}
+//			}
+//			observation = dataTask?.progress.observe(\.fractionCompleted) { progress, _ in
+//				DispatchQueue.main.async { model = .progress(progress.fractionCompleted) }
+//			}
+//			dataTask?.resume()
+//		}

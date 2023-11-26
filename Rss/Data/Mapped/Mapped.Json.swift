@@ -9,7 +9,7 @@ extension Mapped {
 				url: feedUrl,
 				title: json.title,
 				icon: Mapped.icon(
-					imageUrl: json.icon?.url,
+					imageUrl: json.favicon?.url ?? json.icon?.url,
 					faviconUrl: json.feedUrl?.url ?? json.homePageURL?.url ?? feedUrl
 				)
 			),

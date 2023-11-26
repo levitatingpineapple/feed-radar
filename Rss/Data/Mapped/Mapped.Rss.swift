@@ -14,7 +14,8 @@ extension Mapped {
 				)
 			),
 			items: (rss.items ?? Array<RSSFeedItem>()).compactMap { rssItem in
-				rssItem.guid?.value.flatMap {
+				print(Date().timeIntervalSince1970)
+				return rssItem.guid?.value.flatMap {
 					Item(
 						itemId: $0,
 						feedUrl: feedUrl,

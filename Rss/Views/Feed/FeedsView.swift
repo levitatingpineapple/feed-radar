@@ -8,25 +8,21 @@ struct FeedsView: View {
 	var body: some View {
 		List(selection: $store.filter) {
 			Section {
-				NavigationLink(value: Filter.all) {
-					Label {
-						Text("All")
-					} icon: {
-						Image(systemName: "tray.fill")
-							.resizable()
-							.scaledToFit()
-							.frame(maxWidth: 28, maxHeight: 28)
-					}
+				NavigationLink(value: Item.Filter.unread) {
+					FilterView(filter: .unread)
+				}
+				NavigationLink(value: Item.Filter.starred) {
+					FilterView(filter: .starred)
 				}
 			}
 			Section {
 				ForEach(feeds, id: \.url) { feed in
-					NavigationLink(value: Filter.feed(feed)) {
-						FeedView(url: feed.url)
+					NavigationLink(value: Item.Filter.feed(feed)) {
+						FilterView(filter: .feed(feed))
 					}
 					.swipeActions(edge: .leading, allowsFullSwipe: true) {
 						Button("Fetch") {
-							Store.shared.fetch(.feed(feed))
+							Store.shared.fetch(feedUrl: feed.url)
 						}.tint(.accentColor)
 					}
 				}
@@ -37,10 +33,10 @@ struct FeedsView: View {
 		}
 		.toolbar {
 			ToolbarItem {
-				ImportView()
+				FeedImportView()
 			}
 		}
-		.refreshable { Store.shared.fetch(.all) }
+		.refreshable { Store.shared.fetch() }
 		.navigationTitle("Feeds")
 	}
 }

@@ -30,9 +30,13 @@ extension Feed {
 		static var defaultValue = Array<Feed>()
 		
 		func publisher(in store: Store) -> AnyPublisher<Array<Feed>, Error> {
-			ValueObservation.tracking { try Feed.fetchAll($0) }
-				.publisher(in: store.queue, scheduling: .immediate)
-				.eraseToAnyPublisher()
+			ValueObservation.tracking {
+				try Feed
+					.order(GRDB.Column(Column.title.rawValue))
+					.fetchAll($0)
+			}
+			.publisher(in: store.queue, scheduling: .immediate)
+			.eraseToAnyPublisher()
 		}
 	}
 	
@@ -49,5 +53,14 @@ extension Feed {
 				.publisher(in: store.queue, scheduling: .immediate)
 				.eraseToAnyPublisher()
 		}
+	}
+}
+
+
+
+extension Feed {
+	enum Display {
+		case content(scale: Double)
+		case web(reader: Bool, inverted: Bool)
 	}
 }
