@@ -3,14 +3,14 @@ import FeedKit
 import UniformTypeIdentifiers
 
 extension Mapped {
-	init(_ atom: AtomFeed, at feedUrl: URL) {
+	init(_ atom: AtomFeed, at source: URL) {
 		self = Mapped(
 			feed: Feed(
-				url: feedUrl,
+				source: source,
 				title: atom.title,
 				icon: Mapped.icon(
 					imageUrl: atom.icon?.url,
-					faviconUrl: atom.links?.first?.attributes?.href?.url ?? feedUrl
+					faviconUrl: atom.links?.first?.attributes?.href?.url ?? source
 				)
 			),
 			items: atom.entries.flatMap {
@@ -18,7 +18,7 @@ extension Mapped {
 					if let itemId = atomEntrie.id {
 						Item(
 							itemId: itemId,
-							feedUrl: feedUrl,
+							source: source,
 							time: atomEntrie.published?.timeIntervalSince1970,
 							title: atomEntrie.title,
 							author: atomEntrie.authors?
@@ -40,7 +40,7 @@ extension Mapped {
 							if let url = mediaContent.attributes?.url?.url,
 							   let type = mediaContent.attributes?.type?.type {
 								Attachment(
-									feedUrl: feedUrl,
+									source: source,
 									itemId: itemId,
 									url: url,
 									type: type,

@@ -14,7 +14,6 @@ extension EnvironmentValues {
 @main
 struct RssApp: App {
 	@ObservedObject var store: Store = .shared
-	let sync = Sync()
 	
 	var body: some Scene {
 		WindowGroup {

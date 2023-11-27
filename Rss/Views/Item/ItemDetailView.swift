@@ -11,7 +11,7 @@ struct ItemDetailView: View {
 	
 	init(item: Item) {
 		self.item = item
-		self._showWeb = .init(wrappedValue: false, item.feedUrl.absoluteString, store: .standard)
+		self._showWeb = .init(wrappedValue: false, item.source.absoluteString, store: .standard)
 	}
 	
 	var body: some View {
@@ -22,7 +22,7 @@ struct ItemDetailView: View {
 				WebViewController(
 					content: item.content ?? String(),
 					title: item.title ?? item.itemId,
-					request: Attachment.Request(feedUrl: item.feedUrl, itemId: item.itemId),
+					request: Attachment.Request(source: item.source, itemId: item.itemId),
 					scale: $scale
 				).ignoresSafeArea(edges: [.bottom, .horizontal])
 			}

@@ -3,14 +3,14 @@ import FeedKit
 import UniformTypeIdentifiers
 
 extension Mapped {
-	init(_ json: JSONFeed, at feedUrl: URL) {
+	init(_ json: JSONFeed, at source: URL) {
 		self = Mapped(
 			feed: Feed(
-				url: feedUrl,
+				source: source,
 				title: json.title,
 				icon: Mapped.icon(
 					imageUrl: json.favicon?.url ?? json.icon?.url,
-					faviconUrl: json.feedUrl?.url ?? json.homePageURL?.url ?? feedUrl
+					faviconUrl: json.feedUrl?.url ?? json.homePageURL?.url ?? source
 				)
 			),
 			items: json.items.flatMap {
@@ -18,7 +18,7 @@ extension Mapped {
 					if let itemId = jsonItem.id {
 						Item(
 							itemId: itemId,
-							feedUrl: feedUrl,
+							source: source,
 							time: jsonItem.datePublished?.timeIntervalSince1970,
 							title: jsonItem.title,
 							author: jsonItem.author?.name,
@@ -36,7 +36,7 @@ extension Mapped {
 							if let url = attachment.url?.url,
 							   let type = attachment.mimeType?.type {
 								Attachment(
-									feedUrl: feedUrl,
+									source: source,
 									itemId: itemId,
 									url: url,
 									type: type,

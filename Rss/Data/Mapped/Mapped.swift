@@ -9,11 +9,11 @@ struct Mapped {
 }
 	
 extension Mapped {
-	init(feed: FeedKit.Feed, at feedUrl: URL) {
+	init(feed: FeedKit.Feed, at source: URL) {
 		self = switch feed {
-		case let .atom(atom): Mapped(atom, at: feedUrl)
-		case let .rss(rss): Mapped(rss, at: feedUrl)
-		case let .json(json): Mapped(json, at: feedUrl)
+		case let .atom(atom): Mapped(atom, at: source)
+		case let .rss(rss): Mapped(rss, at: source)
+		case let .json(json): Mapped(json, at: source)
 		}
 	}
 

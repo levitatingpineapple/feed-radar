@@ -3,22 +3,21 @@ import FeedKit
 import UniformTypeIdentifiers
 
 extension Mapped {
-	init(_ rss: RSSFeed, at feedUrl: URL) {
+	init(_ rss: RSSFeed, at source: URL) {
 		self = Mapped(
 			feed: Feed(
-				url: feedUrl,
+				source: source,
 				title: rss.title,
 				icon: Mapped.icon(
 					imageUrl: rss.image?.url?.url,
-					faviconUrl: rss.link?.url ?? feedUrl
+					faviconUrl: rss.link?.url ?? source
 				)
 			),
 			items: (rss.items ?? Array<RSSFeedItem>()).compactMap { rssItem in
-				print(Date().timeIntervalSince1970)
 				return rssItem.guid?.value.flatMap {
 					Item(
 						itemId: $0,
-						feedUrl: feedUrl,
+						source: source,
 						time: rssItem.pubDate?.timeIntervalSince1970,
 						title: rssItem.title,
 						author: rssItem.author ?? rss.items?.first?.dublinCore?.dcCreator,
@@ -33,7 +32,7 @@ extension Mapped {
 					   let url = rssItem.enclosure?.attributes?.url?.url,
 					   let type = rssItem.enclosure?.attributes?.type?.type {
 						Attachment(
-							feedUrl: feedUrl,
+							source: source,
 							itemId: itemId,
 							url: url,
 							type: type,

@@ -21,25 +21,20 @@ struct AttachmentsView: View {
 	var body: some View {
 		VStack(alignment: .leading, spacing: 16) {
 			Text(title).font(.largeTitle).bold()
-			HStack {
-				if attachments.count > 1 {
-					Button {
-						selected = max(0, selected - 1)
-					} label: {
-						Image(systemName: "chevron.compact.left").resizable().scaledToFit()
-							.frame(width: 24, height: 48)
-					}.disabled(selected <= .zero)
-				}
-				if !attachments.isEmpty {
-					AttachmentView(attachment: attachments[min(selected, attachments.count - 1)])
-				}
-				if attachments.count > 1 {
-					Button {
-						selected = min(attachments.count - 1, selected + 1)
-					} label: {
-						Image(systemName: "chevron.compact.right").resizable().scaledToFit()
-							.frame(width: 24, height: 48)
-					}.disabled(selected >= attachments.count - 1)
+			if !attachments.isEmpty {
+				AttachmentView(attachment: attachments[min(selected, attachments.count - 1)]) {
+					if attachments.count > 1 {
+						Button {
+							selected = max(0, selected - 1)
+						} label: {
+							Image(systemName: "chevron.left").imageScale(.large)
+						}.disabled(selected <= .zero)
+						Button {
+							selected = min(attachments.count - 1, selected + 1)
+						} label: {
+							Image(systemName: "chevron.right").imageScale(.large)
+						}.disabled(selected >= attachments.count - 1)
+					}
 				}
 			}
 			Divider()

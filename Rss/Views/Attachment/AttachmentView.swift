@@ -1,9 +1,10 @@
 import SwiftUI
 
-struct AttachmentView: View {
+struct AttachmentView<Selector: View>: View {
 	let attachment: Attachment
 	@State private var aspectRatio: Double = 16 / 9
 	@ObservedObject var store: Store = .shared
+	@ViewBuilder var selector: () -> Selector
 	
 	var url: URL {
 		if case let .completed(url) = store.downloads[attachment.url] {
@@ -16,11 +17,12 @@ struct AttachmentView: View {
 	var body: some View {
 		VStack(spacing: .zero) {
 			HStack {
+				DownloadView(attachment: attachment)
 				Text(attachment.title ?? attachment.url.lastPathComponent)
 					.lineLimit(1)
 					.truncationMode(.head)
 				Spacer()
-				DownloadView(attachment: attachment)
+				selector()
 			}
 			.padding(.horizontal, 16)
 			.padding(.vertical, 12)

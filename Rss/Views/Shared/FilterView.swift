@@ -27,7 +27,7 @@ struct FilterView: View {
 				}
 			case let .feed(feed):
 				HStack {
-					FeedView(url: feed.url)
+					FeedView(url: feed.source)
 				}
 			}
 			if !isCompact { Spacer() }

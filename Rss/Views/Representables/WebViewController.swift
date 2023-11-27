@@ -82,7 +82,7 @@ extension WebViewController.ViewController: WKNavigationDelegate {
 		decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
 	) {
 		if let url = navigationAction.request.url,
-		   // External url that is not an iframe
+		   // External url which is not an iframe opened in browser
 			url.absoluteString != "about:blank" && navigationAction.targetFrame?.isMainFrame == true {
 			decisionHandler(.cancel)
 			UIApplication.shared.open(url)

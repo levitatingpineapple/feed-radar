@@ -1,4 +1,5 @@
 import Foundation
+import os.log
 import UniformTypeIdentifiers
 
 extension String {
@@ -30,6 +31,9 @@ extension URL {
 }
 
 extension String {
+	static let cloudKitContainerIdentifier = "iCloud.levitatingpineapple.todo"
+	static let cloudKitStateSerializationKey = "newKey"
+	
 	func wrappedInHtml(scale: Double) -> String { """
 <!DOCTYPE html>
 	<html lang="en">
@@ -54,4 +58,10 @@ extension Int {
 		values.forEach { hasher.combine($0) }
 		return hasher.finalize()
 	}
+}
+
+extension Logger {
+	static let loggingSubsystem: String = "com.levitatingPineapple.rss"
+	static let sync = Logger(subsystem: Self.loggingSubsystem, category: "☁️")
+	static let store = Logger(subsystem: Self.loggingSubsystem, category: "💽")
 }

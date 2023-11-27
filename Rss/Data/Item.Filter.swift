@@ -7,13 +7,11 @@ extension Item {
 		case starred
 		case feed(Feed)
 		
-		var feedUrl: URL? {
+		var source: URL? {
 			switch self {
-			case let .feed(feed): feed.url
+			case let .feed(feed): feed.source
 			default: nil
 			}
 		}
 	}
-	
-	
 }

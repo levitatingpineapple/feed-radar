@@ -18,7 +18,7 @@ struct FeedImportView: View {
 				Spacer()
 				Button("Import") {
 					if let url = URL(string: input) {
-						Store.shared.fetch(feedUrl: url)
+						Store.shared.fetch(source: url)
 					}
 				}.buttonStyle(.borderedProminent)
 			}.padding().frame(idealWidth: 400, idealHeight: 600)

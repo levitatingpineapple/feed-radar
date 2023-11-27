@@ -5,7 +5,7 @@ struct PlayerViewController: UIViewControllerRepresentable {
 	let url: URL
 	@Binding var aspectRatio: Double
 	
-	func makeUIViewController(context: Context) -> AVPlayerViewController {
+	static let shared: AVPlayerViewController = {
 		try! AVAudioSession
 			.sharedInstance()
 			.setCategory(.playback, mode: .moviePlayback)
@@ -14,6 +14,16 @@ struct PlayerViewController: UIViewControllerRepresentable {
 		playerViewController.showsPlaybackControls = true
 		playerViewController.player = AVPlayer()
 		return playerViewController
+	}()
+	
+	func makeUIViewController(context: Context) -> AVPlayerViewController {
+		let shared = PlayerViewController.shared
+		if let player = shared.player {
+			player.pause()
+			player.replaceCurrentItem(with: nil)
+			player.replaceCurrentItem(with: AVPlayerItem(url: url))
+		}
+		return shared
 	}
 	
 	func updateUIViewController(

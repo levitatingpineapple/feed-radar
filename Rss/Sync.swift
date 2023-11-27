@@ -1,17 +1,27 @@
 import Foundation
 import CloudKit
 import SwiftUI
-
-extension String {
-	static let cloudKitContainerIdentifier = "iCloud.levitatingpineapple.todo"
-	static let cloudKitStateSerializationKey = "cloudKitStateSerialization"
-}
+import os.log
 
 actor Sync {
-	@AppStorage(.cloudKitStateSerializationKey)
-	var stateSerialization: CKSyncEngine.State.Serialization?
+	var stateSerialization: CKSyncEngine.State.Serialization? {
+		get {
+			UserDefaults.standard.string(forKey: .cloudKitStateSerializationKey)
+				.flatMap { CKSyncEngine.State.Serialization(rawValue: $0) }
+		}
+		set {
+			UserDefaults.standard.setValue(
+				newValue?.rawValue,
+				forKey: .cloudKitStateSerializationKey
+			)
+		}
+	}
+	
 	var syncEngine: CKSyncEngine!
 	
+	// Items that have been synced before they are fetched
+	var orphanedRecords = Dictionary<URL, Set<CKRecord>>()
+
 	init() {
 		Task { await start() }
 	}
@@ -25,26 +35,32 @@ actor Sync {
 		)
 		syncEngine = CKSyncEngine(configuration)
 	}
-}
-
-extension Sync: CKSyncEngineDelegate {
-	func handleEvent(_ event: CKSyncEngine.Event, syncEngine: CKSyncEngine) async {
-		switch event {
-		case let .stateUpdate(stateUpdate):
-			stateSerialization = stateUpdate.stateSerialization
-		default: break
-		}
+	
+	func add(_ feed: Feed) {
+		Logger.sync.info("Queue add zone: \(feed.source.absoluteString)")
+		syncEngine.state.add(
+			pendingDatabaseChanges: [
+				.saveZone(CKRecordZone(zoneName: feed.source.absoluteString))
+			]
+		)
 	}
 	
-	func nextRecordZoneChangeBatch(
-		_ context: CKSyncEngine.SendChangesContext,
-		syncEngine: CKSyncEngine
-	) async -> CKSyncEngine.RecordZoneChangeBatch? {
-		await CKSyncEngine.RecordZoneChangeBatch(
-			pendingChanges: syncEngine.state.pendingRecordZoneChanges
-		) { recordID in
-			fatalError()
-		}
+	func delete(_ feed: Feed) {
+		Logger.sync.info("Queue delete zone: \(feed.source.absoluteString)")
+		syncEngine.state.add(
+			pendingDatabaseChanges: [
+				.deleteZone(CKRecordZone.ID(zoneName: feed.source.absoluteString))
+			]
+		)
+	}
+	
+	func update(_ item: Item) {
+		Logger.sync.info("Queue save record: \(item.recordID)")
+		syncEngine.state.add(
+			pendingRecordZoneChanges: [
+				.saveRecord(item.recordID)
+			]
+		)
 	}
 }
 
@@ -62,18 +78,5 @@ extension CKSyncEngine.State.Serialization: RawRepresentable {
 		(try? JSONEncoder().encode(self))
 			.flatMap { String(data: $0, encoding: .utf8) }
 		?? String()
-	}
-}
-
-extension Item {
-	var record: CKRecord {
-		let record = CKRecord(
-			recordType: String(describing: self),
-			recordID: CKRecord.ID(recordName: feedUrl.absoluteString + itemId)
-		)
-		record["isRead"] = isRead
-		record["isStarred"] = isStarred
-//		record["feed"]
-		return record
 	}
 }

@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import FeedKit
 import GRDB
+import os.log
 
 enum Download: Equatable {
 	case progress(Double)
@@ -12,6 +13,7 @@ enum Download: Equatable {
 class Store: ObservableObject {
 	static let shared = try! Store()
 	let queue: DatabaseQueue
+	let sync = Sync()
 	
 	@Published var downloads = Dictionary<URL, Download>()
 	@Published var fetching = Set<URL>()
@@ -22,24 +24,14 @@ class Store: ObservableObject {
 	
 	init() throws {
 		var configuration = Configuration()
-//		configuration.publicStatementArguments = true
-//		configuration.prepareDatabase {
-//			$0.trace {
-//				let string = String(describing: $0)
-//				switch string {
-//				case "BEGIN DEFERRED TRANSACTION": print("🟢")
-//				case "COMMIT TRANSACTION": print("🔴")
-//				case "PRAGMA query_only = 1": break
-//				case "PRAGMA query_only = 0": break
-//				default: print("⭐️", string)
-//				}
-//			}
-//		}
+		configuration.publicStatementArguments = true
+		configuration.prepareDatabase {
+			$0.trace { Logger.store.log("\($0.description)") }
+		}
 		queue = try DatabaseQueue(
 			path: URL.documents.appendingPathComponent("rss.db").path,
 			configuration: configuration
 		)
-		
 		try queue.write {
 			try Feed.createTable(database: $0)
 			try Item.createTable(database: $0)
@@ -58,53 +50,94 @@ class Store: ObservableObject {
 	}
 	
 	func toggleRead(for item: Item) {
-		try? self.queue.write {
+		try? queue.write {
 			var newItem = item
 			newItem.isRead.toggle()
 			try newItem.update($0, columns: [Item.Column.isRead.rawValue])
 		}
+		Task { await sync.update(item) }
 	}
 	
 	func toggleStarred(for item: Item) {
-		try? self.queue.write {
+		try? queue.write {
 			var newItem = item
 			newItem.isStarred.toggle()
 			try newItem.update($0, columns: [Item.Column.isStarred.rawValue])
 		}
+		Task { await sync.update(item) }
 	}
 	
-	func fetch(feedUrl: URL? = nil) {
+	func item(source: URL, itemId: String) -> Item? {
+		try? queue.write {
+			try Item
+				.filter(Column(Item.Column.source.rawValue) == source)
+				.filter(Column(Item.Column.itemId.rawValue) == itemId)
+				.fetchOne($0)
+		}
+	}
+	
+	func isNewFeed(source: URL) -> Bool {
+		(try? queue.write {
+			try Feed
+				.filter(Column(Item.Column.source.rawValue) == source)
+				.isEmpty($0)
+		}) ?? true
+	}
+ 
+	func update(item: Item) {
+		try? queue.write {
+			try item.insert($0)
+		}
+	}
+	
+	func fetch(source: URL? = nil, sync: Bool = true) {
 		Task {
 			do {
-				let feedUrls = try feedUrl.flatMap { [$0] } ?? (
+				// Fetch all feeds, if source is not defined and filter out feeds already being fetched
+				let sources = try source.flatMap { [$0] } ?? (
 					try queue.write {
-						try Feed.order(Column(Feed.Column.title.rawValue)).fetchAll($0).map { $0.url }
+						try Feed.fetchAll($0).map { $0.source }
 					}
 				).filter { !self.fetching.contains($0) }
-				DispatchQueue.main.async { self.fetching = self.fetching.union(Set(feedUrls)) }
-				for feedUrl in feedUrls {
+				
+				// Display progress indicators
+				DispatchQueue.main.async { self.fetching = self.fetching.union(Set(sources)) }
+				for source in sources {
 					Task {
-						switch FeedParser(URL: feedUrl).parse() {
+						switch FeedParser(URL: source).parse() {
 						case let .success(feed):
-							try await queue.write { db in
-								let mapped = Mapped(feed: feed, at: feedUrl)
-								try mapped.feed.insert(db)
+							try await queue.write {
+								let mapped = Mapped(feed: feed, at: source)
+								
+								// Insert and sync feed, if it does not exist
+								if try Feed
+									.filter(Column(Feed.Column.source.rawValue) == mapped.feed.source)
+									.isEmpty($0) {
+									try mapped.feed.insert($0)
+									if sync {
+										Task { await self.sync.add(mapped.feed) }
+									}
+								}
+								
+								// Merge fetched items with synced state (isRead, isStarred) and insert
 								for var item in mapped.items {
 									if let existing = try Item
-										.filter(Column(Item.Column.feedUrl.rawValue) == item.feedUrl)
+										.filter(Column(Item.Column.source.rawValue) == item.source)
 										.filter(Column(Item.Column.itemId.rawValue) == item.itemId)
-										.fetchOne(db) {
+										.fetchOne($0) {
 										item.isRead = existing.isRead
 										item.isStarred = existing.isStarred
 										if existing == item { continue }
 									}
-									try item.insert(db)
+									try item.insert($0)
 								}
-								for attachment in mapped.attachments { try attachment.insert(db) }
+								
+								// Insert attachements
+								for attachment in mapped.attachments { try attachment.insert($0) }
 							}
-							DispatchQueue.main.async { self.fetching.remove(feedUrl) }
+							DispatchQueue.main.async { self.fetching.remove(source) }
 						case let .failure(parserError):
-							DispatchQueue.main.async { self.fetching.remove(feedUrl) }
+							DispatchQueue.main.async { self.fetching.remove(source) }
 							throw parserError
 						}
 					}
@@ -116,10 +149,12 @@ class Store: ObservableObject {
 		}
 	}
 	
-	func delete(feed: Feed) {
+	func delete(feed: Feed, sync: Bool = true) {
 		try? queue.write { let _ = try feed.delete($0) }
+		if sync {
+			Task { await self.sync.delete(feed) }
+		}
 	}
-
 	
 	func download(attachment: Attachment) {
 		if downloads.keys.contains(attachment.url) { return }

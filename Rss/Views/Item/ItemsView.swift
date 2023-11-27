@@ -15,14 +15,14 @@ struct ItemsView: View {
 		)
 	}
 	
-	var filtred: Array<Item> { items.filter { !$0.isRead || isReadFiltered } }
+	var filtred: Array<Item> { items.filter { !($0.isRead && isReadFiltered) } }
 	
 	var body: some View {
-		List(filtred, selection: $store.item) { item in
+		List(items, selection: $store.item) { item in
 			ItemView(item: item, showsFeed: filter == .unread || filter == .starred)
 		}
 		.animation(.easeOut(duration: 0.2), value: filtred)
-		.refreshable { Store.shared.fetch(feedUrl: store.filter?.feedUrl) }
+		.refreshable { Store.shared.fetch(source: store.filter?.source) }
 		.listStyle(.plain)
 		.navigationTitle(navigationTitle)
 		.navigationBarTitleDisplayMode(.inline)
@@ -45,7 +45,7 @@ struct ItemsView: View {
 		switch filter {
 		case .unread: "Unread"
 		case .starred: "Starred"
-		case .feed(let feed): feed.title ?? feed.url.absoluteString
+		case .feed(let feed): feed.title ?? feed.source.absoluteString
 		}
 	}
 }

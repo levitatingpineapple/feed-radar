@@ -16,18 +16,21 @@ struct FeedsView: View {
 				}
 			}
 			Section {
-				ForEach(feeds, id: \.url) { feed in
+				ForEach(feeds, id: \.source) { feed in
 					NavigationLink(value: Item.Filter.feed(feed)) {
 						FilterView(filter: .feed(feed))
 					}
 					.swipeActions(edge: .leading, allowsFullSwipe: true) {
 						Button("Fetch") {
-							Store.shared.fetch(feedUrl: feed.url)
+							Store.shared.fetch(source: feed.source)
 						}.tint(.accentColor)
 					}
 				}
 				.onDelete {
-					$0.forEach { Store.shared.delete(feed: feeds[$0]) }
+					$0.forEach { index in
+						let feed = feeds[index]
+						Store.shared.delete(feed: feed)
+					}
 				}
 			}
 		}
