@@ -6,12 +6,12 @@ import CryptoKit
 // TODO: Add retry
 struct DownloadView: View {
 	let attachment: Attachment
-	@ObservedObject var store: Store = .shared
+	@ObservedObject var downloads: Downloads = .shared
 	@State private var quickLook: URL?
 
 	var body: some View {
 		Group {
-			if let download = store.downloads[attachment.url] {
+			if let download = downloads.tasks[attachment.url] {
 				switch download {
 				case let .progress(progress):
 					CircularProgressView(width: 24 / 10, progress: progress)
@@ -22,11 +22,12 @@ struct DownloadView: View {
 						Image(systemName: "eye").resizable().scaledToFit()
 					}.quickLookPreview($quickLook)
 				case .error:
-					Image(systemName: "exclamationmark.circle").resizable().scaledToFit().foregroundColor(.red)
+					Image(systemName: "exclamationmark.circle").resizable().scaledToFit()
+						.foregroundColor(.red)
 				}
 			} else {
 				Button {
-					Store.shared.download(attachment: attachment)
+					Downloads.shared.download(attachment: attachment)
 				} label: {
 					Image(systemName: "arrow.down.circle").resizable().scaledToFit()
 				}

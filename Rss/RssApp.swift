@@ -17,7 +17,7 @@ struct RssApp: App {
 	
 	var body: some Scene {
 		WindowGroup {
-			NavigationSplitView(columnVisibility: .constant(.all)) {
+			NavigationSplitView {
 				FeedsView()
 			} content: {
 				if let filter = store.filter {
@@ -27,8 +27,7 @@ struct RssApp: App {
 				if let item = store.item {
 					ItemDetailView(item: item)
 				}
-			}
-			.task { Store.shared.fetch() }
+			}.task { Store.shared.fetch() }
 		}
 	}
 }

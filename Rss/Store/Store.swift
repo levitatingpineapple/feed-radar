@@ -4,23 +4,14 @@ import FeedKit
 import GRDB
 import os.log
 
-enum Download: Equatable {
-	case progress(Double)
-	case completed(URL)
-	case error
-}
-
 class Store: ObservableObject {
 	static let shared = try! Store()
 	let queue: DatabaseQueue
-	let sync = Sync()
-	
-	@Published var downloads = Dictionary<URL, Download>()
+	private let sync = Sync()
+	private var bag = Set<AnyCancellable>()
 	@Published var fetching = Set<URL>()
 	@Published var filter: Item.Filter?
 	@Published var item: Item?
-	
-	private var bag = Set<AnyCancellable>()
 	
 	init() throws {
 		var configuration = Configuration()
@@ -49,6 +40,38 @@ class Store: ObservableObject {
 			.store(in: &bag)
 	}
 	
+	func isNewFeed(source: URL) -> Bool {
+		(try? queue.write { 
+			try isNewFeed(source: source, $0)}
+		) ?? true
+	}
+	
+	func item(source: URL, itemId: String) -> Item? {
+		try? queue.write {
+			try item(source: source, itemId: itemId, $0)
+		}
+	}
+	
+	private func item(source: URL, itemId: String, _ database: Database) throws -> Item? {
+		try Item
+			.filter(Column(Item.Column.source.rawValue) == source)
+			.filter(Column(Item.Column.itemId.rawValue) == itemId)
+			.fetchOne(database)
+	}
+	
+	private func isNewFeed(source: URL, _ database: Database) throws -> Bool {
+		try Feed
+			.filter(Column(Item.Column.source.rawValue) == source)
+			.isEmpty(database)
+	}
+ 
+	func update(item: Item) {
+		try? queue.write {
+			try item.insert($0)
+		}
+	}
+	
+	// MARK: User Actions
 	func toggleRead(for item: Item) {
 		try? queue.write {
 			var newItem = item
@@ -67,26 +90,10 @@ class Store: ObservableObject {
 		Task { await sync.update(item) }
 	}
 	
-	func item(source: URL, itemId: String) -> Item? {
-		try? queue.write {
-			try Item
-				.filter(Column(Item.Column.source.rawValue) == source)
-				.filter(Column(Item.Column.itemId.rawValue) == itemId)
-				.fetchOne($0)
-		}
-	}
-	
-	func isNewFeed(source: URL) -> Bool {
-		(try? queue.write {
-			try Feed
-				.filter(Column(Item.Column.source.rawValue) == source)
-				.isEmpty($0)
-		}) ?? true
-	}
- 
-	func update(item: Item) {
-		try? queue.write {
-			try item.insert($0)
+	func delete(feed: Feed, sync: Bool = true) {
+		try? queue.write { let _ = try feed.delete($0) }
+		if sync {
+			Task { await self.sync.delete(feed) }
 		}
 	}
 	
@@ -100,7 +107,7 @@ class Store: ObservableObject {
 					}
 				).filter { !self.fetching.contains($0) }
 				
-				// Display progress indicators
+				// Displays progress indicators
 				DispatchQueue.main.async { self.fetching = self.fetching.union(Set(sources)) }
 				for source in sources {
 					Task {
@@ -109,30 +116,26 @@ class Store: ObservableObject {
 							try await queue.write {
 								let mapped = Mapped(feed: feed, at: source)
 								
-								// Insert and sync feed, if it does not exist
-								if try Feed
-									.filter(Column(Feed.Column.source.rawValue) == mapped.feed.source)
-									.isEmpty($0) {
+								// 1. Feed: Insert on initial fetch
+								if try self.isNewFeed(source: mapped.feed.source, $0) {
 									try mapped.feed.insert($0)
 									if sync {
 										Task { await self.sync.add(mapped.feed) }
 									}
 								}
 								
-								// Merge fetched items with synced state (isRead, isStarred) and insert
+								// 2. Items: Merge fetched items with synced state (isRead, isStarred) and insert
 								for var item in mapped.items {
-									if let existing = try Item
-										.filter(Column(Item.Column.source.rawValue) == item.source)
-										.filter(Column(Item.Column.itemId.rawValue) == item.itemId)
-										.fetchOne($0) {
-										item.isRead = existing.isRead
-										item.isStarred = existing.isStarred
-										if existing == item { continue }
+									if let stored = try self.item(source: item.source, itemId: item.itemId, $0) {
+										item.isRead = stored.isRead
+										item.isStarred = stored.isStarred
+										item.sync = stored.sync
+										if stored == item { continue } // Skip unchanged items
 									}
 									try item.insert($0)
 								}
 								
-								// Insert attachements
+								// 3. Insert attachements
 								for attachment in mapped.attachments { try attachment.insert($0) }
 							}
 							DispatchQueue.main.async { self.fetching.remove(source) }
@@ -148,40 +151,5 @@ class Store: ObservableObject {
 			}
 		}
 	}
-	
-	func delete(feed: Feed, sync: Bool = true) {
-		try? queue.write { let _ = try feed.delete($0) }
-		if sync {
-			Task { await self.sync.delete(feed) }
-		}
-	}
-	
-	func download(attachment: Attachment) {
-		if downloads.keys.contains(attachment.url) { return }
-		var observation: NSKeyValueObservation!
-		let dataTask = URLSession.shared.dataTask(with: URLRequest(url: attachment.url)) { data, _, _ in
-			if let data {
-				try! FileManager.default.createDirectory(
-					at: attachment.localUrl.deletingLastPathComponent(),
-					withIntermediateDirectories: true
-				)
-				try! data.write(to: attachment.localUrl)
-				DispatchQueue.main.async {
-					observation.invalidate()
-					self.downloads[attachment.url] = .completed(attachment.localUrl)
-				}
-			} else {
-				DispatchQueue.main.async {
-					observation.invalidate()
-					self.downloads[attachment.url] = .error
-				}
-			}
-		}
-		observation = dataTask.progress.observe(\.fractionCompleted) { progress, test in
-			DispatchQueue.main.async {
-				self.downloads[attachment.url] = .progress(progress.fractionCompleted)
-			}
-		}
-		dataTask.resume()
-	}
+
 }

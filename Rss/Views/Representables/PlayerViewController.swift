@@ -12,7 +12,7 @@ struct PlayerViewController: UIViewControllerRepresentable {
 		let playerViewController = AVPlayerViewController()
 		playerViewController.view?.backgroundColor = .clear
 		playerViewController.showsPlaybackControls = true
-		playerViewController.player = AVPlayer()
+		playerViewController.player = AVPlayer(playerItem: AVPlayerItem(url: url))
 		return playerViewController
 	}
 	

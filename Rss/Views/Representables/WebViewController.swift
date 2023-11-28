@@ -10,7 +10,7 @@ struct WebViewController: UIViewControllerRepresentable {
 	@Binding var scale: Double
 	
 	func makeUIViewController(context: Context) -> ViewController {
-		ViewController(attachmentsView: attatchmentsView)
+		return ViewController(attachmentsView: attatchmentsView)
 	}
 	
 	func updateUIViewController(
@@ -18,8 +18,10 @@ struct WebViewController: UIViewControllerRepresentable {
 		context: Context
 	) {
 		viewController.hc.rootView = attatchmentsView
-		viewController.webView
-			.loadHTMLString(content.wrappedInHtml(scale: scale), baseURL: nil)
+		viewController.webView.loadHTMLString(
+			content.wrappedInHtml(scale: scale),
+			baseURL: nil
+		)
 	}
 	
 	private var attatchmentsView: AttachmentsView {

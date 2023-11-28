@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE13C0EA2B1665C900058F60 /* Downloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13C0E92B1665C900058F60 /* Downloads.swift */; };
 		CE18F38A2B094EB700FE509C /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE18F3892B094EB700FE509C /* Helpers.swift */; };
 		CE18F38C2B09800C00FE509C /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE18F38B2B09800C00FE509C /* FeedView.swift */; };
 		CE351BDE2B0BE768006FF948 /* FeedsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BDD2B0BE768006FF948 /* FeedsView.swift */; };
 		CE351BE02B0BE7C6006FF948 /* ItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BDF2B0BE7C6006FF948 /* ItemsView.swift */; };
-		CE351BE42B0D003D006FF948 /* DownloadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BE32B0D003D006FF948 /* DownloadsView.swift */; };
+		CE351BE42B0D003D006FF948 /* DownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BE32B0D003D006FF948 /* DownloadView.swift */; };
 		CE351BE62B0D007C006FF948 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BE52B0D007C006FF948 /* CircularProgressView.swift */; };
 		CE351BE82B0D00C6006FF948 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BE72B0D00C6006FF948 /* PlayerViewController.swift */; };
 		CE351BEA2B0D1D28006FF948 /* AttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BE92B0D1D28006FF948 /* AttachmentView.swift */; };
@@ -45,11 +46,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CE13C0E92B1665C900058F60 /* Downloads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloads.swift; sourceTree = "<group>"; };
 		CE18F3892B094EB700FE509C /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		CE18F38B2B09800C00FE509C /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		CE351BDD2B0BE768006FF948 /* FeedsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsView.swift; sourceTree = "<group>"; };
 		CE351BDF2B0BE7C6006FF948 /* ItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsView.swift; sourceTree = "<group>"; };
-		CE351BE32B0D003D006FF948 /* DownloadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsView.swift; sourceTree = "<group>"; };
+		CE351BE32B0D003D006FF948 /* DownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadView.swift; sourceTree = "<group>"; };
 		CE351BE52B0D007C006FF948 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		CE351BE72B0D00C6006FF948 /* PlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
 		CE351BE92B0D1D28006FF948 /* AttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentView.swift; sourceTree = "<group>"; };
@@ -96,6 +98,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE13C0E72B1617D800058F60 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				CEED7B892B0B9AB2004B29C6 /* Store.swift */,
+				CE13C0E92B1665C900058F60 /* Downloads.swift */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		CE13C0E82B1617E000058F60 /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				CE76F89E2B1262FE007ED642 /* Sync.swift */,
+				CE7B3B8F2B15530000663605 /* Sync.EngineDelegate.swift */,
+			);
+			path = Sync;
+			sourceTree = "<group>";
+		};
 		CE18F3862B094B8600FE509C /* Support */ = {
 			isa = PBXGroup;
 			children = (
@@ -143,8 +163,6 @@
 		CEA06C132B0FDF2900B3C516 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				CE351BE52B0D007C006FF948 /* CircularProgressView.swift */,
-				CE351BE32B0D003D006FF948 /* DownloadsView.swift */,
 				CEA06C162B0FDFF400B3C516 /* FilterView.swift */,
 				CE5FA35A2B092C230056DC70 /* IconView.swift */,
 				CEA06C182B0FE01400B3C516 /* CountView.swift */,
@@ -193,9 +211,8 @@
 			isa = PBXGroup;
 			children = (
 				CEDEC5CC2B0650F700D83636 /* RssApp.swift */,
-				CEED7B892B0B9AB2004B29C6 /* Store.swift */,
-				CE76F89E2B1262FE007ED642 /* Sync.swift */,
-				CE7B3B8F2B15530000663605 /* Sync.EngineDelegate.swift */,
+				CE13C0E72B1617D800058F60 /* Store */,
+				CE13C0E82B1617E000058F60 /* Sync */,
 				CEED7B882B0B9AA0004B29C6 /* Data */,
 				CE64CE282B07EEB0006C9DB9 /* Views */,
 				CE18F3862B094B8600FE509C /* Support */,
@@ -229,6 +246,8 @@
 			children = (
 				CE351BE92B0D1D28006FF948 /* AttachmentView.swift */,
 				CEFEC7C52B0AF42200FF8728 /* AttachmentsView.swift */,
+				CE351BE32B0D003D006FF948 /* DownloadView.swift */,
+				CE351BE52B0D007C006FF948 /* CircularProgressView.swift */,
 			);
 			path = Attachment;
 			sourceTree = "<group>";
@@ -320,7 +339,8 @@
 				CEA06C172B0FDFF400B3C516 /* FilterView.swift in Sources */,
 				CE351BF72B0D388D006FF948 /* Attachment.swift in Sources */,
 				CE351BF52B0D3880006FF948 /* Item.swift in Sources */,
-				CE351BE42B0D003D006FF948 /* DownloadsView.swift in Sources */,
+				CE351BE42B0D003D006FF948 /* DownloadView.swift in Sources */,
+				CE13C0EA2B1665C900058F60 /* Downloads.swift in Sources */,
 				CEED7B8A2B0B9AB2004B29C6 /* Store.swift in Sources */,
 				CE18F38A2B094EB700FE509C /* Helpers.swift in Sources */,
 				CEFEC7C62B0AF42200FF8728 /* AttachmentsView.swift in Sources */,

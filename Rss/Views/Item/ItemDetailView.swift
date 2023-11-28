@@ -30,7 +30,6 @@ struct ItemDetailView: View {
 		.background(
 			colorScheme == .dark ? .black : .white
 		)
-		
 		.toolbar {
 			if let url = item.url {
 				toolbarItem(image: "safari") { UIApplication.shared.open(url) }

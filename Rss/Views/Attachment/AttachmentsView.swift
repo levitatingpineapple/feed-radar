@@ -36,8 +36,9 @@ struct AttachmentsView: View {
 						}.disabled(selected >= attachments.count - 1)
 					}
 				}
+			} else {
+				Divider()
 			}
-			Divider()
 		}
 		.padding(.horizontal, 16)
 		.frame(maxWidth: 720 * scale)

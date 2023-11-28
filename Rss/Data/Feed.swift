@@ -50,8 +50,8 @@ extension Feed {
 					.filter(GRDB.Column(Column.source.rawValue) == url.absoluteString)
 					.fetchOne($0)
 			}
-				.publisher(in: store.queue, scheduling: .immediate)
-				.eraseToAnyPublisher()
+			.publisher(in: store.queue, scheduling: .immediate)
+			.eraseToAnyPublisher()
 		}
 	}
 }

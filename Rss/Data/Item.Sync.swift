@@ -26,14 +26,34 @@ extension Item {
 			)
 			record["isRead"] = isRead
 			record["isStarred"] = isStarred
-			Logger.sync.info("Decoded record: \(record), isRead: \(isRead), (isStarred: \(isStarred)")
 			return record
 		}
 		set {
 			let archiver = NSKeyedArchiver(requiringSecureCoding: true)
 			newValue.encodeSystemFields(with: archiver)
-			Logger.sync.info("Decoded record: \(newValue)")
 			sync = archiver.encodedData
 		}
+	}
+	
+	func merged(with remoteRecord: CKRecord, mergeFields: Bool) -> Item {
+		var merged = self
+		if mergeFields {
+			merged.isRead = remoteRecord["isRead"] as! Bool
+			merged.isStarred = remoteRecord["isStarred"] as! Bool
+			Logger.sync.info("Item fields updated from remote, ItemId: \(itemId)")
+		}
+		if merged.record.modificationDate ?? .distantPast <
+		   remoteRecord.modificationDate ?? .distantFuture {
+			merged.record = remoteRecord
+			Logger.sync.info("Item record updated from remote:  ItemId: \(itemId)")
+		} else {
+			Logger.sync.info("Remote record older and discarded:  ItemId: \(itemId)")
+		}
+		return merged
+	}
+	
+	static func stored(with recordID: CKRecord.ID) -> Item? {
+		recordID.zoneID.zoneName.url
+			.flatMap { Store.shared.item(source: $0, itemId: recordID.recordName) }
 	}
 }

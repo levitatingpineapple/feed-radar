@@ -2,11 +2,6 @@ import Foundation
 import os.log
 import UniformTypeIdentifiers
 
-extension String {
-	var url: URL? { URL(string: self) }
-	var type: UTType? { UTType(mimeType: self) }
-}
-
 extension URL {
 	var favicon: URL? {
 		host(percentEncoded: true).flatMap {
@@ -33,6 +28,10 @@ extension URL {
 extension String {
 	static let cloudKitContainerIdentifier = "iCloud.levitatingpineapple.todo"
 	static let cloudKitStateSerializationKey = "newKey"
+	static let loggingSubsystem: String = "com.levitatingPineapple.rss"
+	
+	var url: URL? { URL(string: self) }
+	var type: UTType? { UTType(mimeType: self) }
 	
 	func wrappedInHtml(scale: Double) -> String { """
 <!DOCTYPE html>
@@ -61,7 +60,6 @@ extension Int {
 }
 
 extension Logger {
-	static let loggingSubsystem: String = "com.levitatingPineapple.rss"
-	static let sync = Logger(subsystem: Self.loggingSubsystem, category: "☁️")
-	static let store = Logger(subsystem: Self.loggingSubsystem, category: "💽")
+	static let sync = Logger(subsystem: .loggingSubsystem, category: "☁️")
+	static let store = Logger(subsystem: .loggingSubsystem, category: "💽")
 }

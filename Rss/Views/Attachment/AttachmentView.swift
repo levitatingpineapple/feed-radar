@@ -3,11 +3,11 @@ import SwiftUI
 struct AttachmentView<Selector: View>: View {
 	let attachment: Attachment
 	@State private var aspectRatio: Double = 16 / 9
-	@ObservedObject var store: Store = .shared
+	@ObservedObject var downloads: Downloads = .shared
 	@ViewBuilder var selector: () -> Selector
 	
 	var url: URL {
-		if case let .completed(url) = store.downloads[attachment.url] {
+		if case let .completed(url) = downloads.tasks[attachment.url] {
 			url
 		} else {
 			attachment.url
@@ -23,24 +23,30 @@ struct AttachmentView<Selector: View>: View {
 					.truncationMode(.head)
 				Spacer()
 				selector()
-			}
-			.padding(.horizontal, 16)
-			.padding(.vertical, 12)
-			if attachment.type.conforms(to: .image) {
-				AsyncImage(url: attachment.url) {
-					switch $0 {
-					case .success(let image):
-						image
-							.resizable()
-							.aspectRatio(contentMode: .fit)
-					default:
-						EmptyView()
+			}.padding(10)
+			Group {
+				if attachment.type.conforms(to: .image) {
+					AsyncImage(url: url) {
+						switch $0 {
+						case .success(let image):
+							image
+								.resizable()
+								.aspectRatio(contentMode: .fit)
+						default:
+							EmptyView()
+						}
 					}
+				} else if attachment.type.conforms(to: .audiovisualContent) {
+					VStack {
+						PlayerViewController(url: url, aspectRatio: $aspectRatio)
+							.aspectRatio(aspectRatio, contentMode: .fit)
+					}
+					
 				}
-			} else if attachment.type.conforms(to: .audiovisualContent) {
-				PlayerViewController(url: url, aspectRatio: $aspectRatio)
-					.aspectRatio(aspectRatio, contentMode: .fit)
-			}
+			}.clipShape(
+				UnevenRoundedRectangle(bottomLeadingRadius: 17, bottomTrailingRadius: 17)
+			).padding(1)
+			
 		}
 		.background(Color(.secondarySystemBackground))
 		.cornerRadius(16)
@@ -52,10 +58,14 @@ struct AttachmentView<Selector: View>: View {
 	}
 	
 	private func checkLocalFile() {
-		if FileManager.default.fileExists(
-			atPath: attachment.localUrl.path
-		) && store.downloads[attachment.url] == nil {
-			store.downloads[attachment.url] = .completed(attachment.url)
+		Task {
+			if FileManager.default.fileExists(
+				atPath: attachment.localUrl.path
+			) && downloads.tasks[attachment.url] == nil {
+				DispatchQueue.main.async {
+					downloads.tasks[attachment.url] = .completed(attachment.localUrl)
+				}
+			}
 		}
 	}
 }

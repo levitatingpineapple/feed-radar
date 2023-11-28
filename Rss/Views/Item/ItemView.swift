@@ -41,10 +41,17 @@ struct ItemView: View {
 					if let author = item.author { Text(author) }
 					Spacer()
 					if let time = item.time {
-						Text(
-							Date(timeIntervalSince1970: time),
-							format: Date.FormatStyle(date: .abbreviated, time: .omitted)
-						)
+						if  Date.now.timeIntervalSince1970 - time < (60 * 60 * 24 * 8) {
+							Text(
+								Date(timeIntervalSince1970: time),
+								format: .relative(presentation: .named)
+							)
+						} else {
+							Text(
+								Date(timeIntervalSince1970: time),
+								format: Date.FormatStyle(date: .abbreviated, time: .omitted)
+							)
+						}
 					}
 				}.font(.caption).foregroundColor(.secondary)
 			}
@@ -65,4 +72,3 @@ struct ItemView: View {
 		}
 	}
 }
-

@@ -4,23 +4,9 @@ import SwiftUI
 import os.log
 
 actor Sync {
-	var stateSerialization: CKSyncEngine.State.Serialization? {
-		get {
-			UserDefaults.standard.string(forKey: .cloudKitStateSerializationKey)
-				.flatMap { CKSyncEngine.State.Serialization(rawValue: $0) }
-		}
-		set {
-			UserDefaults.standard.setValue(
-				newValue?.rawValue,
-				forKey: .cloudKitStateSerializationKey
-			)
-		}
-	}
-	
+	@AppStorage(.cloudKitStateSerializationKey) var stateSerialization: CKSyncEngine.State.Serialization?
 	var syncEngine: CKSyncEngine!
-	
-	// Items that have been synced before they are fetched
-	var orphanedRecords = Dictionary<URL, Set<CKRecord>>()
+	var orphanedRecords = Set<CKRecord>()
 
 	init() {
 		Task { await start() }
@@ -28,8 +14,7 @@ actor Sync {
 	
 	private func start() {
 		let configuration = CKSyncEngine.Configuration(
-			database: CKContainer(identifier: .cloudKitContainerIdentifier)
-				.privateCloudDatabase,
+			database: CKContainer(identifier: .cloudKitContainerIdentifier).privateCloudDatabase,
 			stateSerialization: stateSerialization,
 			delegate: self
 		)
@@ -55,7 +40,7 @@ actor Sync {
 	}
 	
 	func update(_ item: Item) {
-		Logger.sync.info("Queue save record: \(item.recordID)")
+		Logger.sync.info("Queue record: \(item.recordID)")
 		syncEngine.state.add(
 			pendingRecordZoneChanges: [
 				.saveRecord(item.recordID)
