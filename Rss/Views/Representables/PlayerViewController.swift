@@ -5,7 +5,7 @@ struct PlayerViewController: UIViewControllerRepresentable {
 	let url: URL
 	@Binding var aspectRatio: Double
 	
-	static let shared: AVPlayerViewController = {
+	func makeUIViewController(context: Context) -> AVPlayerViewController {
 		try! AVAudioSession
 			.sharedInstance()
 			.setCategory(.playback, mode: .moviePlayback)
@@ -14,16 +14,12 @@ struct PlayerViewController: UIViewControllerRepresentable {
 		playerViewController.showsPlaybackControls = true
 		playerViewController.player = AVPlayer()
 		return playerViewController
-	}()
+	}
 	
-	func makeUIViewController(context: Context) -> AVPlayerViewController {
-		let shared = PlayerViewController.shared
-		if let player = shared.player {
-			player.pause()
+	static func dismantleUIViewController(_ playerViewController: AVPlayerViewController) {
+		if let player = playerViewController.player {
 			player.replaceCurrentItem(with: nil)
-			player.replaceCurrentItem(with: AVPlayerItem(url: url))
 		}
-		return shared
 	}
 	
 	func updateUIViewController(
@@ -31,7 +27,6 @@ struct PlayerViewController: UIViewControllerRepresentable {
 		context: Context
 	) {
 		if let player = playerViewController.player {
-			player.pause()
 			player.replaceCurrentItem(with: nil)
 			player.replaceCurrentItem(with: AVPlayerItem(url: url))
 			Task { [weak player] in

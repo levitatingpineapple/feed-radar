@@ -34,9 +34,7 @@ extension WebViewController {
 		
 		init(attachmentsView: AttachmentsView) {
 			hc = UIHostingController(rootView: attachmentsView)
-			
 			super.init(nibName: nil, bundle: nil)
-			
 		}
 		
 		@available(*, unavailable)
@@ -61,13 +59,17 @@ extension WebViewController {
 			hc.view.centerXAnchor.constraint(equalTo: webView.centerXAnchor).isActive = true
 			
 			// TODO: Find way to observe intrinsic content change
-			Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { _ in
-				let webContentHeight = self.hc.view.intrinsicContentSize.height
-				let topInset = self.webView.scrollView.contentInset.top
-				if webContentHeight != topInset {
-					self.webView.scrollView.contentInset.top = webContentHeight
-					self.webView.scrollView.setContentOffset(CGPoint(x: .zero, y: -webContentHeight), animated: false)
-					self.hc.view.invalidateIntrinsicContentSize()
+			Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] timer in
+				if let self {
+					let webContentHeight = self.hc.view.intrinsicContentSize.height
+					let topInset = self.webView.scrollView.contentInset.top
+					if webContentHeight != topInset {
+						self.webView.scrollView.contentInset.top = webContentHeight
+						self.webView.scrollView.setContentOffset(CGPoint(x: .zero, y: -webContentHeight), animated: false)
+						self.hc.view.invalidateIntrinsicContentSize()
+					}
+				} else {
+					timer.invalidate()
 				}
 			}
 		}
