@@ -11,7 +11,7 @@ struct Feed: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord
 	
 	let source: URL
 	let title: String?
-	let icon: Data?
+	let icon: URL?
 	
 	var id: Int { source.hashValue }
 	
@@ -19,9 +19,15 @@ struct Feed: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord
 		try database.create(table: "feed", options: .ifNotExists) {
 			$0.column(Column.source.rawValue, .text).notNull()
 			$0.column(Column.title.rawValue, .text)
-			$0.column(Column.icon.rawValue, .blob)
-			$0.primaryKey([Column.source.rawValue], onConflict: .ignore)
+			$0.column(Column.icon.rawValue, .text)
+			$0.primaryKey([Column.source.rawValue], onConflict: .replace)
 		}
+	}
+}
+
+extension Feed {
+	init(source: URL) {
+		self = Feed(source: source, title: nil, icon: nil)
 	}
 }
 
@@ -53,14 +59,5 @@ extension Feed {
 			.publisher(in: store.queue, scheduling: .immediate)
 			.eraseToAnyPublisher()
 		}
-	}
-}
-
-
-
-extension Feed {
-	enum Display {
-		case content(scale: Double)
-		case web(reader: Bool, inverted: Bool)
 	}
 }

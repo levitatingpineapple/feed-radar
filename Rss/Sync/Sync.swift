@@ -4,7 +4,8 @@ import SwiftUI
 import os.log
 
 actor Sync {
-	@AppStorage(.cloudKitStateSerializationKey) var stateSerialization: CKSyncEngine.State.Serialization?
+	@AppStorage(.cloudKitStateSerializationKey) 
+	var stateSerialization: CKSyncEngine.State.Serialization?
 	var syncEngine: CKSyncEngine!
 	var orphanedRecords = Set<CKRecord>()
 

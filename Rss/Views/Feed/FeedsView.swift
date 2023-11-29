@@ -22,7 +22,7 @@ struct FeedsView: View {
 					}
 					.swipeActions(edge: .leading, allowsFullSwipe: true) {
 						Button("Fetch") {
-							Store.shared.fetch(source: feed.source)
+							Store.shared.fetch(feed: feed)
 						}.tint(.accentColor)
 					}
 				}

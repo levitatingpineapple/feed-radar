@@ -8,10 +8,8 @@ extension Mapped {
 			feed: Feed(
 				source: source,
 				title: rss.title,
-				icon: Mapped.icon(
-					imageUrl: rss.image?.url?.url,
-					faviconUrl: rss.link?.url ?? source
-				)
+				icon: rss.image?.url?.url
+				?? (rss.link?.url ?? source).favicon
 			),
 			items: (rss.items ?? Array<RSSFeedItem>()).compactMap { rssItem in
 				return rssItem.guid?.value.flatMap {

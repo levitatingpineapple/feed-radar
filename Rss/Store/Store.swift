@@ -5,8 +5,8 @@ import GRDB
 import os.log
 
 class Store: ObservableObject {
-	static let shared = try! Store()
 	let queue: DatabaseQueue
+	static let shared = try! Store()
 	private let sync = Sync()
 	private var bag = Set<AnyCancellable>()
 	@Published var fetching = Set<URL>()
@@ -40,10 +40,33 @@ class Store: ObservableObject {
 			.store(in: &bag)
 	}
 	
-	func isNewFeed(source: URL) -> Bool {
-		(try? queue.write { 
-			try isNewFeed(source: source, $0)}
-		) ?? true
+	private func feed(source: URL, _ database: Database) throws -> Feed? {
+		try Feed
+			.filter(Column(Feed.Column.source.rawValue) == source)
+			.fetchOne(database)
+	}
+	
+	func add(feed: Feed, userInitiated: Bool = true) {
+		if (
+			try? queue.write {
+				try Feed
+					.filter(Column(Item.Column.source.rawValue) == feed.source)
+					.isEmpty($0)
+			}
+		) ?? true {
+			try? queue.write { try feed.insert($0) }
+			fetch(feed: feed)
+			if userInitiated {
+				Task { await self.sync.add(feed) }
+			}
+		}
+	}
+	
+	func delete(feed: Feed, userInitiated: Bool = true) {
+		try? queue.write { let _ = try feed.delete($0) }
+		if userInitiated {
+			Task { await self.sync.delete(feed) }
+		}
 	}
 	
 	func item(source: URL, itemId: String) -> Item? {
@@ -58,12 +81,6 @@ class Store: ObservableObject {
 			.filter(Column(Item.Column.itemId.rawValue) == itemId)
 			.fetchOne(database)
 	}
-	
-	private func isNewFeed(source: URL, _ database: Database) throws -> Bool {
-		try Feed
-			.filter(Column(Item.Column.source.rawValue) == source)
-			.isEmpty(database)
-	}
  
 	func update(item: Item) {
 		try? queue.write {
@@ -71,7 +88,6 @@ class Store: ObservableObject {
 		}
 	}
 	
-	// MARK: User Actions
 	func toggleRead(for item: Item) {
 		try? queue.write {
 			var newItem = item
@@ -88,20 +104,14 @@ class Store: ObservableObject {
 			try newItem.update($0, columns: [Item.Column.isStarred.rawValue])
 		}
 		Task { await sync.update(item) }
+		Task { await sync.update(item) }
 	}
 	
-	func delete(feed: Feed, sync: Bool = true) {
-		try? queue.write { let _ = try feed.delete($0) }
-		if sync {
-			Task { await self.sync.delete(feed) }
-		}
-	}
-	
-	func fetch(source: URL? = nil, sync: Bool = true) {
+	func fetch(feed: Feed? = nil) {
 		Task {
 			do {
 				// Fetch all feeds, if source is not defined and filter out feeds already being fetched
-				let sources = try source.flatMap { [$0] } ?? (
+				let sources = try feed.flatMap { [$0.source] } ?? (
 					try queue.write {
 						try Feed.fetchAll($0).map { $0.source }
 					}
@@ -115,15 +125,16 @@ class Store: ObservableObject {
 						case let .success(feed):
 							try await queue.write {
 								let mapped = Mapped(feed: feed, at: source)
-								
-								// 1. Feed: Insert on initial fetch
-								if try self.isNewFeed(source: mapped.feed.source, $0) {
+								if mapped.feed != (try self.feed(source: mapped.feed.source, $0)) {
 									try mapped.feed.insert($0)
-									if sync {
-										Task { await self.sync.add(mapped.feed) }
+									Task {
+										if let iconUrl = mapped.feed.icon,
+										   let iconData = try? Data(contentsOf: iconUrl),
+										   let icon = iconData.scaledPng {
+											UserDefaults.standard.setValue(icon, forKey: mapped.feed.source.absoluteString)
+										}
 									}
 								}
-								
 								// 2. Items: Merge fetched items with synced state (isRead, isStarred) and insert
 								for var item in mapped.items {
 									if let stored = try self.item(source: item.source, itemId: item.itemId, $0) {
@@ -147,7 +158,7 @@ class Store: ObservableObject {
 				}
 			} catch {
 				// TODO: Surface import errors to user
-				print("‼️ ", error)
+				Logger.store.error("Fetch Error \(error)")
 			}
 		}
 	}

@@ -8,10 +8,8 @@ extension Mapped {
 			feed: Feed(
 				source: source,
 				title: json.title,
-				icon: Mapped.icon(
-					imageUrl: json.favicon?.url ?? json.icon?.url,
-					faviconUrl: json.feedUrl?.url ?? json.homePageURL?.url ?? source
-				)
+				icon: json.favicon?.url ?? json.icon?.url
+				?? (json.feedUrl?.url ?? json.homePageURL?.url ?? source).favicon
 			),
 			items: json.items.flatMap {
 				$0.compactMap { jsonItem in

@@ -7,10 +7,18 @@ extension Item {
 		case starred
 		case feed(Feed)
 		
-		var source: URL? {
+		var feed: Feed? {
 			switch self {
-			case let .feed(feed): feed.source
+			case let .feed(feed): feed
 			default: nil
+			}
+		}
+		
+		var navigationTitle: String {
+			switch self {
+			case .unread: "Unread"
+			case .starred: "Starred"
+			case .feed(let feed): feed.title ?? feed.source.absoluteString
 			}
 		}
 	}

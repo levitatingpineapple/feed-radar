@@ -1,11 +1,18 @@
 import SwiftUI
 
 struct IconView: View {
+	@AppStorage var icon: Data?
 	let feed: Feed
 	let size: Double
 	
+	init(feed: Feed, size: Double) {
+		_icon = AppStorage(feed.source.absoluteString)
+		self.feed = feed
+		self.size = size
+	}
+	
 	var image: Image? {
-		feed.icon
+		icon
 			.flatMap { UIImage(data: $0) }
 			.flatMap { Image(uiImage: $0) }
 	}

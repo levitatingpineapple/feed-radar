@@ -22,9 +22,9 @@ struct ItemsView: View {
 			ItemView(item: item, showsFeed: filter == .unread || filter == .starred)
 		}
 		.animation(.easeOut(duration: 0.2), value: filtred)
-		.refreshable { Store.shared.fetch(source: store.filter?.source) }
+		.refreshable { Store.shared.fetch(feed: store.filter?.feed) }
 		.listStyle(.plain)
-		.navigationTitle(navigationTitle)
+		.navigationTitle(filter.navigationTitle)
 		.navigationBarTitleDisplayMode(.inline)
 		.toolbar {
 			ToolbarItem(placement: .principal) {
@@ -41,11 +41,5 @@ struct ItemsView: View {
 		
 	}
 	
-	var navigationTitle: String {
-		switch filter {
-		case .unread: "Unread"
-		case .starred: "Starred"
-		case .feed(let feed): feed.title ?? feed.source.absoluteString
-		}
-	}
+
 }

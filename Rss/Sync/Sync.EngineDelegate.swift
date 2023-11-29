@@ -12,10 +12,8 @@ extension Sync: CKSyncEngineDelegate {
 		case let .fetchedDatabaseChanges(databaseChanges):
 			for modification in databaseChanges.modifications {
 				if let source = modification.zoneID.zoneName.url {
-					if Store.shared.isNewFeed(source: source) {
-						Logger.sync.info("New zone added: \(modification.zoneID.zoneName)")
-						Store.shared.fetch(source: source, sync: false)
-					}
+					Logger.sync.info("New zone added: \(modification.zoneID.zoneName)")
+					Store.shared.add(feed: Feed(source: source), userInitiated: false)
 				} else {
 					Logger.sync.fault("Zone name not URL: \(modification.zoneID.zoneName)")
 				}
@@ -23,10 +21,7 @@ extension Sync: CKSyncEngineDelegate {
 			for deletion in databaseChanges.deletions {
 				if let source = deletion.zoneID.zoneName.url {
 					Logger.sync.info("Received zone deletion: \(deletion.zoneID.zoneName)")
-					Store.shared.delete(
-						feed: Feed(source: source, title: nil, icon: nil),
-						sync: false
-					)
+					Store.shared.delete(feed: Feed(source: source), userInitiated: false)
 				} else {
 					Logger.sync.fault("Zone name not URL: \(deletion.zoneID.zoneName)")
 				}
@@ -80,7 +75,7 @@ extension Sync: CKSyncEngineDelegate {
 			if !recordZoneChanges.deletions.isEmpty {
 				Logger.sync.fault("Records should only be deleted with the zone")
 			}
-		default: Logger.sync.warning("🟢 \(event.description)")
+		default: Logger.sync.info("🟢 \(event.description)")
 		}
 	}
 	

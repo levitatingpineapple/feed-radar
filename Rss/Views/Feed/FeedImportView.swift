@@ -17,8 +17,8 @@ struct FeedImportView: View {
 				TextField("Feed URLs", text: $input, axis: .vertical)
 				Spacer()
 				Button("Import") {
-					if let url = URL(string: input) {
-						Store.shared.fetch(source: url)
+					if let source = URL(string: input) {
+						Store.shared.add(feed: Feed(source: source))
 					}
 				}.buttonStyle(.borderedProminent)
 			}.padding().frame(idealWidth: 400, idealHeight: 600)

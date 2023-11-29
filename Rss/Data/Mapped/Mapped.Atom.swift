@@ -8,10 +8,8 @@ extension Mapped {
 			feed: Feed(
 				source: source,
 				title: atom.title,
-				icon: Mapped.icon(
-					imageUrl: atom.icon?.url,
-					faviconUrl: atom.links?.first?.attributes?.href?.url ?? source
-				)
+				icon: atom.icon?.url ?? 
+				(atom.links?.first?.attributes?.href?.url ?? source).favicon
 			),
 			items: atom.entries.flatMap {
 				$0.compactMap { atomEntrie in

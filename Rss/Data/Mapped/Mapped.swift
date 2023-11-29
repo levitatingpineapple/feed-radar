@@ -16,9 +16,4 @@ extension Mapped {
 		case let .json(json): Mapped(json, at: source)
 		}
 	}
-
-	static func icon(imageUrl: URL?, faviconUrl: URL) -> Data? {
-		(imageUrl ?? faviconUrl.favicon)
-			.flatMap { try? Data(contentsOf: $0) }
-	}
 }
