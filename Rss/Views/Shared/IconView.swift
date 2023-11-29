@@ -18,10 +18,12 @@ struct IconView: View {
 	}
 	
 	var body: some View {
-		(image ?? Image(systemName: "globe"))
+		(image ?? Image(.rss).renderingMode(.template))
 			.resizable()
 			.scaledToFit()
+			.padding(image == nil ? 2 : 0)
 			.frame(maxWidth: size, maxHeight: size)
+			.background(Color(.tertiarySystemBackground))
 			.clipShape(RoundedRectangle(cornerRadius: size / 4, style: .continuous))
 	}
 }

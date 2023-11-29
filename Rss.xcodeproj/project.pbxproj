@@ -98,13 +98,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		CE13C0E72B1617D800058F60 /* Store */ = {
+		CE13C0E72B1617D800058F60 /* Persist */ = {
 			isa = PBXGroup;
 			children = (
 				CEED7B892B0B9AB2004B29C6 /* Store.swift */,
 				CE13C0E92B1665C900058F60 /* Downloads.swift */,
 			);
-			path = Store;
+			path = Persist;
 			sourceTree = "<group>";
 		};
 		CE13C0E82B1617E000058F60 /* Sync */ = {
@@ -211,7 +211,7 @@
 			isa = PBXGroup;
 			children = (
 				CEDEC5CC2B0650F700D83636 /* RssApp.swift */,
-				CE13C0E72B1617D800058F60 /* Store */,
+				CE13C0E72B1617D800058F60 /* Persist */,
 				CE13C0E82B1617E000058F60 /* Sync */,
 				CEED7B882B0B9AA0004B29C6 /* Data */,
 				CE64CE282B07EEB0006C9DB9 /* Views */,
