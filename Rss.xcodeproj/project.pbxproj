@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CE13C0EA2B1665C900058F60 /* Downloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13C0E92B1665C900058F60 /* Downloads.swift */; };
+		CE13C0EA2B1665C900058F60 /* Downloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13C0E92B1665C900058F60 /* Downloader.swift */; };
 		CE18F38A2B094EB700FE509C /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE18F3892B094EB700FE509C /* Helpers.swift */; };
 		CE18F38C2B09800C00FE509C /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE18F38B2B09800C00FE509C /* FeedView.swift */; };
 		CE351BDE2B0BE768006FF948 /* FeedsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BDD2B0BE768006FF948 /* FeedsView.swift */; };
@@ -36,6 +36,7 @@
 		CEDEC5E12B065DB200D83636 /* Mapped.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5E02B065DB200D83636 /* Mapped.swift */; };
 		CEDEC5E62B067CA500D83636 /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = CEDEC5E52B067CA500D83636 /* style.css */; };
 		CEDEC5E82B06809000D83636 /* SafariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5E72B06809000D83636 /* SafariViewController.swift */; };
+		CEDEFFE72B17695000AC9623 /* NavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEFFE62B17695000AC9623 /* NavigationView.swift */; };
 		CEE41B412B0833C1005E0289 /* FeedImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE41B402B0833C1005E0289 /* FeedImportView.swift */; };
 		CEED7B8A2B0B9AB2004B29C6 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEED7B892B0B9AB2004B29C6 /* Store.swift */; };
 		CEED7B952B0B9E65004B29C6 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CEED7B942B0B9E65004B29C6 /* GRDB */; };
@@ -46,7 +47,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CE13C0E92B1665C900058F60 /* Downloads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloads.swift; sourceTree = "<group>"; };
+		CE13C0E92B1665C900058F60 /* Downloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloader.swift; sourceTree = "<group>"; };
 		CE18F3892B094EB700FE509C /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		CE18F38B2B09800C00FE509C /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		CE351BDD2B0BE768006FF948 /* FeedsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsView.swift; sourceTree = "<group>"; };
@@ -78,6 +79,7 @@
 		CEDEC5E02B065DB200D83636 /* Mapped.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mapped.swift; sourceTree = "<group>"; };
 		CEDEC5E52B067CA500D83636 /* style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
 		CEDEC5E72B06809000D83636 /* SafariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariViewController.swift; sourceTree = "<group>"; };
+		CEDEFFE62B17695000AC9623 /* NavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationView.swift; sourceTree = "<group>"; };
 		CEE41B402B0833C1005E0289 /* FeedImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImportView.swift; sourceTree = "<group>"; };
 		CEED7B892B0B9AB2004B29C6 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CEFEC7C52B0AF42200FF8728 /* AttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsView.swift; sourceTree = "<group>"; };
@@ -102,7 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				CEED7B892B0B9AB2004B29C6 /* Store.swift */,
-				CE13C0E92B1665C900058F60 /* Downloads.swift */,
+				CE13C0E92B1665C900058F60 /* Downloader.swift */,
 			);
 			path = Persist;
 			sourceTree = "<group>";
@@ -151,6 +153,7 @@
 		CE64CE282B07EEB0006C9DB9 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				CEDEFFE62B17695000AC9623 /* NavigationView.swift */,
 				CEA06C142B0FDF3F00B3C516 /* Feed */,
 				CEA06C152B0FDF6800B3C516 /* Item */,
 				CEFEC7C42B0AF41300FF8728 /* Attachment */,
@@ -340,7 +343,7 @@
 				CE351BF72B0D388D006FF948 /* Attachment.swift in Sources */,
 				CE351BF52B0D3880006FF948 /* Item.swift in Sources */,
 				CE351BE42B0D003D006FF948 /* DownloadView.swift in Sources */,
-				CE13C0EA2B1665C900058F60 /* Downloads.swift in Sources */,
+				CE13C0EA2B1665C900058F60 /* Downloader.swift in Sources */,
 				CEED7B8A2B0B9AB2004B29C6 /* Store.swift in Sources */,
 				CE18F38A2B094EB700FE509C /* Helpers.swift in Sources */,
 				CEFEC7C62B0AF42200FF8728 /* AttachmentsView.swift in Sources */,
@@ -358,6 +361,7 @@
 				CE351BEC2B0D26A4006FF948 /* Mapped.Rss.swift in Sources */,
 				CEA06C192B0FE01400B3C516 /* CountView.swift in Sources */,
 				CE7B3B902B15530000663605 /* Sync.EngineDelegate.swift in Sources */,
+				CEDEFFE72B17695000AC9623 /* NavigationView.swift in Sources */,
 				CE8D430A2B0F071700BBA501 /* ItemView.swift in Sources */,
 				CE351BF32B0D3873006FF948 /* Feed.swift in Sources */,
 				CEDEC5E82B06809000D83636 /* SafariViewController.swift in Sources */,

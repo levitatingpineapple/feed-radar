@@ -1,9 +1,9 @@
 import SwiftUI
 
-class Downloads: ObservableObject {
+class Downloader: ObservableObject {
 	@Published var tasks = Dictionary<URL, Download>()
 	
-	static let shared = Downloads()
+	static let shared = Downloader()
 	
 	func download(attachment: Attachment) {
 		if tasks.keys.contains(attachment.url) { return }
@@ -35,7 +35,7 @@ class Downloads: ObservableObject {
 	}
 }
 
-extension Downloads {
+extension Downloader {
 	enum Download: Equatable {
 		case progress(Double)
 		case completed(URL)

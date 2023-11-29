@@ -31,13 +31,24 @@ class Store: ObservableObject {
 		$item
 			.removeDuplicates()
 			.scan((Optional<Item>.none, Optional<Item>.none)) { ($0.1, $1) }
-			.sink { (deselect, select) in
-				if let deselect, deselect.isRead == false {
-					self.toggleRead(for: deselect)
-					DispatchQueue.main.async { self.item = select }
+			.sink { (deselected, selected) in
+				if let deselected, deselected.isRead == false {
+					self.toggleRead(for: deselected)
+					self.reselect(item: selected)
 				}
 			}
 			.store(in: &bag)
+	}
+	
+	/// Fixes SwiftUI bug, where list item looses selection state
+	/// The bug does not affect navigation
+	private func reselect(item: Item?) {
+		DispatchQueue.main.async {
+			if self.item?.source == item?.source,
+			   self.item?.itemId == item?.itemId {
+				self.item = item
+			}
+		}
 	}
 	
 	private func feed(source: URL, _ database: Database) throws -> Feed? {
@@ -84,8 +95,9 @@ class Store: ObservableObject {
  
 	func update(item: Item) {
 		try? queue.write {
-			try item.insert($0)
+			try item.update($0)
 		}
+		reselect(item: item)
 	}
 	
 	func toggleRead(for item: Item) {

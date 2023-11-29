@@ -9,6 +9,9 @@ extension Sync: CKSyncEngineDelegate {
 			stateSerialization = stateUpdate.stateSerialization
 			Logger.sync.info("Updated State: \(stateUpdate.stateSerialization.rawValue.hash)")
 			
+		case let .accountChange(accountChange):
+			fatalError("TODO \(accountChange)")
+			
 		case let .fetchedDatabaseChanges(databaseChanges):
 			for modification in databaseChanges.modifications {
 				if let source = modification.zoneID.zoneName.url {
@@ -25,6 +28,19 @@ extension Sync: CKSyncEngineDelegate {
 				} else {
 					Logger.sync.fault("Zone name not URL: \(deletion.zoneID.zoneName)")
 				}
+			}
+		
+		case let .fetchedRecordZoneChanges(recordZoneChanges):
+			for modification in recordZoneChanges.modifications {
+				Logger.sync.info("Received Item Update: \(modification.record.recordID)")
+				if let item = Item.stored(with: modification.record.recordID) {
+					Store.shared.update(item: item.merged(with: modification.record, mergeFields: true))
+				} else {
+					orphanedRecords.insert(modification.record)
+				}
+			}
+			if !recordZoneChanges.deletions.isEmpty {
+				Logger.sync.fault("Records should only be deleted with the zone")
 			}
 			
 		case let .sentRecordZoneChanges(recordZoneChanges):
@@ -61,19 +77,6 @@ extension Sync: CKSyncEngineDelegate {
 				default:
 					Logger.sync.fault("Unknown error saving record \(failedRecordSave.record.recordID): \(failedRecordSave.error)")
 				}
-			}
-			
-		case let .fetchedRecordZoneChanges(recordZoneChanges):
-			for modification in recordZoneChanges.modifications {
-				Logger.sync.info("Received Item Update: \(modification.record.recordID)")
-				if let item = Item.stored(with: modification.record.recordID) {
-					Store.shared.update(item: item.merged(with: modification.record, mergeFields: true))
-				} else {
-					orphanedRecords.insert(modification.record)
-				}
-			}
-			if !recordZoneChanges.deletions.isEmpty {
-				Logger.sync.fault("Records should only be deleted with the zone")
 			}
 		default: Logger.sync.info("🟢 \(event.description)")
 		}

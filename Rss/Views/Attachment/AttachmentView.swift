@@ -3,7 +3,7 @@ import SwiftUI
 struct AttachmentView<Selector: View>: View {
 	let attachment: Attachment
 	@State private var aspectRatio: Double = 16 / 9
-	@ObservedObject var downloads: Downloads = .shared
+	@ObservedObject var downloads: Downloader = .shared
 	@ViewBuilder var selector: () -> Selector
 	
 	var url: URL {
