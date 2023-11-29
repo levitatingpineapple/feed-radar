@@ -41,7 +41,7 @@ struct ItemView: View {
 					if let author = item.author { Text(author) }
 					Spacer()
 					if let time = item.time {
-						if  Date.now.timeIntervalSince1970 - time < (60 * 60 * 24 * 8) {
+						if Date.now.timeIntervalSince1970 - time < (60 * 60 * 24 * 8) {
 							Text(
 								Date(timeIntervalSince1970: time),
 								format: .relative(presentation: .named)

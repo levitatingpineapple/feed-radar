@@ -42,4 +42,3 @@ extension Downloader {
 		case error
 	}
 }
-

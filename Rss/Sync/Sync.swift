@@ -22,7 +22,23 @@ actor Sync {
 		syncEngine = CKSyncEngine(configuration)
 	}
 	
-	func add(_ feed: Feed) {
+	func queueAll() {
+		Logger.sync.info("Queue all")
+		syncEngine.state.add(
+			pendingDatabaseChanges: Store.shared.feeds
+				.map {
+					.saveZone(
+						CKRecordZone(zoneName: $0.source.absoluteString)
+					)
+				}
+		)
+		syncEngine.state.add(
+			pendingRecordZoneChanges: Store.shared.modifiedItems
+				.map { .saveRecord($0.recordID) }
+		)
+	}
+	
+	func queueAdded(_ feed: Feed) {
 		Logger.sync.info("Queue add zone: \(feed.source.absoluteString)")
 		syncEngine.state.add(
 			pendingDatabaseChanges: [
@@ -31,7 +47,7 @@ actor Sync {
 		)
 	}
 	
-	func delete(_ feed: Feed) {
+	func queueDeleted(_ feed: Feed) {
 		Logger.sync.info("Queue delete zone: \(feed.source.absoluteString)")
 		syncEngine.state.add(
 			pendingDatabaseChanges: [
@@ -40,7 +56,7 @@ actor Sync {
 		)
 	}
 	
-	func update(_ item: Item) {
+	func queueUpdated(_ item: Item) {
 		Logger.sync.info("Queue record: \(item.recordID)")
 		syncEngine.state.add(
 			pendingRecordZoneChanges: [

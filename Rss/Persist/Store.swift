@@ -17,7 +17,7 @@ class Store: ObservableObject {
 		var configuration = Configuration()
 		configuration.publicStatementArguments = true
 		configuration.prepareDatabase {
-			$0.trace { Logger.store.log("\($0.description)") }
+			$0.trace { Logger.store.trace("\($0.description)") }
 		}
 		queue = try DatabaseQueue(
 			path: URL.documents.appendingPathComponent("rss.db").path,
@@ -40,15 +40,12 @@ class Store: ObservableObject {
 			.store(in: &bag)
 	}
 	
-	/// Fixes SwiftUI bug, where list item looses selection state
-	/// The bug does not affect navigation
-	private func reselect(item: Item?) {
-		DispatchQueue.main.async {
-			if self.item?.source == item?.source,
-			   self.item?.itemId == item?.itemId {
-				self.item = item
-			}
-		}
+	// MARK: Feed
+	
+	var feeds: Array<Feed> {
+		(try? queue.write {
+			try? Feed.fetchAll($0)
+		}) ?? Array<Feed>()
 	}
 	
 	private func feed(source: URL, _ database: Database) throws -> Feed? {
@@ -68,7 +65,7 @@ class Store: ObservableObject {
 			try? queue.write { try feed.insert($0) }
 			fetch(feed: feed)
 			if userInitiated {
-				Task { await self.sync.add(feed) }
+				Task { await self.sync.queueAdded(feed) }
 			}
 		}
 	}
@@ -76,47 +73,15 @@ class Store: ObservableObject {
 	func delete(feed: Feed, userInitiated: Bool = true) {
 		try? queue.write { let _ = try feed.delete($0) }
 		if userInitiated {
-			Task { await self.sync.delete(feed) }
+			Task { await self.sync.queueDeleted(feed) }
 		}
 	}
 	
-	func item(source: URL, itemId: String) -> Item? {
-		try? queue.write {
-			try item(source: source, itemId: itemId, $0)
+	func deleteAllFeeds() {
+		let _  = try? queue.write {
+			try Feed.deleteAll($0)
 		}
-	}
-	
-	private func item(source: URL, itemId: String, _ database: Database) throws -> Item? {
-		try Item
-			.filter(Column(Item.Column.source.rawValue) == source)
-			.filter(Column(Item.Column.itemId.rawValue) == itemId)
-			.fetchOne(database)
-	}
- 
-	func update(item: Item) {
-		try? queue.write {
-			try item.update($0)
-		}
-		reselect(item: item)
-	}
-	
-	func toggleRead(for item: Item) {
-		try? queue.write {
-			var newItem = item
-			newItem.isRead.toggle()
-			try newItem.update($0, columns: [Item.Column.isRead.rawValue])
-		}
-		Task { await sync.update(item) }
-	}
-	
-	func toggleStarred(for item: Item) {
-		try? queue.write {
-			var newItem = item
-			newItem.isStarred.toggle()
-			try newItem.update($0, columns: [Item.Column.isStarred.rawValue])
-		}
-		Task { await sync.update(item) }
-		Task { await sync.update(item) }
+		// TODO: Delete attachments
 	}
 	
 	func fetch(feed: Feed? = nil) {
@@ -174,5 +139,63 @@ class Store: ObservableObject {
 			}
 		}
 	}
-
+	
+	// MARK: Item
+	var modifiedItems: Array<Item> {
+		(try? queue.write {
+			try? Item
+				.filter(Item.Column.isRead.column == true || Item.Column.isStarred.column == true)
+				.fetchAll($0)
+		}) ?? Array<Item>()
+	}
+	
+	func item(source: URL, itemId: String) -> Item? {
+		try? queue.write {
+			try item(source: source, itemId: itemId, $0)
+		}
+	}
+	
+	private func item(source: URL, itemId: String, _ database: Database) throws -> Item? {
+		try Item
+			.filter(Column(Item.Column.source.rawValue) == source)
+			.filter(Column(Item.Column.itemId.rawValue) == itemId)
+			.fetchOne(database)
+	}
+ 
+	func update(item: Item) {
+		try? queue.write {
+			try item.update($0)
+		}
+		reselect(item: item)
+	}
+	
+	func toggleRead(for item: Item) {
+		try? queue.write {
+			var newItem = item
+			newItem.isRead.toggle()
+			try newItem.update($0, columns: [Item.Column.isRead.rawValue])
+		}
+		Task { await sync.queueUpdated(item) }
+	}
+	
+	func toggleStarred(for item: Item) {
+		try? queue.write {
+			var newItem = item
+			newItem.isStarred.toggle()
+			try newItem.update($0, columns: [Item.Column.isStarred.rawValue])
+		}
+		Task { await sync.queueUpdated(item) }
+		Task { await sync.queueUpdated(item) }
+	}
+	
+	/// Fixes SwiftUI bug, where list item looses selection hilight
+	/// The bug does not affect navigation
+	private func reselect(item: Item?) {
+		DispatchQueue.main.async {
+			if self.item?.source == item?.source,
+			   self.item?.itemId == item?.itemId {
+				self.item = item
+			}
+		}
+	}
 }
