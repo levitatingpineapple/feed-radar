@@ -102,13 +102,15 @@ class Store: ObservableObject {
 						case let .success(feed):
 							try await queue.write {
 								let mapped = Mapped(feed: feed, at: source)
+								
+								// 1. Check if feed has changed. Insert and fetch it's icon
 								if mapped.feed != (try self.feed(source: mapped.feed.source, $0)) {
 									try mapped.feed.insert($0)
 									Task {
 										if let iconUrl = mapped.feed.icon,
 										   let iconData = try? Data(contentsOf: iconUrl),
 										   let icon = iconData.scaledPng {
-											UserDefaults.standard.setValue(icon, forKey: mapped.feed.source.absoluteString)
+											UserDefaults.standard.setValue(icon, forKey: .iconKey(source: mapped.feed.source))
 										}
 									}
 								}

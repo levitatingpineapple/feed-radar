@@ -10,7 +10,7 @@ extension Logger {
 
 extension String {
 	static let cloudKitContainerIdentifier = "iCloud.levitatingpineapple.todo"
-	static let cloudKitStateSerializationKey = "newKey"
+	static let cloudKitStateSerializationKey = "cloudKitStateSerialization"
 	static let loggingSubsystem: String = "com.levitatingPineapple.rss"
 	
 	// App Storage

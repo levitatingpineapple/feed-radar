@@ -6,7 +6,7 @@ struct IconView: View {
 	let size: Double
 	
 	init(feed: Feed, size: Double) {
-		_icon = AppStorage(feed.source.absoluteString)
+		_icon = AppStorage(.iconKey(source: feed.source))
 		self.feed = feed
 		self.size = size
 	}
