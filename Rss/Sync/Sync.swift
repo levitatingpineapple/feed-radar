@@ -4,10 +4,23 @@ import SwiftUI
 import os.log
 
 actor Sync {
-	@AppStorage(.cloudKitStateSerializationKey) 
-	var stateSerialization: CKSyncEngine.State.Serialization?
 	var syncEngine: CKSyncEngine!
 	var orphanedRecords = Set<CKRecord>()
+	var stateSerialization: CKSyncEngine.State.Serialization? {
+		get {
+			if let data = UserDefaults.standard.data(forKey: .cloudKitStateSerializationKey),
+			   let result = try? JSONDecoder().decode(
+				CKSyncEngine.State.Serialization.self,
+				from: data
+			) { result } else { nil }
+		}
+		set {
+			UserDefaults.standard.setValue(
+				try! JSONEncoder().encode(newValue),
+				forKey: .cloudKitStateSerializationKey
+			)
+		}
+	}
 
 	init() {
 		Task { await start() }
@@ -20,6 +33,17 @@ actor Sync {
 			delegate: self
 		)
 		syncEngine = CKSyncEngine(configuration)
+	}
+	
+	func processOrphaned(feed: Feed) {
+		orphanedRecords
+			.filter { $0.recordID.zoneID.zoneName == feed.source.absoluteString }
+			.forEach { orphanedRecord in
+				if let item = Item.stored(with:orphanedRecord.recordID) {
+					Logger.sync.info("Processing orphaned record: \(orphanedRecord.recordID)")
+					Store.shared.update(item: item.merged(with: orphanedRecord, mergeFields: true))
+				}
+			}
 	}
 	
 	func queueAll() {
@@ -63,22 +87,5 @@ actor Sync {
 				.saveRecord(item.recordID)
 			]
 		)
-	}
-}
-
-extension CKSyncEngine.State.Serialization: RawRepresentable {
-	public init?(rawValue: String) {
-		if let data = rawValue.data(using: .utf8),
-		   let result = try? JSONDecoder().decode(Self.self, from: data) {
-			self = result
-		} else {
-			return nil
-		}
-	}
-	
-	public var rawValue: String {
-		(try? JSONEncoder().encode(self))
-			.flatMap { String(data: $0, encoding: .utf8) }
-		?? String()
 	}
 }

@@ -8,6 +8,7 @@ import UniformTypeIdentifiers
 struct Attachment: Hashable, Identifiable {
 	enum Column: String {
 		case source, itemId, url, type, title
+		var column: GRDB.Column { GRDB.Column(self.rawValue) }
 	}
 	
 	let source: URL
@@ -70,8 +71,8 @@ extension Attachment {
 			ValueObservation
 				.tracking {
 					try Attachment
-						.filter(GRDB.Column(Column.source.rawValue) == source.absoluteString)
-						.filter(GRDB.Column(Column.itemId.rawValue) == itemId)
+						.filter(Column.source.column == source.absoluteString)
+						.filter(Column.itemId.column == itemId)
 						.fetchAll($0)
 				}
 				.publisher(in: store.queue, scheduling: .immediate)

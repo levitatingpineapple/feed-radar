@@ -38,7 +38,7 @@ extension Sync: CKSyncEngineDelegate {
 fileprivate extension Sync {
 	func stateUpdate(_ stateUpdate: CKSyncEngine.Event.StateUpdate) {
 		stateSerialization = stateUpdate.stateSerialization
-		Logger.sync.info("Updated state. Hash: \(String(format:"%02X", stateUpdate.stateSerialization.rawValue.hash))")
+		Logger.sync.info("Updated state. Hash: \(String(format:"%02X", stateUpdate.description))")
 	}
 	
 	func accountChange(_ accountChange: CKSyncEngine.Event.AccountChange) {
@@ -73,11 +73,16 @@ fileprivate extension Sync {
 	
 	func fetchedRecordZoneChanges(_ fetchedRecordZoneChanges: CKSyncEngine.Event.FetchedRecordZoneChanges) {
 		for modification in fetchedRecordZoneChanges.modifications {
-			Logger.sync.info("Received Item Update: \(modification.record.recordID)")
 			if let item = Item.stored(with: modification.record.recordID) {
+				Logger.sync.info("Received item update: \(modification.record.recordID)")
 				Store.shared.update(item: item.merged(with: modification.record, mergeFields: true))
 			} else {
+				Logger.sync.info("Received item update, no matching local item: \(modification.record.recordID)")
 				orphanedRecords.insert(modification.record)
+				if let source = modification.record.recordID.zoneID.zoneName.url {
+					Store.shared.fetch(feed: Feed(source: source))
+				}
+				
 			}
 		}
 		if !fetchedRecordZoneChanges.deletions.isEmpty {

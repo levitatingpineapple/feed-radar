@@ -7,6 +7,7 @@ import GRDBQuery
 struct Feed: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord {
 	enum Column: String {
 		case source, title, icon
+		var column: GRDB.Column { GRDB.Column(self.rawValue) }
 	}
 	
 	let source: URL
@@ -38,7 +39,7 @@ extension Feed {
 		func publisher(in store: Store) -> AnyPublisher<Array<Feed>, Error> {
 			ValueObservation.tracking {
 				try Feed
-					.order(GRDB.Column(Column.title.rawValue))
+					.order(Column.title.column)
 					.fetchAll($0)
 			}
 			.publisher(in: store.queue, scheduling: .immediate)
@@ -53,7 +54,7 @@ extension Feed {
 		func publisher(in store: Store) -> AnyPublisher<Feed?, Error> {
 			ValueObservation.tracking {
 				try Feed
-					.filter(GRDB.Column(Column.source.rawValue) == url.absoluteString)
+					.filter(Column.source.column == url.absoluteString)
 					.fetchOne($0)
 			}
 			.publisher(in: store.queue, scheduling: .immediate)

@@ -17,9 +17,9 @@ class Store: ObservableObject {
 	init() throws {
 		var configuration = Configuration()
 		configuration.publicStatementArguments = true
-		configuration.prepareDatabase {
-			$0.trace { Logger.store.trace("\($0.description)") }
-		}
+//		configuration.prepareDatabase {
+//			$0.trace { Logger.store.trace("\($0.description)") }
+//		}
 		queue = try DatabaseQueue(
 			path: URL.documents.appendingPathComponent("rss.db").path,
 			configuration: configuration
@@ -45,6 +45,12 @@ class Store: ObservableObject {
 			.sink { UNUserNotificationCenter.current().setBadgeCount($0) }
 			.store(in: &bag)
 		
+		Task {
+			var a = [1, 2, 3]
+			Task {
+				
+			}
+		}
 	}
 	
 	// MARK: Feed
@@ -92,60 +98,66 @@ class Store: ObservableObject {
 	}
 	
 	func fetch(feed: Feed? = nil) {
-		Task {
-			do {
-				// Fetch all feeds, if source is not defined and filter out feeds already being fetched
-				let sources = try feed.flatMap { [$0.source] } ?? (
-					try queue.write {
-						try Feed.fetchAll($0).map { $0.source }
-					}
-				).filter { !self.fetching.contains($0) }
-				
-				// Displays progress indicators
-				DispatchQueue.main.async { self.fetching = self.fetching.union(Set(sources)) }
-				for source in sources {
-					Task {
-						switch FeedParser(URL: source).parse() {
-						case let .success(feed):
-							try await queue.write {
-								let mapped = Mapped(feed: feed, at: source)
-								
-								// 1. Check if feed has changed. Insert and fetch it's icon
-								if mapped.feed != (try self.feed(source: mapped.feed.source, $0)) {
-									try mapped.feed.insert($0)
-									Task {
-										if let iconUrl = mapped.feed.icon,
-										   let iconData = try? Data(contentsOf: iconUrl),
-										   let icon = iconData.scaledPng {
-											UserDefaults.standard.setValue(icon, forKey: .iconKey(source: mapped.feed.source))
-										}
+		// Fetch all feeds, if source is not defined and filter out feeds already being fetched
+		let sources = feed.flatMap { [$0.source] } ?? (
+			try? queue.write {
+				try Feed
+					.fetchAll($0)
+					.map { $0.source }
+			}
+		) ?? Array<URL>()
+			.filter { !fetching.contains($0) }
+			
+		
+		// Display progress indicators
+		DispatchQueue.main.async { self.fetching = self.fetching.union(Set(sources)) }
+		
+		for source in sources {
+			Task {
+				do {
+					switch FeedParser(URL: source).parse() {
+					case let .success(feed):
+						try await queue.write {
+							let mapped = Mapped(feed: feed, at: source)
+							
+							// 1. Check if feed has changed. Insert and fetch it's icon
+							if mapped.feed != (try self.feed(source: mapped.feed.source, $0)) {
+								try mapped.feed.insert($0)
+								Task {
+									if let iconUrl = mapped.feed.icon,
+									   let iconData = try? Data(contentsOf: iconUrl),
+									   let icon = iconData.scaledPng {
+										UserDefaults.standard.setValue(icon, forKey: .iconKey(source: mapped.feed.source))
 									}
 								}
-								
-								// 2. Items: Merge fetched items with synced state (isRead, isStarred) and insert
-								for var item in mapped.items {
-									if let stored = try self.item(source: item.source, itemId: item.itemId, $0) {
-										item.isRead = stored.isRead
-										item.isStarred = stored.isStarred
-										item.sync = stored.sync
-										if stored == item { continue } // Skip unchanged items
-									}
-									try item.insert($0)
-								}
-								
-								// 3. Insert attachements
-								for attachment in mapped.attachments { try attachment.insert($0) }
 							}
-							DispatchQueue.main.async { self.fetching.remove(source) }
-						case let .failure(parserError):
-							DispatchQueue.main.async { self.fetching.remove(source) }
-							throw parserError
+							
+							// 2. Items: Merge fetched items with synced state (isRead, isStarred) and insert
+							for var item in mapped.items {
+								if let stored = try self.item(source: item.source, itemId: item.itemId, $0) {
+									item.isRead = stored.isRead
+									item.isStarred = stored.isStarred
+									item.sync = stored.sync
+									if stored == item { continue } // Skip unchanged items
+								}
+								try item.insert($0)
+							}
+							
+							// 3. Insert attachements
+							for attachment in mapped.attachments { try attachment.insert($0) }
+							
+							// 4. Process orphaned sync records
+							Task { await self.sync.processOrphaned(feed: mapped.feed) }
 						}
+						DispatchQueue.main.async { self.fetching.remove(source) }
+					case let .failure(parserError):
+						DispatchQueue.main.async { self.fetching.remove(source) }
+						throw parserError
 					}
+				} catch {
+					// TODO: Surface import errors to the user
+					Logger.store.error("Fetch Error \(error)")
 				}
-			} catch {
-				// TODO: Surface import errors to user
-				Logger.store.error("Fetch Error \(error)")
 			}
 		}
 	}
