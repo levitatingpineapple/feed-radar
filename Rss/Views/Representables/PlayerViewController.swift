@@ -31,7 +31,7 @@ struct PlayerViewController: UIViewControllerRepresentable {
 				title.identifier = AVMetadataIdentifier.commonIdentifierTitle
 				title.value = (item.title ?? item.itemId) as NSString
 				playerItem.externalMetadata.append(title)
-				if let imageData = UserDefaults.standard.data(forKey: item.source.absoluteString) {
+				if let imageData = UserDefaults.standard.data(forKey: .iconKey(source: item.source)) {
 					let image = AVMutableMetadataItem()
 					image.identifier = .commonIdentifierArtwork
 					image.value = imageData as NSData

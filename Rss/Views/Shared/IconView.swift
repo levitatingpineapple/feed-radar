@@ -2,13 +2,9 @@ import SwiftUI
 
 struct IconView: View {
 	@AppStorage var icon: Data?
-	let feed: Feed
-	let size: Double
 	
-	init(feed: Feed, size: Double) {
+	init(feed: Feed) {
 		_icon = AppStorage(.iconKey(source: feed.source))
-		self.feed = feed
-		self.size = size
 	}
 	
 	var image: Image? {
@@ -21,9 +17,8 @@ struct IconView: View {
 		(image ?? Image(.rss).renderingMode(.template))
 			.resizable()
 			.scaledToFit()
-			.padding(image == nil ? 2 : 0)
-			.frame(maxWidth: size, maxHeight: size)
+			.frame(width: 32, height: 32)
 			.background(Color(.tertiarySystemBackground))
-			.clipShape(RoundedRectangle(cornerRadius: size / 4, style: .continuous))
+			.clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 	}
 }

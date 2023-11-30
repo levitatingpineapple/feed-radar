@@ -25,7 +25,7 @@ struct FeedView: View {
 		if let feed {
 			HStack {
 				ZStack {
-					IconView(feed: feed, size: 32)
+					IconView(feed: feed)
 						.blur(radius: isFetching ? 2 : 0)
 						.opacity(isFetching ? 0.4 : 1)
 					ProgressView()
