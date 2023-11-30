@@ -7,6 +7,7 @@ class Downloader: ObservableObject {
 	
 	func download(attachment: Attachment) {
 		if tasks.keys.contains(attachment.url) { return }
+		self.tasks[attachment.url] = .progress(.zero)
 		var observation: NSKeyValueObservation!
 		let dataTask = URLSession.shared.dataTask(with: URLRequest(url: attachment.url)) { data, _, _ in
 			if let data {
@@ -26,7 +27,7 @@ class Downloader: ObservableObject {
 				}
 			}
 		}
-		observation = dataTask.progress.observe(\.fractionCompleted) { progress, test in
+		observation = dataTask.progress.observe(\.fractionCompleted) { progress, change in
 			DispatchQueue.main.async {
 				self.tasks[attachment.url] = .progress(progress.fractionCompleted)
 			}

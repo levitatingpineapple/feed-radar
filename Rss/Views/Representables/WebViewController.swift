@@ -11,41 +11,32 @@ struct WebViewController: UIViewControllerRepresentable {
 	@Binding var scale: Double
 	
 	func makeUIViewController(context: Context) -> ViewController {
-		return ViewController(attachmentsView: attatchmentsView)
+		ViewController()
 	}
 	
 	func updateUIViewController(
 		_ viewController: ViewController,
 		context: Context
 	) {
-		viewController.hc.rootView = attatchmentsView
+		viewController.attachmentsController.rootView = AttachmentsView(
+			title: title,
+			request: request,
+			scale: scale
+		) { viewController.attachmentsController.view.invalidateIntrinsicContentSize() }
 		viewController.webView.loadHTMLString(
 			content.wrappedInHtml(scale: scale),
 			baseURL: base
 		)
 	}
-	
-	private var attatchmentsView: AttachmentsView {
-		AttachmentsView(title: title, request: request, scale: scale)
-	}
 }
 
 extension WebViewController {
 	class ViewController: UIViewController {
-		let hc: UIHostingController<AttachmentsView>
+		let attachmentsController = UIHostingController<AttachmentsView?>(rootView: .none)
 		let webView = WKWebView()
+		private var observation: NSKeyValueObservation?
 		
-		init(attachmentsView: AttachmentsView) {
-			hc = UIHostingController(rootView: attachmentsView)
-			super.init(nibName: nil, bundle: nil)
-		}
-		
-		@available(*, unavailable)
-		required init?(coder: NSCoder) {
-			fatalError("init(coder:) has not been implemented")
-		}
-		
-		var timer: Timer!
+		deinit { observation = nil }
 		
 		override func viewDidLoad() {
 			super.viewDidLoad()
@@ -53,28 +44,25 @@ extension WebViewController {
 			webView.navigationDelegate = self
 			webView.isOpaque = false
 			webView.backgroundColor = .clear
-			addChild(hc)
-			hc.view.backgroundColor = .clear
-			webView.scrollView.addSubview(hc.view!)
-			hc.view.translatesAutoresizingMaskIntoConstraints = false
-			hc.view.bottomAnchor.constraint(equalTo: webView.scrollView.topAnchor).isActive = true
-			hc.view.widthAnchor.constraint(equalTo: webView.widthAnchor).isActive = true
-			hc.view.centerXAnchor.constraint(equalTo: webView.centerXAnchor).isActive = true
+			addChild(attachmentsController)
+			attachmentsController.view.backgroundColor = .clear
+			webView.scrollView.addSubview(attachmentsController.view)
+			attachmentsController.view.translatesAutoresizingMaskIntoConstraints = false
+			attachmentsController.view.bottomAnchor.constraint(equalTo: webView.scrollView.topAnchor).isActive = true
+			attachmentsController.view.widthAnchor.constraint(equalTo: webView.widthAnchor).isActive = true
+			attachmentsController.view.centerXAnchor.constraint(equalTo: webView.centerXAnchor).isActive = true
 			
-			// TODO: Find way to observe intrinsic content change
-			Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] timer in
-				if let self {
-					let webContentHeight = self.hc.view.intrinsicContentSize.height
-					if webContentHeight != self.webView.scrollView.contentInset.top {
-						self.webView.scrollView.contentInset.top = webContentHeight
-						self.webView.scrollView.setContentOffset(
-							CGPoint(x: .zero, y: -(self.webView.safeAreaInsets.top + webContentHeight)),
-							animated: false
-						)
-						self.hc.view.invalidateIntrinsicContentSize()
-					}
-				} else {
-					timer.invalidate()
+			// Updates content inset based height of the attachments, as they load.
+			observation = attachmentsController.view.observe(\.bounds, options: [.new]) { [weak self] (view, change) in
+				if let self,
+				   let webContentHeight = change.newValue?.height,
+				   webContentHeight != self.webView.scrollView.contentInset.top {
+					self.webView.scrollView.contentInset.top = webContentHeight
+					self.webView.scrollView.setContentOffset(
+						CGPoint(x: .zero, y: -(self.webView.safeAreaInsets.top + webContentHeight)),
+						animated: false
+					)
+					
 				}
 			}
 		}

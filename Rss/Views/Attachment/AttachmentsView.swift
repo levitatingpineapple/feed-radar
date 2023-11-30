@@ -6,12 +6,19 @@ import GRDBQuery
 struct AttachmentsView: View {
 	let title: String
 	let scale: Double
+	let invalidateSize: () -> Void
 	@Query<Attachment.Request> var attachments: Array<Attachment>
 	@State private var selected: Int = .zero
 	
-	init(title: String, request: Attachment.Request, scale: Double) {
+	init(
+		title: String,
+		request: Attachment.Request,
+		scale: Double,
+		invalidateSize: @escaping () -> Void = { }
+	) {
 		self.title = title
 		self.scale = scale
+		self.invalidateSize = invalidateSize
 		_attachments = Query(
 			Binding(get: { request }, set: { _ in }),
 			in: \.store
@@ -22,7 +29,7 @@ struct AttachmentsView: View {
 		VStack(alignment: .leading, spacing: 16) {
 			Text(title).font(.largeTitle).bold()
 			if !attachments.isEmpty {
-				AttachmentView(attachment: attachments[min(selected, attachments.count - 1)]) {
+				AttachmentView(attachment: attachments[min(selected, attachments.count - 1)], invalidateSize: invalidateSize) {
 					if attachments.count > 1 {
 						Button {
 							selected = max(0, selected - 1)
@@ -42,6 +49,9 @@ struct AttachmentsView: View {
 		}
 		.padding(.horizontal, 16)
 		.frame(maxWidth: 720 * scale)
-		.onChange(of: attachments) { selected = .zero }
+		.onChange(of: attachments) {
+			selected = .zero
+			invalidateSize()
+		}
 	}
 }

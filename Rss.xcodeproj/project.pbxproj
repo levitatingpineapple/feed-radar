@@ -106,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				CEED7B892B0B9AB2004B29C6 /* Store.swift */,
+				CEDEC5CC2B0650F700D83636 /* RssApp.swift */,
 				CE13C0E92B1665C900058F60 /* Downloader.swift */,
 			);
 			path = Persist;
@@ -215,7 +216,6 @@
 		CEDEC5CB2B0650F700D83636 /* Rss */ = {
 			isa = PBXGroup;
 			children = (
-				CEDEC5CC2B0650F700D83636 /* RssApp.swift */,
 				CE13C0E72B1617D800058F60 /* Persist */,
 				CE13C0E82B1617E000058F60 /* Sync */,
 				CEED7B882B0B9AA0004B29C6 /* Data */,
@@ -507,6 +507,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Rss/Support/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Feed Radar";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -553,6 +554,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Rss/Support/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Feed Radar";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;

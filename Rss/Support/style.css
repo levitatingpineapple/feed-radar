@@ -41,7 +41,7 @@ body {
 	padding: var(--large);
 	margin: auto;
 	tab-size: 4;
-	line-height: 1.4em;
+	line-height: 140%;
 	max-width: 720px;
 }
 blockquote,
@@ -74,7 +74,11 @@ hr {
 }
 img,
 table,
-video { max-width: 100%; }
+video {
+/*	object-fit: scale-down;*/
+	height: auto;
+	max-width: 100%;
+}
 img,
 pre>code,
 table,

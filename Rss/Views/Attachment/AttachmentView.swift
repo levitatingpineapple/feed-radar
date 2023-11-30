@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AttachmentView<Selector: View>: View {
 	let attachment: Attachment
+	let invalidateSize: () -> Void
 	@State private var aspectRatio: Double = 16 / 9
 	@ObservedObject var downloads: Downloader = .shared
 	@ViewBuilder var selector: () -> Selector
@@ -32,6 +33,7 @@ struct AttachmentView<Selector: View>: View {
 							image
 								.resizable()
 								.aspectRatio(contentMode: .fit)
+								.onAppear { invalidateSize() }
 						default:
 							EmptyView()
 						}
@@ -40,6 +42,7 @@ struct AttachmentView<Selector: View>: View {
 					VStack {
 						PlayerViewController(url: url, aspectRatio: $aspectRatio)
 							.aspectRatio(aspectRatio, contentMode: .fit)
+							.onChange(of: aspectRatio) { invalidateSize() }
 					}
 					
 				}
