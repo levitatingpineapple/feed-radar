@@ -9,7 +9,7 @@
 		--primary: #000000FF;
 		--secondary: #3C3C4399;
 		--accent: #007AFFFF;
-		--background: #FFFFFFFF;
+		--background: clear;
 		--secondaryBackground: #F2F2F7FF;
 		--accentBackground: #FFFFFFFF;
 		--shadow: 0px 2px 14px #C0C0C0FF;
@@ -20,7 +20,7 @@
 		--primary: #FFFFFFFF;
 		--secondary: #EBEBF599;
 		--accent: #0A84FFFF;
-		--background: #000000FF;
+		--background: clear;
 		--secondaryBackground: #1C1C1EFF;
 		--accentBackground: #2C2C2CFF;
 		--shadow: 0px 0px 2px #FFFFFFFF;
@@ -51,6 +51,7 @@ blockquote {
 	border-radius: 0 var(--large) var(--large) 0;
 	margin: 0;
 }
+figure,
 blockquote>p { margin: 0; }
 blockquote,
 table { background-color: var(--secondaryBackground); }

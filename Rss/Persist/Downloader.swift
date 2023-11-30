@@ -10,11 +10,11 @@ class Downloader: ObservableObject {
 		var observation: NSKeyValueObservation!
 		let dataTask = URLSession.shared.dataTask(with: URLRequest(url: attachment.url)) { data, _, _ in
 			if let data {
-				try! FileManager.default.createDirectory(
+				try? FileManager.default.createDirectory(
 					at: attachment.localUrl.deletingLastPathComponent(),
 					withIntermediateDirectories: true
 				)
-				try! data.write(to: attachment.localUrl)
+				try? data.write(to: attachment.localUrl)
 				DispatchQueue.main.async {
 					observation.invalidate()
 					self.tasks[attachment.url] = .completed(attachment.localUrl)

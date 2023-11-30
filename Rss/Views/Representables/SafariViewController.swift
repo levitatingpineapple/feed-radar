@@ -4,6 +4,7 @@ import SafariServices
 
 struct SafariViewController: UIViewControllerRepresentable {
 	let url: URL
+	let reader: Bool
 	
 	func makeUIViewController(
 		context: Context
@@ -12,14 +13,14 @@ struct SafariViewController: UIViewControllerRepresentable {
 	func updateUIViewController(
 		_ container: SafariViewController.Container,
 		context: Context
-	) { container.load(url: url) }
+	) { container.load(url: url, reader: reader) }
 }
 
 extension SafariViewController {
 	class Container: UIViewController {
 		var safariViewController: SFSafariViewController?
 		
-		func load(url: URL) {
+		func load(url: URL, reader: Bool) {
 			if let safariViewController {
 				safariViewController.view.removeFromSuperview()
 				safariViewController.removeFromParent()
@@ -33,7 +34,9 @@ extension SafariViewController {
 					view = webView
 				}
 			} else {
-				let newController = SFSafariViewController(url: url)
+				let configuration = SFSafariViewController.Configuration()
+				configuration.entersReaderIfAvailable = reader
+				let newController = SFSafariViewController(url: url, configuration: configuration)
 				addChild(newController)
 				view.addSubview(newController.view)
 				newController.view.translatesAutoresizingMaskIntoConstraints = false

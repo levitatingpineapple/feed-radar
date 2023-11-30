@@ -6,6 +6,7 @@ import WebKit
 struct WebViewController: UIViewControllerRepresentable {
 	let content: String
 	let title: String
+	let base: URL?
 	let request: Attachment.Request
 	@Binding var scale: Double
 	
@@ -20,7 +21,7 @@ struct WebViewController: UIViewControllerRepresentable {
 		viewController.hc.rootView = attatchmentsView
 		viewController.webView.loadHTMLString(
 			content.wrappedInHtml(scale: scale),
-			baseURL: nil
+			baseURL: base
 		)
 	}
 	
@@ -64,10 +65,12 @@ extension WebViewController {
 			Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] timer in
 				if let self {
 					let webContentHeight = self.hc.view.intrinsicContentSize.height
-					let topInset = self.webView.scrollView.contentInset.top
-					if webContentHeight != topInset {
+					if webContentHeight != self.webView.scrollView.contentInset.top {
 						self.webView.scrollView.contentInset.top = webContentHeight
-						self.webView.scrollView.setContentOffset(CGPoint(x: .zero, y: -webContentHeight), animated: false)
+						self.webView.scrollView.setContentOffset(
+							CGPoint(x: .zero, y: -(self.webView.safeAreaInsets.top + webContentHeight)),
+							animated: false
+						)
 						self.hc.view.invalidateIntrinsicContentSize()
 					}
 				} else {
@@ -87,7 +90,7 @@ extension WebViewController.ViewController: WKNavigationDelegate {
 	) {
 		if let url = navigationAction.request.url,
 		   // External url which is not an iframe opened in browser
-			url.absoluteString != "about:blank" && navigationAction.targetFrame?.isMainFrame == true {
+		   url != webView.url && navigationAction.targetFrame?.isMainFrame == true {
 			decisionHandler(.cancel)
 			UIApplication.shared.open(url)
 		} else {

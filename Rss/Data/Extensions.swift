@@ -3,14 +3,24 @@ import UIKit
 import UniformTypeIdentifiers
 import os.log
 
+extension Logger {
+	static let sync = Logger(subsystem: .loggingSubsystem, category: "☁️")
+	static let store = Logger(subsystem: .loggingSubsystem, category: "💽")
+}
+
 extension String {
 	static let cloudKitContainerIdentifier = "iCloud.levitatingpineapple.todo"
 	static let cloudKitStateSerializationKey = "newKey"
 	static let loggingSubsystem: String = "com.levitatingPineapple.rss"
 	
+	// App Storage
+	static let contentScaleKey = "contentScale"
+	static func displayKey(source: URL) -> String { "display:" + source.absoluteString }
+	static func iconKey(source: URL) -> String { "icon:" + source.absoluteString }
+	
+	
 	var url: URL? { URL(string: self) }
 	var type: UTType? { UTType(mimeType: self) }
-	
 	func wrappedInHtml(scale: Double) -> String { """
 <!DOCTYPE html>
 	<html lang="en">
@@ -30,6 +40,13 @@ extension String {
 }
 
 extension URL {
+	static var documents: URL {
+		FileManager.default.urls(
+			for: .documentDirectory,
+			in: .userDomainMask
+		).first!
+	}
+	
 	var favicon: URL? {
 		host(percentEncoded: true).flatMap {
 			var components = URLComponents()
@@ -44,11 +61,13 @@ extension URL {
 		}
 	}
 	
-	static var documents: URL {
-		FileManager.default.urls(
-			for: .documentDirectory,
-			in: .userDomainMask
-		).first!
+	var base: URL? {
+		if var components = URLComponents(url: self, resolvingAgainstBaseURL: false) {
+			components.path = String()
+			return components.url
+		} else {
+			return nil
+		}
 	}
 }
 
@@ -59,11 +78,6 @@ extension Int {
 		values.forEach { hasher.combine($0) }
 		return hasher.finalize()
 	}
-}
-
-extension Logger {
-	static let sync = Logger(subsystem: .loggingSubsystem, category: "☁️")
-	static let store = Logger(subsystem: .loggingSubsystem, category: "💽")
 }
 
 extension UIImage {
@@ -102,3 +116,4 @@ extension Data {
 			.pngData()
 	}
 }
+

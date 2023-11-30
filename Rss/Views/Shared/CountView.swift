@@ -17,6 +17,7 @@ struct CountView: View {
 	var body: some View {
 		if count > .zero {
 			Text(String(count))
+				.lineLimit(1)
 				.foregroundStyle(Color.white)
 				.font(.caption).bold()
 				.padding(.vertical, 4).padding(.horizontal, 8)

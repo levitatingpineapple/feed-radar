@@ -1,50 +1,101 @@
 import SwiftUI
 
 struct ItemDetailView: View {
-	@AppStorage var showWeb: Bool
-	@AppStorage("scaling") private var scale: Double = 1
+	@AppStorage var display: Feed.Display
+	@AppStorage(.contentScaleKey) private var scale: Double = 1
 	@Environment(\.colorScheme) var colorScheme
-	
 	@State private var showsPopover: Bool = false
 	
 	let item: Item
 	
 	init(item: Item) {
 		self.item = item
-		self._showWeb = .init(wrappedValue: false, item.source.absoluteString, store: .standard)
+		self._display = AppStorage(
+			wrappedValue: Feed.Display(mode: .item, opensReader: false, isInverted: false),
+			.displayKey(source: item.source)
+		)
+	}
+	
+	var displayView: some View {
+		HStack {
+			switch display.mode {
+			case .item:
+				SystemImageButton(systemName: "plus.magnifyingglass") { scale += 0.1 }
+				SystemImageButton(systemName: "minus.magnifyingglass") { scale -= 0.1 }
+			case .link:
+				if ProcessInfo.processInfo.isiOSAppOnMac {
+					SystemImageButton(
+						systemName: display.isInverted ? "circle.lefthalf.filled": "circle.righthalf.filled"
+					) { display.isInverted.toggle() }
+				} else {
+					SystemImageButton(
+						systemName: display.opensReader ? "doc.plaintext.fill" : "doc.plaintext"
+					) { display.opensReader.toggle() }
+				}
+			}
+			Picker("Select Display", selection: $display.mode) {
+				Image(systemName: "text.justify.leading")
+					.tag(Feed.Display.Mode.item)
+				Image(systemName: "globe")
+					.tag(Feed.Display.Mode.link)
+			}.pickerStyle(.segmented).frame(maxWidth: 64)
+		}
 	}
 	
 	var body: some View {
 		VStack(spacing: .zero) {
-			if showWeb, let url = item.url {
-				SafariViewController (url: url).ignoresSafeArea()
-			} else {
-				WebViewController(
-					content: item.content ?? String(),
-					title: item.title ?? item.itemId,
-					request: Attachment.Request(source: item.source, itemId: item.itemId),
-					scale: $scale
-				).ignoresSafeArea(edges: [.bottom, .horizontal])
+			switch display.mode {
+			case .item:
+				if let content = item.content {
+					WebViewController(
+						content: content,
+						title: item.title ?? item.itemId, 
+						base: (item.url ?? item.source).base,
+						request: Attachment.Request(source: item.source, itemId: item.itemId),
+						scale: $scale
+					).ignoresSafeArea(edges: [.bottom, .horizontal, .top])
+				}
+			case .link:
+				if let url = item.url {
+					if display.isInverted {
+						SafariViewController(url: url, reader: display.opensReader)
+							.ignoresSafeArea()
+							.colorInvert()
+							.hueRotation(.degrees(180))
+					} else {
+						SafariViewController(url: url, reader: display.opensReader)
+							.ignoresSafeArea()
+							
+					}
+					
+				}
 			}
 		}
-		.background(
-			colorScheme == .dark ? .black : .white
-		)
+		.toolbarBackground(Material.bar, for: .navigationBar)
 		.toolbar {
+			ToolbarItem { displayView }
 			if let url = item.url {
-				toolbarItem(image: "safari") { UIApplication.shared.open(url) }
+				ToolbarItem { ShareLink(item: url) }
 			}
 		}
 	}
+}
+
+struct SystemImageButton: View {
+	let systemName: String
+	let action: () -> Void
 	
-	private func toolbarItem(
-		image: String,
-		action: @escaping () -> Void
-	) ->  ToolbarItem<Void, some View> {
-		ToolbarItem {
-			Button(action: action) {
-				Image(systemName: image)
-			}
-		}
+	var body: some View {
+		Image(systemName: systemName)
+			.foregroundStyle(Color.accentColor)
+			.frame(width: 30, height: 30)
+			.background(Color(.systemGray2).opacity(0.25))
+			.clipShape(
+				RoundedRectangle(
+					cornerSize: CGSize(width: 6, height: 6),
+					style: .continuous
+				)
+			)
+			.onTapGesture(perform: action)
 	}
 }
