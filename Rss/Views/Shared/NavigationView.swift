@@ -22,6 +22,9 @@ struct NavigationView: View {
 			? .all
 			: .automatic
 			store.fetch()
+			let result = try? await UNUserNotificationCenter
+				.current()
+				.requestAuthorization(options: .badge)
 		}
 	}
 }

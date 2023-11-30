@@ -3,6 +3,7 @@ import Combine
 import FeedKit
 import GRDB
 import os.log
+import NotificationCenter
 
 class Store: ObservableObject {
 	let queue: DatabaseQueue
@@ -38,6 +39,12 @@ class Store: ObservableObject {
 				}
 			}
 			.store(in: &bag)
+		Item.RequestCount(filter: .unread)
+			.publisher(in: self)
+			.replaceError(with: .zero)
+			.sink { UNUserNotificationCenter.current().setBadgeCount($0) }
+			.store(in: &bag)
+		
 	}
 	
 	// MARK: Feed
@@ -114,6 +121,7 @@ class Store: ObservableObject {
 										}
 									}
 								}
+								
 								// 2. Items: Merge fetched items with synced state (isRead, isStarred) and insert
 								for var item in mapped.items {
 									if let stored = try self.item(source: item.source, itemId: item.itemId, $0) {
