@@ -4,28 +4,6 @@
 	--medium: 8px;
 	--large: 16px;
 }
-@media (prefers-color-scheme: light) {
-	:root {
-		--primary: #000000FF;
-		--secondary: #3C3C4399;
-		--accent: #007AFFFF;
-		--background: clear;
-		--secondaryBackground: #F2F2F7FF;
-		--accentBackground: #FFFFFFFF;
-		--shadow: 0px 2px 14px #C0C0C0FF;
-	}
-}
-@media (prefers-color-scheme: dark) {
-	:root {
-		--primary: #FFFFFFFF;
-		--secondary: #EBEBF599;
-		--accent: #0A84FFFF;
-		--background: clear;
-		--secondaryBackground: #1C1C1EFF;
-		--accentBackground: #2C2C2CFF;
-		--shadow: 0px 0px 2px #FFFFFFFF;
-	}
-}
 a {
 	color: var(--accent);
 	text-decoration: none;
@@ -75,7 +53,6 @@ hr {
 img,
 table,
 video {
-/*	object-fit: scale-down;*/
 	height: auto;
 	max-width: 100%;
 }

@@ -1,5 +1,5 @@
 import Foundation
-import UIKit
+import SwiftUI
 import UniformTypeIdentifiers
 import os.log
 
@@ -12,31 +12,28 @@ extension String {
 	static let cloudKitContainerIdentifier = "iCloud.levitatingpineapple.todo"
 	static let cloudKitStateSerializationKey = "cloudKitStateSerialization"
 	static let loggingSubsystem: String = "com.levitatingPineapple.rss"
+	static let style: String = try! String(
+		contentsOf: Bundle.main.url(
+			forResource: "style",
+			withExtension: "css"
+		)!
+	)
 	
-	// App Storage
 	static let contentScaleKey = "contentScale"
 	static let isReadFilteredKey = "isReadFiltered"
 	static func displayKey(source: URL) -> String { "display:" + source.absoluteString }
 	static func iconKey(source: URL) -> String { "icon:" + source.absoluteString }
 	
-	
 	var url: URL? { URL(string: self) }
 	var type: UTType? { UTType(mimeType: self) }
-	func wrappedInHtml(scale: Double) -> String { """
-<!DOCTYPE html>
-	<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="initial-scale=\(String(format: "%.1f", scale))">
-		<style>
-			\(try! String(contentsOf: Bundle.main.url(forResource: "style", withExtension: "css")!))
-		</style>
-	</head>
-	<body>
-		\(self)
-	</body>
-</html>
-"""
+	func indented(_ indent: Int) -> String {
+		replacingOccurrences(
+			of: "\n",
+			with: Array<String>(
+				repeating: "\t", 
+				count: indent
+			).joined() + "\n"
+		)
 	}
 }
 
@@ -119,14 +116,14 @@ extension Data {
 }
 
 extension Array where Element == URL {
-	mutating func process(workers: UInt, partialCompletion: (Data, URLResponse) async -> Void) async {
-		await withTaskGroup(of: Result<(Data, URLResponse), any Error>.self) { taskGroup in
+	mutating func process(workers: UInt, partialCompletion: (Data, URL) async -> Void) async {
+		await withTaskGroup(of: Result<(Data, URL), any Error>.self) { taskGroup in
 			func addWorker() {
 				if let last = popLast() {
 					DispatchQueue.main.async { Store.shared.fetching.insert(last) }
 					taskGroup.addTask {
 						do {
-							let success = try await URLSession.shared.data(from: last)
+							let success = (try await URLSession.shared.data(from: last).0, last)
 							DispatchQueue.main.async { Store.shared.fetching.remove(last) }
 							return Result.success(success)
 						} catch {
@@ -138,8 +135,8 @@ extension Array where Element == URL {
 			(0..<workers).forEach { _ in addWorker() }
 			while let next = await taskGroup.next() {
 				switch next {
-				case let .success((data, response)):
-					await partialCompletion(data, response)
+				case let .success((data, source)):
+					await partialCompletion(data, source)
 				case let .failure(error): Logger.store.debug("Failed to Download \(error)")
 				}
 				addWorker()

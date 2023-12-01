@@ -1,12 +1,11 @@
 import SwiftUI
 
 struct ItemDetailView: View {
+	let item: Item
+	@Environment(\.colorScheme) var colorScheme
+	@Environment(\.self) var environmentValues
 	@AppStorage var display: Feed.Display
 	@AppStorage(.contentScaleKey) private var scale: Double = 1
-	@Environment(\.colorScheme) var colorScheme
-	@State private var showsPopover: Bool = false
-	
-	let item: Item
 	
 	init(item: Item) {
 		self.item = item
@@ -48,12 +47,17 @@ struct ItemDetailView: View {
 			case .item:
 				if let content = item.content {
 					WebViewController(
-						content: content,
-						title: item.title ?? item.itemId, 
+						htmlString: Html(
+							scale: scale,
+							style: .style,
+							body: content,
+							environmentValues: environmentValues
+						).string,
+						title: item.title ?? item.itemId,
 						base: (item.url ?? item.source).base,
 						request: Attachment.Request(source: item.source, itemId: item.itemId),
 						scale: $scale
-					).ignoresSafeArea(edges: [.bottom, .horizontal, .top])
+					).ignoresSafeArea()
 				}
 			case .link:
 				if let url = item.url {
@@ -65,7 +69,6 @@ struct ItemDetailView: View {
 					} else {
 						SafariViewController(url: url, reader: display.opensReader)
 							.ignoresSafeArea()
-							
 					}
 					
 				}

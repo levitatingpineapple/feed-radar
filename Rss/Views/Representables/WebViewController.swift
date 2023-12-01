@@ -4,7 +4,7 @@ import SwiftUI
 import WebKit
 
 struct WebViewController: UIViewControllerRepresentable {
-	let content: String
+	let htmlString: String
 	let title: String
 	let base: URL?
 	let request: Attachment.Request
@@ -24,7 +24,7 @@ struct WebViewController: UIViewControllerRepresentable {
 			scale: scale
 		) { viewController.attachmentsController.view.invalidateIntrinsicContentSize() }
 		viewController.webView.loadHTMLString(
-			content.wrappedInHtml(scale: scale),
+			htmlString,
 			baseURL: base
 		)
 	}

@@ -17,9 +17,9 @@ class Store: ObservableObject {
 	init() throws {
 		var configuration = Configuration()
 		configuration.publicStatementArguments = true
-//		configuration.prepareDatabase {
-//			$0.trace { Logger.store.trace("\($0.description)") }
-//		}
+		configuration.prepareDatabase {
+			$0.trace { Logger.store.trace("\($0.description)") }
+		}
 		queue = try DatabaseQueue(
 			path: URL.documents.appendingPathComponent("rss.db").path,
 			configuration: configuration
@@ -72,9 +72,9 @@ class Store: ObservableObject {
 			}
 		) ?? true {
 			try? queue.write { try feed.insert($0) }
-			Task {
-				fetch(feed: feed)
-				if userInitiated { await self.sync.queueAdded(feed) }
+			fetch(feed: feed)
+			if userInitiated {
+				Task { await self.sync.queueAdded(feed) }
 			}
 		}
 	}
@@ -99,8 +99,7 @@ class Store: ObservableObject {
 			var sources = feed
 				.flatMap { [$0.source] } ?? self.feeds.map { $0.source }
 				.filter { !fetching.contains($0) }
-			await sources.process(workers: 3) { data, response in
-				guard let source = response.url else { return }
+			await sources.process(workers: 3) { data, source in
 				switch FeedParser(data: data).parse() {
 				case let .success(feed):
 					try? queue.write {
@@ -187,11 +186,10 @@ class Store: ObservableObject {
 			try newItem.update($0, columns: [Item.Column.isStarred.rawValue])
 		}
 		Task { await sync.queueUpdated(item) }
-		Task { await sync.queueUpdated(item) }
 	}
 	
-	/// Fixes SwiftUI bug, where list item looses selection hilight
-	/// The bug does not affect navigation
+	/// Fixes visual bug, where list item looses selection
+	/// It does not affect navigation
 	private func reselect(item: Item?) {
 		DispatchQueue.main.async {
 			if self.item?.source == item?.source,

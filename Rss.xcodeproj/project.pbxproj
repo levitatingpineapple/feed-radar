@@ -31,6 +31,7 @@
 		CEA06C172B0FDFF400B3C516 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA06C162B0FDFF400B3C516 /* FilterView.swift */; };
 		CEA06C192B0FE01400B3C516 /* CountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA06C182B0FE01400B3C516 /* CountView.swift */; };
 		CEA270A62B11788B00D220F0 /* Item.Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA270A52B11788B00D220F0 /* Item.Filter.swift */; };
+		CEB155B52B1A419400AB785C /* Html.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB155B42B1A419400AB785C /* Html.swift */; };
 		CEC27A8C2B17DD35000EBA44 /* Feed.Display.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC27A8B2B17DD35000EBA44 /* Feed.Display.swift */; };
 		CEDEC5CD2B0650F700D83636 /* RssApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5CC2B0650F700D83636 /* RssApp.swift */; };
 		CEDEC5D32B0650F800D83636 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDEC5D22B0650F800D83636 /* Assets.xcassets */; };
@@ -73,6 +74,7 @@
 		CEA06C162B0FDFF400B3C516 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		CEA06C182B0FE01400B3C516 /* CountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountView.swift; sourceTree = "<group>"; };
 		CEA270A52B11788B00D220F0 /* Item.Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.Filter.swift; sourceTree = "<group>"; };
+		CEB155B42B1A419400AB785C /* Html.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Html.swift; sourceTree = "<group>"; };
 		CEC27A8B2B17DD35000EBA44 /* Feed.Display.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feed.Display.swift; sourceTree = "<group>"; };
 		CEDEC5C92B0650F700D83636 /* Rss.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rss.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDEC5CC2B0650F700D83636 /* RssApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssApp.swift; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				CEA270A52B11788B00D220F0 /* Item.Filter.swift */,
 				CE7B3B912B15534600663605 /* Item.Sync.swift */,
 				CE351BF62B0D388D006FF948 /* Attachment.swift */,
+				CEB155B42B1A419400AB785C /* Html.swift */,
 				CE18F3892B094EB700FE509C /* Extensions.swift */,
 				CE351BF12B0D26D2006FF948 /* Mapped */,
 			);
@@ -338,6 +341,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEB155B52B1A419400AB785C /* Html.swift in Sources */,
 				CE351BF02B0D26C7006FF948 /* Mapped.Json.swift in Sources */,
 				CE351BE02B0BE7C6006FF948 /* ItemsView.swift in Sources */,
 				CE18F38C2B09800C00FE509C /* FeedView.swift in Sources */,
