@@ -33,7 +33,15 @@ struct FeedView: View {
 						.opacity(isFetching ? 1 : 0)
 				}
 				Text(feed.title ?? feed.source.absoluteString).lineLimit(1)
-			}
+			}.contextMenu(
+				ContextMenu {
+					Button("Fetch") { Store.shared.fetch(feed: feed) }
+					Button("Copy Link") { UIPasteboard.general.url = feed.source }
+					Button("Mark all as read") {  }
+					Button("Clear attachments", role: .destructive) {  }
+					Button("Clear items", role: .destructive) {  }
+				}
+			)
 		}
 	}
 }

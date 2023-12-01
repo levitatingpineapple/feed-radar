@@ -69,6 +69,23 @@ struct ItemView: View {
 					Image(systemName: item.isStarred ? "star.slash.fill" : "star.fill")
 				}.tint(.orange)
 			}
+			.contextMenu(
+				ContextMenu {
+					if let url = item.url {
+						Button {
+							UIPasteboard.general.url = url
+						} label: {
+							Label { Text("Copy Link") } icon: { Image(systemName: "doc.on.doc") }
+						}
+						Button {
+							UIApplication.shared.open(url)
+						} label: {
+							Label { Text("Open in Browser") } icon: { Image(systemName: "safari") }
+						}
+						ShareLink(item: url)
+					}
+				}
+			)
 		}
 	}
 }

@@ -53,5 +53,6 @@ struct AttachmentsView: View {
 			selected = .zero
 			invalidateSize()
 		}
+		.onChange(of: scale) { invalidateSize() }
 	}
 }

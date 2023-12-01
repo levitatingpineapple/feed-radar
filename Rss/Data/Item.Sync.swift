@@ -45,9 +45,9 @@ extension Item {
 		if merged.record.modificationDate ?? .distantPast <
 		   remoteRecord.modificationDate ?? .distantFuture {
 			merged.record = remoteRecord
-			Logger.sync.info("Item record updated from remote:  ItemId: \(itemId)")
+			Logger.sync.info("Item record updated from remote. ItemId: \(itemId)")
 		} else {
-			Logger.sync.info("Remote record older and discarded:  ItemId: \(itemId)")
+			Logger.sync.info("Remote record older and discarded. ItemId: \(itemId)")
 		}
 		return merged
 	}

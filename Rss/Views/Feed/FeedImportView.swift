@@ -7,11 +7,9 @@ struct FeedImportView: View {
 	@State var test = String()
 	
 	var body: some View {
-		Button {
-			isPresented = true
-		} label: {
-			Label("Add Item", systemImage: "plus")
-		}
+		SystemImageButton(
+			systemName: "plus"
+		) { isPresented = true }
 		.popover(isPresented: $isPresented) {
 			VStack {
 				TextField("Feed URLs", text: $input, axis: .vertical)

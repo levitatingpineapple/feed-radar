@@ -15,13 +15,13 @@ struct ItemsView: View {
 		)
 	}
 	
-	var filtred: Array<Item> { items.filter { !($0.isRead && isReadFiltered) } }
+	var filtered: Array<Item> { items.filter { !($0.isRead && isReadFiltered) } }
 	
 	var body: some View {
-		List(items, selection: $store.item) { item in
+		List(filtered, selection: $store.item) { item in
 			ItemView(item: item, showsFeed: filter == .unread || filter == .starred)
 		}
-		.animation(.easeOut(duration: 0.2), value: filtred)
+		.animation(.easeOut(duration: 0.2), value: filtered)
 		.refreshable { Store.shared.fetch(feed: store.filter?.feed) }
 		.listStyle(.plain)
 		.navigationTitle(filter.navigationTitle)
@@ -31,15 +31,10 @@ struct ItemsView: View {
 				FilterView(filter: filter, isCompact: true).bold()
 			}
 			ToolbarItem(placement: .topBarTrailing) {
-				Button{
-					// TODO: Open Settings
-				} label: {
-					Image(systemName: "gear")
-				}
+				SystemImageButton(
+					systemName: isReadFiltered ? "circle.fill" : "circle"
+				) { isReadFiltered.toggle() }
 			}
 		}
-		
 	}
-	
-
 }

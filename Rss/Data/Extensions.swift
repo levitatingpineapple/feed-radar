@@ -4,8 +4,8 @@ import UniformTypeIdentifiers
 import os.log
 
 extension Logger {
-	static let sync = Logger(subsystem: .loggingSubsystem, category: "☁️")
-	static let store = Logger(subsystem: .loggingSubsystem, category: "💽")
+	static let sync = Logger(subsystem: .loggingSubsystem, category: "☁️ Sync")
+	static let store = Logger(subsystem: .loggingSubsystem, category: "💽 Store")
 }
 
 extension String {

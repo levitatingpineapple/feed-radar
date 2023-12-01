@@ -44,13 +44,6 @@ class Store: ObservableObject {
 			.replaceError(with: .zero)
 			.sink { UNUserNotificationCenter.current().setBadgeCount($0) }
 			.store(in: &bag)
-		
-		Task {
-			var a = [1, 2, 3]
-			Task {
-				
-			}
-		}
 	}
 	
 	// MARK: Feed
@@ -107,11 +100,10 @@ class Store: ObservableObject {
 			}
 		) ?? Array<URL>()
 			.filter { !fetching.contains($0) }
-			
+		
 		
 		// Display progress indicators
 		DispatchQueue.main.async { self.fetching = self.fetching.union(Set(sources)) }
-		
 		for source in sources {
 			Task {
 				do {

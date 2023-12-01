@@ -74,9 +74,6 @@ struct ItemDetailView: View {
 		.toolbarBackground(Material.bar, for: .navigationBar)
 		.toolbar {
 			ToolbarItem { displayView }
-			if let url = item.url {
-				ToolbarItem { ShareLink(item: url) }
-			}
 		}
 	}
 }
