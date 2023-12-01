@@ -31,7 +31,7 @@ struct FeedView: View {
 					ProgressView()
 						.frame(width: 32, height: 32)
 						.opacity(isFetching ? 1 : 0)
-				}
+				}.animation(.easeInOut(duration: 0.2), value: isFetching)
 				Text(feed.title ?? feed.source.absoluteString).lineLimit(1)
 			}.contextMenu(
 				ContextMenu {

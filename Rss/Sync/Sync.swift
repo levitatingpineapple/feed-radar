@@ -35,7 +35,7 @@ actor Sync {
 		syncEngine = CKSyncEngine(configuration)
 	}
 	
-	func processOrphaned(feed: Feed) {
+	func processOrphanedRecords(for feed: Feed) {
 		orphanedRecords
 			.filter { $0.recordID.zoneID.zoneName == feed.source.absoluteString }
 			.forEach { orphanedRecord in

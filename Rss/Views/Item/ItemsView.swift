@@ -3,7 +3,7 @@ import GRDBQuery
 
 struct ItemsView: View {
 	let filter: Item.Filter
-	@AppStorage("isReadFiltered") var isReadFiltered = false
+	@AppStorage(.isReadFilteredKey) var isReadFiltered = false
 	@Query<Item.Request> var items: Array<Item>
 	@ObservedObject var store: Store = .shared
 	
@@ -21,8 +21,8 @@ struct ItemsView: View {
 		List(filtered, selection: $store.item) { item in
 			ItemView(item: item, showsFeed: filter == .unread || filter == .starred)
 		}
-		.animation(.easeOut(duration: 0.2), value: filtered)
 		.refreshable { Store.shared.fetch(feed: store.filter?.feed) }
+		.animation(.easeOut(duration: 0.2), value: filtered)
 		.listStyle(.plain)
 		.navigationTitle(filter.navigationTitle)
 		.navigationBarTitleDisplayMode(.inline)

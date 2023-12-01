@@ -15,6 +15,7 @@ extension String {
 	
 	// App Storage
 	static let contentScaleKey = "contentScale"
+	static let isReadFilteredKey = "isReadFiltered"
 	static func displayKey(source: URL) -> String { "display:" + source.absoluteString }
 	static func iconKey(source: URL) -> String { "icon:" + source.absoluteString }
 	
@@ -114,5 +115,35 @@ extension Data {
 		UIImage(data: self)?
 			.cropScaled(max: 128)
 			.pngData()
+	}
+}
+
+extension Array where Element == URL {
+	mutating func process(workers: UInt, partialCompletion: (Data, URLResponse) async -> Void) async {
+		await withTaskGroup(of: Result<(Data, URLResponse), any Error>.self) { taskGroup in
+			func addWorker() {
+				if let last = popLast() {
+					DispatchQueue.main.async { Store.shared.fetching.insert(last) }
+					taskGroup.addTask {
+						do {
+							let success = try await URLSession.shared.data(from: last)
+							DispatchQueue.main.async { Store.shared.fetching.remove(last) }
+							return Result.success(success)
+						} catch {
+							return Result.failure(error)
+						}
+					}
+				}
+			}
+			(0..<workers).forEach { _ in addWorker() }
+			while let next = await taskGroup.next() {
+				switch next {
+				case let .success((data, response)):
+					await partialCompletion(data, response)
+				case let .failure(error): Logger.store.debug("Failed to Download \(error)")
+				}
+				addWorker()
+			}
+		}
 	}
 }

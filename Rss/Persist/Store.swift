@@ -50,7 +50,10 @@ class Store: ObservableObject {
 	
 	var feeds: Array<Feed> {
 		(try? queue.write {
-			try? Feed.fetchAll($0)
+			try? Feed
+				.order(Feed.Column.title.column)
+				.reversed()
+				.fetchAll($0)
 		}) ?? Array<Feed>()
 	}
 	
@@ -69,9 +72,9 @@ class Store: ObservableObject {
 			}
 		) ?? true {
 			try? queue.write { try feed.insert($0) }
-			fetch(feed: feed)
-			if userInitiated {
-				Task { await self.sync.queueAdded(feed) }
+			Task {
+				fetch(feed: feed)
+				if userInitiated { await self.sync.queueAdded(feed) }
 			}
 		}
 	}
@@ -91,64 +94,49 @@ class Store: ObservableObject {
 	}
 	
 	func fetch(feed: Feed? = nil) {
-		// Fetch all feeds, if source is not defined and filter out feeds already being fetched
-		let sources = feed.flatMap { [$0.source] } ?? (
-			try? queue.write {
-				try Feed
-					.fetchAll($0)
-					.map { $0.source }
-			}
-		) ?? Array<URL>()
-			.filter { !fetching.contains($0) }
-		
-		
-		// Display progress indicators
-		DispatchQueue.main.async { self.fetching = self.fetching.union(Set(sources)) }
-		for source in sources {
-			Task {
-				do {
-					switch FeedParser(URL: source).parse() {
-					case let .success(feed):
-						try await queue.write {
-							let mapped = Mapped(feed: feed, at: source)
-							
-							// 1. Check if feed has changed. Insert and fetch it's icon
-							if mapped.feed != (try self.feed(source: mapped.feed.source, $0)) {
-								try mapped.feed.insert($0)
-								Task {
-									if let iconUrl = mapped.feed.icon,
-									   let iconData = try? Data(contentsOf: iconUrl),
-									   let icon = iconData.scaledPng {
-										UserDefaults.standard.setValue(icon, forKey: .iconKey(source: mapped.feed.source))
-									}
+		Task {
+			// Fetch all feeds, if source is not defined and filter out feeds already being fetched
+			var sources = feed
+				.flatMap { [$0.source] } ?? self.feeds.map { $0.source }
+				.filter { !fetching.contains($0) }
+			await sources.process(workers: 3) { data, response in
+				guard let source = response.url else { return }
+				switch FeedParser(data: data).parse() {
+				case let .success(feed):
+					try? queue.write {
+						let mapped = Mapped(feed: feed, at: source)
+						
+						// 1. Check if feed has changed. Insert and fetch it's icon
+						if mapped.feed != (try? self.feed(source: mapped.feed.source, $0)) {
+							try? mapped.feed.insert($0)
+							Task {
+								if let iconUrl = mapped.feed.icon,
+								   let iconData = try? Data(contentsOf: iconUrl),
+								   let icon = iconData.scaledPng {
+									UserDefaults.standard.setValue(icon, forKey: .iconKey(source: mapped.feed.source))
 								}
 							}
-							
-							// 2. Items: Merge fetched items with synced state (isRead, isStarred) and insert
-							for var item in mapped.items {
-								if let stored = try self.item(source: item.source, itemId: item.itemId, $0) {
-									item.isRead = stored.isRead
-									item.isStarred = stored.isStarred
-									item.sync = stored.sync
-									if stored == item { continue } // Skip unchanged items
-								}
-								try item.insert($0)
-							}
-							
-							// 3. Insert attachements
-							for attachment in mapped.attachments { try attachment.insert($0) }
-							
-							// 4. Process orphaned sync records
-							Task { await self.sync.processOrphaned(feed: mapped.feed) }
 						}
-						DispatchQueue.main.async { self.fetching.remove(source) }
-					case let .failure(parserError):
-						DispatchQueue.main.async { self.fetching.remove(source) }
-						throw parserError
+						
+						// 2. Items: Merge fetched items with synced state (isRead, isStarred) and insert
+						for var item in mapped.items {
+							if let stored = try? self.item(source: item.source, itemId: item.itemId, $0) {
+								item.isRead = stored.isRead
+								item.isStarred = stored.isStarred
+								item.sync = stored.sync
+								if stored == item { continue } // Skip unchanged items
+							}
+							try? item.insert($0)
+						}
+						
+						// 3. Insert attachements
+						for attachment in mapped.attachments { try? attachment.insert($0) }
+						
+						// 4. Process orphaned sync records
+						Task { await self.sync.processOrphanedRecords(for: mapped.feed) }
 					}
-				} catch {
-					// TODO: Surface import errors to the user
-					Logger.store.error("Fetch Error \(error)")
+				case let .failure(error):
+					Logger.store.error("Parses Error \(error)")
 				}
 			}
 		}
