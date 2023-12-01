@@ -20,6 +20,7 @@ struct Attachment: Hashable, Identifiable {
 	var id: Int { .hashValues(source, itemId, url) }
 	var localUrl: URL {
 		URL.documents.appendingPathComponent(
+			"attachments/" +
 			SHA256.hash(data: url.dataRepresentation)
 				.compactMap { String(format: "%02x", $0) }
 				.joined() + "/" + url.lastPathComponent,

@@ -87,7 +87,7 @@ extension Item {
 				Column.isStarred.column == true
 			case let .feed(feed):
 				Column.isRead.column == false &&
-				Column.source.column == feed.source.absoluteString
+				Column.source.column == feed.source
 			}
 		}
 		

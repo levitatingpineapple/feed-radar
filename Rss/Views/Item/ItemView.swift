@@ -74,16 +74,15 @@ struct ItemView: View {
 					if let url = item.url {
 						Button {
 							UIPasteboard.general.url = url
-						} label: {
-							Label { Text("Copy Link") } icon: { Image(systemName: "doc.on.doc") }
-						}
+						} label: { Label("Copy Link", systemImage: "doc.on.doc") }
 						Button {
 							UIApplication.shared.open(url)
-						} label: {
-							Label { Text("Open in Browser") } icon: { Image(systemName: "safari") }
-						}
+						} label: { Label("Open in Browser", systemImage: "safari") }
 						ShareLink(item: url)
 					}
+					Button(role: .destructive ) {
+						Store.shared.removeAttachments(source: item.source, itemId: item.itemId)
+					} label: { Label("Remove attachments", systemImage: "paperclip") }
 				}
 			)
 		}

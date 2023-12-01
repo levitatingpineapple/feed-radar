@@ -87,10 +87,28 @@ class Store: ObservableObject {
 	}
 	
 	func deleteAllFeeds() {
-		let _  = try? queue.write {
-			try Feed.deleteAll($0)
+		try? queue.write {
+			let _  = try Feed.deleteAll($0)
 		}
-		// TODO: Delete attachments
+		try? FileManager.default.removeItem(
+			at: URL.documents.appendingPathComponent("attachments")
+		)
+	}
+	
+	func markAllAsRead(feed: Feed) {
+		try? queue.write {
+			var unread: QueryInterfaceRequest<Item> {
+				Item
+					.filter(Column(Item.Column.source.rawValue) == feed.source)
+					.filter(Item.Column.isRead.column == false)
+			}
+			if let items = try? unread.fetchAll($0) {
+				try unread.updateAll($0, [Item.Column.isRead.column.set(to: true)])
+				Task {
+					for item in items { await sync.queueUpdated(item) }
+				}
+			}
+		}
 	}
 	
 	func fetch(feed: Feed? = nil) {
@@ -164,9 +182,7 @@ class Store: ObservableObject {
 	}
  
 	func update(item: Item) {
-		try? queue.write {
-			try item.update($0)
-		}
+		try? queue.write { try item.update($0) }
 		reselect(item: item)
 	}
 	
@@ -198,4 +214,28 @@ class Store: ObservableObject {
 			}
 		}
 	}
+	
+	// MARK: Attachment
+	
+	func removeAttachments(source: URL, itemId: String? = nil) {
+		var predicate: some SQLSpecificExpressible {
+			if let itemId {
+				Attachment.Column.source.column == source.absoluteString &&
+				Attachment.Column.itemId.column == itemId
+			} else {
+				Attachment.Column.source.column == source.absoluteString
+			}
+		}
+		try? queue.write {
+			if let attachments = try? Attachment.filter(predicate).fetchAll($0) {
+				attachments.forEach {
+					try? FileManager.default.removeItem(at: $0.localUrl.deletingLastPathComponent())
+					Downloader.shared.tasks.removeValue(forKey: $0.url)
+				}
+			}
+		}
+		
+		
+	}
+	
 }

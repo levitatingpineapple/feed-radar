@@ -35,11 +35,18 @@ struct FeedView: View {
 				Text(feed.title ?? feed.source.absoluteString).lineLimit(1)
 			}.contextMenu(
 				ContextMenu {
-					Button("Fetch") { Store.shared.fetch(feed: feed) }
-					Button("Copy Link") { UIPasteboard.general.url = feed.source }
-					Button("Mark all as read") {  }
-					Button("Clear attachments", role: .destructive) {  }
-					Button("Clear items", role: .destructive) {  }
+					Button {
+						Store.shared.fetch(feed: feed)
+					} label: { Label("Fetch", systemImage: "arrow.clockwise") }
+					Button {
+						UIPasteboard.general.url = feed.source
+					} label: { Label("Copy Link", systemImage: "doc.on.doc") }
+					Button {
+						Store.shared.markAllAsRead(feed: feed)
+					} label: { Label("Mark all as read", systemImage: "circle") }
+					Button(role: .destructive ) {
+						Store.shared.removeAttachments(source: feed.source)
+					} label: { Label("Remove attachments", systemImage: "paperclip") }
 				}
 			)
 		}
