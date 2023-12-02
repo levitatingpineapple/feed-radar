@@ -12,6 +12,7 @@ extension String {
 	static let cloudKitContainerIdentifier = "iCloud.levitatingpineapple.todo"
 	static let cloudKitStateSerializationKey = "cloudKitStateSerialization"
 	static let cloudKitRecordIdPrefix = "record:"
+	static let cloudKitZoneIdPrefix = "zone:"
 	
 	
 	static let loggingSubsystem: String = "com.levitatingPineapple.rss"

@@ -30,7 +30,7 @@ extension Sync: CKSyncEngineDelegate {
 				.filter { context.options.scope.contains($0) }
 		) { recordID in
 			Logger.sync.info("Dequeued \(recordID.recordName)")
-			return Item.stored(with: recordID)?.record
+			return Store.shared.item(source: recordID.zoneID.source, itemId: recordID.itemId)?.record
 		}
 	}
 }
@@ -65,11 +65,9 @@ fileprivate extension Sync {
 	
 	func fetchedRecordZoneChanges(_ fetchedRecordZoneChanges: CKSyncEngine.Event.FetchedRecordZoneChanges) {
 		for modification in fetchedRecordZoneChanges.modifications {
-			if let item = Item.stored(with: modification.record.recordID) {
-				Logger.sync.info("Received item update: \(modification.record.recordID)")
-				if let merged =  item.merged(with: modification.record) {
-					Store.shared.update(item: merged)
-				}
+			Logger.sync.info("Received item update: \(modification.record.recordID)")
+			if let mergedItem = modification.record.mergedItem {
+				Store.shared.update(item: mergedItem)
 			} else {
 				Logger.sync.info("Received item update, no matching local item: \(modification.record.recordID)")
 				orphanedRecords.insert(modification.record)
@@ -83,10 +81,9 @@ fileprivate extension Sync {
 	
 	func sentRecordZoneChanges(_ sentRecordZoneChanges: CKSyncEngine.Event.SentRecordZoneChanges) {
 		for savedRecord in sentRecordZoneChanges.savedRecords {
-			if let item = Item.stored(with: savedRecord.recordID),
-			   let merged = item.merged(with: savedRecord) {
+			if let mergedItem = savedRecord.mergedItem {
 				Logger.sync.info("Merging sent record: \(savedRecord.recordID)")
-				Store.shared.update(item: merged)
+				Store.shared.update(item: mergedItem)
 			} else {
 				Logger.sync.info("Sent record doesn't exist: \(savedRecord.recordID)")
 			}
@@ -95,11 +92,10 @@ fileprivate extension Sync {
 			switch failedRecordSave.error.code {
 			case .serverRecordChanged:
 				if let serverRecord = failedRecordSave.error.serverRecord,
-				   let item = Item.stored(with: failedRecordSave.record.recordID),
-				   let merged = item.merged(with: serverRecord) {
+				   let mergedItem = serverRecord.mergedItem {
 					Logger.sync.error("Server record changed, merging remote changes: \(failedRecordSave.record.recordID)")
-					Store.shared.update(item: merged)
-					queueUpdated(item)
+					Store.shared.update(item: mergedItem)
+					queueUpdated(mergedItem)
 				} else {
 					Logger.sync.fault("Missing server record or local item \(failedRecordSave.record.recordID)")
 				}

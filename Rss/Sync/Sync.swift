@@ -39,10 +39,9 @@ actor Sync {
 		orphanedRecords
 			.filter { $0.recordID.source == feed.source }
 			.forEach { orphanedRecord in
-				if let item = Item.stored(with: orphanedRecord.recordID),
-				   let merged = item.merged(with: orphanedRecord) {
+				if let mergedItem = orphanedRecord.mergedItem {
 					Logger.sync.info("Merging orphaned record: \(orphanedRecord.recordID)")
-					Store.shared.update(item: merged)
+					Store.shared.update(item: mergedItem)
 				}
 			}
 	}

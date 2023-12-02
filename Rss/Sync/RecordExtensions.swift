@@ -3,7 +3,7 @@ import CloudKit
 import os.log
 
 extension CKRecordZone.ID {
-	var source: URL { URL(string: zoneName.strippingPrefix("zone:"))! }
+	var source: URL { URL(string: zoneName.strippingPrefix(.cloudKitZoneIdPrefix))! }
 }
 
 extension CKRecord.ID {
@@ -13,7 +13,7 @@ extension CKRecord.ID {
 
 extension Feed {
 	var zoneID: CKRecordZone.ID {
-		CKRecordZone.ID(zoneName: "zone:" + source.absoluteString)
+		CKRecordZone.ID(zoneName: .cloudKitZoneIdPrefix + source.absoluteString)
 	}
 	
 	var zone: CKRecordZone { CKRecordZone(zoneID: zoneID) }
@@ -51,34 +51,28 @@ extension Item {
 			sync = archiver.encodedData
 		}
 	}
-	
-	func merged(with remoteRecord: CKRecord) -> Item? {
-		let isRemoteRead = remoteRecord[Column.isRead.rawValue] as! Bool
-		let isRemoteStarred = remoteRecord[Column.isStarred.rawValue] as! Bool
-		if record.modificationDate ?? .distantPast < remoteRecord.modificationDate ?? .distantFuture {
+}
+
+
+extension CKRecord {
+	// Fetches local and merges it with the record, if it's newer.
+	var mergedItem: Item? {
+		if var item = Store.shared.item(source: recordID.zoneID.source, itemId: recordID.itemId),
+		   item.record.modificationDate ?? .distantPast < modificationDate ?? .distantFuture {
+			let isRead = self[Item.Column.isRead.rawValue] as! Bool
+			let isStarred = self[Item.Column.isStarred.rawValue] as! Bool
 			Logger.sync.info("""
-Merging (remote was newer) ✅
-	itemId: \(itemId)
-	isRead: \(isRead.description) ---> \(isRemoteRead.description)
-	isStarred: \(isStarred.description) ---> \(isRemoteStarred.description)
+Merging (remote was newer) ✅ \(self.recordID.itemId)
+	isRead: \(item.isRead.description) ---> \(isRead.description)
+	isStarred: \(item.isStarred.description) ---> \(isStarred.description)
 """)
-			var merged = self
-			merged.isRead = isRemoteRead
-			merged.isStarred = isRemoteStarred
-			merged.record = remoteRecord
-			return merged
+			item.isRead = isRead
+			item.isStarred = isStarred
+			item.record = self
+			return item
 		} else {
-			Logger.sync.info("""
-Merging (remote was older) ❌
-	itemId: \(itemId)
-	isRead: \(isRead.description) -x-> \(isRemoteRead.description)
-	isStarred: \(isStarred.description) -x-> \(isRemoteStarred.description)
-""")
+			Logger.sync.info("Merging (remote was older) ❌ \(self.recordID.itemId)")
 			return nil
 		}
-	}
-	
-	static func stored(with recordID: CKRecord.ID) -> Item? {
-		Store.shared.item(source: recordID.zoneID.source, itemId: recordID.itemId)
 	}
 }
