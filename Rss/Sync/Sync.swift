@@ -35,17 +35,6 @@ actor Sync {
 		syncEngine = CKSyncEngine(configuration)
 	}
 	
-	func processOrphanedRecords(for feed: Feed) {
-		orphanedRecords
-			.filter { $0.recordID.source == feed.source }
-			.forEach { orphanedRecord in
-				if let mergedItem = orphanedRecord.mergedItem {
-					Logger.sync.info("Merging orphaned record: \(orphanedRecord.recordID)")
-					Store.shared.update(item: mergedItem)
-				}
-			}
-	}
-	
 	func queueAll() {
 		Logger.sync.info("Queue all")
 		syncEngine.state.add(
@@ -79,5 +68,16 @@ actor Sync {
 				.saveRecord(item.recordID)
 			]
 		)
+	}
+	
+	func processOrphanedRecords(for feed: Feed) {
+		orphanedRecords
+			.filter { $0.recordID.source == feed.source }
+			.forEach { orphanedRecord in
+				if let mergedItem = orphanedRecord.mergedItem {
+					Logger.sync.info("Merging orphaned record: \(orphanedRecord.recordID)")
+					Store.shared.update(item: mergedItem)
+				}
+			}
 	}
 }
