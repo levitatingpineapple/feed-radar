@@ -72,7 +72,7 @@ extension Attachment {
 			ValueObservation
 				.tracking {
 					try Attachment
-						.filter(Column.source.column == source.absoluteString)
+						.filter(Column.source.column == source)
 						.filter(Column.itemId.column == itemId)
 						.fetchAll($0)
 				}

@@ -160,7 +160,7 @@ class Store: ObservableObject {
 	}
 	
 	// MARK: Item
-	var modifiedItems: Array<Item> {
+	var touchedItems: Array<Item> {
 		(try? queue.write {
 			try? Item
 				.filter(Item.Column.isRead.column == true || Item.Column.isStarred.column == true)
@@ -220,10 +220,10 @@ class Store: ObservableObject {
 	func removeAttachments(source: URL, itemId: String? = nil) {
 		var predicate: some SQLSpecificExpressible {
 			if let itemId {
-				Attachment.Column.source.column == source.absoluteString &&
+				Attachment.Column.source.column == source &&
 				Attachment.Column.itemId.column == itemId
 			} else {
-				Attachment.Column.source.column == source.absoluteString
+				Attachment.Column.source.column == source
 			}
 		}
 		try? queue.write {

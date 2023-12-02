@@ -37,11 +37,12 @@ actor Sync {
 	
 	func processOrphanedRecords(for feed: Feed) {
 		orphanedRecords
-			.filter { $0.recordID.zoneID.zoneName == feed.source.absoluteString }
+			.filter { $0.recordID.source == feed.source }
 			.forEach { orphanedRecord in
-				if let item = Item.stored(with:orphanedRecord.recordID) {
-					Logger.sync.info("Processing orphaned record: \(orphanedRecord.recordID)")
-					Store.shared.update(item: item.merged(with: orphanedRecord, mergeFields: true))
+				if let item = Item.stored(with: orphanedRecord.recordID),
+				   let merged = item.merged(with: orphanedRecord) {
+					Logger.sync.info("Merging orphaned record: \(orphanedRecord.recordID)")
+					Store.shared.update(item: merged)
 				}
 			}
 	}
@@ -50,33 +51,25 @@ actor Sync {
 		Logger.sync.info("Queue all")
 		syncEngine.state.add(
 			pendingDatabaseChanges: Store.shared.feeds
-				.map {
-					.saveZone(
-						CKRecordZone(zoneName: $0.source.absoluteString)
-					)
-				}
+				.map { .saveZone($0.zone) }
 		)
 		syncEngine.state.add(
-			pendingRecordZoneChanges: Store.shared.modifiedItems
+			pendingRecordZoneChanges: Store.shared.touchedItems
 				.map { .saveRecord($0.recordID) }
 		)
 	}
 	
 	func queueAdded(_ feed: Feed) {
-		Logger.sync.info("Queue add zone: \(feed.source.absoluteString)")
+		Logger.sync.info("Queue add zone: \(feed.zone)")
 		syncEngine.state.add(
-			pendingDatabaseChanges: [
-				.saveZone(CKRecordZone(zoneName: feed.source.absoluteString))
-			]
+			pendingDatabaseChanges: [ .saveZone(feed.zone) ]
 		)
 	}
 	
 	func queueDeleted(_ feed: Feed) {
-		Logger.sync.info("Queue delete zone: \(feed.source.absoluteString)")
+		Logger.sync.info("Queue delete zone: \(feed.zoneID)")
 		syncEngine.state.add(
-			pendingDatabaseChanges: [
-				.deleteZone(CKRecordZone.ID(zoneName: feed.source.absoluteString))
-			]
+			pendingDatabaseChanges: [ .deleteZone(feed.zoneID) ]
 		)
 	}
 	

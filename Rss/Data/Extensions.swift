@@ -11,6 +11,9 @@ extension Logger {
 extension String {
 	static let cloudKitContainerIdentifier = "iCloud.levitatingpineapple.todo"
 	static let cloudKitStateSerializationKey = "cloudKitStateSerialization"
+	static let cloudKitRecordIdPrefix = "record:"
+	
+	
 	static let loggingSubsystem: String = "com.levitatingPineapple.rss"
 	static let style: String = try! String(
 		contentsOf: Bundle.main.url(
@@ -34,6 +37,9 @@ extension String {
 				count: indent
 			).joined() + "\n"
 		)
+	}
+	func strippingPrefix(_ prefix: String) -> String {
+		hasPrefix(prefix) ? String(dropFirst(prefix.count)) : self
 	}
 }
 

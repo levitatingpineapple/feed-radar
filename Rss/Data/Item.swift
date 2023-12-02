@@ -56,7 +56,7 @@ extension Item {
 			case .starred:
 				Column.isStarred.column == true
 			case let .feed(feed):
-				Column.source.column == feed.source.absoluteString
+				Column.source.column == feed.source
 			}
 		}
 		

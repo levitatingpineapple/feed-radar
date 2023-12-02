@@ -5,18 +5,18 @@ import os.log
 extension Sync: CKSyncEngineDelegate {
 	func handleEvent(_ event: CKSyncEngine.Event, syncEngine: CKSyncEngine) async {
 		switch event {
-		case let .stateUpdate(event): stateUpdate(event)
-		case let .accountChange(event): accountChange(event)
-		case let .fetchedDatabaseChanges(event): fetchedDatabaseChanges(event)
-		case let .fetchedRecordZoneChanges(event): fetchedRecordZoneChanges(event)
-		case let .sentDatabaseChanges(event): sentDatabaseChanges(event)
-		case let .sentRecordZoneChanges(event): sentRecordZoneChanges(event)
-		case let .willFetchChanges(event): willFetchChanges(event)
-		case let .willFetchRecordZoneChanges(event): willFetchRecordZoneChanges(event)
-		case let .didFetchRecordZoneChanges(event): didFetchRecordZoneChanges(event)
-		case let .didFetchChanges(event): didFetchChanges(event)
-		case let .willSendChanges(event): willSendChanges(event)
-		case let .didSendChanges(event): didSendChanges(event)
+		case .stateUpdate(let event): stateUpdate(event)
+		case .accountChange(let event): accountChange(event)
+		case .fetchedDatabaseChanges(let event): fetchedDatabaseChanges(event)
+		case .fetchedRecordZoneChanges(let event): fetchedRecordZoneChanges(event)
+		case .sentDatabaseChanges: Logger.sync.debug("Sent database changes")
+		case .sentRecordZoneChanges(let event): sentRecordZoneChanges(event)
+		case .willFetchChanges: Logger.sync.debug("Will fetch changes")
+		case .willFetchRecordZoneChanges: Logger.sync.debug("Will fetch record zone changes")
+		case .didFetchRecordZoneChanges: Logger.sync.debug("Did fetch record zone changes")
+		case .didFetchChanges: Logger.sync.debug("Did fetch changes")
+		case .willSendChanges: Logger.sync.debug("Will send changes")
+		case .didSendChanges: Logger.sync.debug("Did send changes")
 		@unknown default: Logger.sync.fault("Unexpected sync event")
 		}
 	}
@@ -29,7 +29,7 @@ extension Sync: CKSyncEngineDelegate {
 			pendingChanges: syncEngine.state.pendingRecordZoneChanges
 				.filter { context.options.scope.contains($0) }
 		) { recordID in
-			Logger.sync.info("Dequeued record \(recordID.recordName)")
+			Logger.sync.info("Dequeued \(recordID.recordName)")
 			return Item.stored(with: recordID)?.record
 		}
 	}
@@ -38,7 +38,7 @@ extension Sync: CKSyncEngineDelegate {
 fileprivate extension Sync {
 	func stateUpdate(_ stateUpdate: CKSyncEngine.Event.StateUpdate) {
 		stateSerialization = stateUpdate.stateSerialization
-		Logger.sync.info("Updated state. Hash: \(String(format:"%02X", stateUpdate.description))")
+		Logger.sync.info("Updated state. Hash: \(stateUpdate)")
 	}
 	
 	func accountChange(_ accountChange: CKSyncEngine.Event.AccountChange) {
@@ -47,27 +47,19 @@ fileprivate extension Sync {
 			queueAll()
 		case .switchAccounts, .signOut:
 			Store.shared.deleteAllFeeds()
-		@unknown default:
+		 default:
 			Logger.sync.fault("Unknown account change type: \(accountChange)")
 		}
 	}
 	
 	func fetchedDatabaseChanges(_ fetchedDatabaseChanges: CKSyncEngine.Event.FetchedDatabaseChanges) {
 		for modification in fetchedDatabaseChanges.modifications {
-			if let source = modification.zoneID.zoneName.url {
-				Logger.sync.info("New zone added: \(modification.zoneID.zoneName)")
-				Store.shared.add(feed: Feed(source: source), userInitiated: false)
-			} else {
-				Logger.sync.fault("Zone name not URL: \(modification.zoneID.zoneName)")
-			}
+			Logger.sync.info("New zone added: \(modification.zoneID)")
+			Store.shared.add(feed: Feed(source: modification.zoneID.source), userInitiated: false)
 		}
 		for deletion in fetchedDatabaseChanges.deletions {
-			if let source = deletion.zoneID.zoneName.url {
-				Logger.sync.info("Received zone deletion: \(deletion.zoneID.zoneName)")
-				Store.shared.delete(feed: Feed(source: source), userInitiated: false)
-			} else {
-				Logger.sync.fault("Zone name not URL: \(deletion.zoneID.zoneName)")
-			}
+			Logger.sync.info("Received zone deletion: \(deletion.zoneID)")
+			Store.shared.delete(feed: Feed(source: deletion.zoneID.source), userInitiated: false)
 		}
 	}
 	
@@ -75,14 +67,13 @@ fileprivate extension Sync {
 		for modification in fetchedRecordZoneChanges.modifications {
 			if let item = Item.stored(with: modification.record.recordID) {
 				Logger.sync.info("Received item update: \(modification.record.recordID)")
-				Store.shared.update(item: item.merged(with: modification.record, mergeFields: true))
+				if let merged =  item.merged(with: modification.record) {
+					Store.shared.update(item: merged)
+				}
 			} else {
 				Logger.sync.info("Received item update, no matching local item: \(modification.record.recordID)")
 				orphanedRecords.insert(modification.record)
-				if let source = modification.record.recordID.zoneID.zoneName.url {
-					Store.shared.fetch(feed: Feed(source: source))
-				}
-				
+				Store.shared.fetch(feed: Feed(source: modification.record.recordID.source))
 			}
 		}
 		if !fetchedRecordZoneChanges.deletions.isEmpty {
@@ -90,37 +81,32 @@ fileprivate extension Sync {
 		}
 	}
 	
-	func sentDatabaseChanges(_ sentDatabaseChanges: CKSyncEngine.Event.SentDatabaseChanges) {
-		Logger.sync.debug("Sent database changes")
-	}
-	
 	func sentRecordZoneChanges(_ sentRecordZoneChanges: CKSyncEngine.Event.SentRecordZoneChanges) {
-		for record in sentRecordZoneChanges.savedRecords {
-			if let item = Item.stored(with: record.recordID) {
-				Store.shared.update(item: item.merged(with: record, mergeFields: false))
+		for savedRecord in sentRecordZoneChanges.savedRecords {
+			if let item = Item.stored(with: savedRecord.recordID),
+			   let merged = item.merged(with: savedRecord) {
+				Logger.sync.info("Merging sent record: \(savedRecord.recordID)")
+				Store.shared.update(item: merged)
 			} else {
-				Logger.sync.info("Sent record doesn't exist: \(record.recordID)")
+				Logger.sync.info("Sent record doesn't exist: \(savedRecord.recordID)")
 			}
 		}
 		for failedRecordSave in sentRecordZoneChanges.failedRecordSaves {
 			switch failedRecordSave.error.code {
 			case .serverRecordChanged:
 				if let serverRecord = failedRecordSave.error.serverRecord,
-				   let item = Item.stored(with: failedRecordSave.record.recordID) {
+				   let item = Item.stored(with: failedRecordSave.record.recordID),
+				   let merged = item.merged(with: serverRecord) {
 					Logger.sync.error("Server record changed, merging remote changes: \(failedRecordSave.record.recordID)")
-					Store.shared.update(item: item.merged(with: serverRecord, mergeFields: true))
+					Store.shared.update(item: merged)
 					queueUpdated(item)
 				} else {
-					Logger.sync.info("Missing server record or local item \(failedRecordSave.record.recordID)")
+					Logger.sync.fault("Missing server record or local item \(failedRecordSave.record.recordID)")
 				}
 			case .zoneNotFound, .unknownItem:
 				Logger.sync.info("Zone or record not found. Deleting local feed: \(failedRecordSave.record.recordID.zoneID)")
 				Store.shared.delete(
-					feed: Feed(
-						source: failedRecordSave.record.recordID.zoneID.zoneName.url!,
-						title: nil,
-						icon: nil
-					)
+					feed: Feed(source: failedRecordSave.record.recordID.source)
 				)
 			case .networkFailure, .networkUnavailable, .zoneBusy, .serviceUnavailable, .notAuthenticated, .operationCancelled:
 				Logger.sync.error("Will Retry: \(failedRecordSave.record.recordID): \(failedRecordSave.error)")
@@ -128,29 +114,5 @@ fileprivate extension Sync {
 				Logger.sync.fault("Unhandled error saving record \(failedRecordSave.record.recordID): \(failedRecordSave.error)")
 			}
 		}
-	}
-	
-	func willFetchChanges(_ willFetchChanges: CKSyncEngine.Event.WillFetchChanges) {
-		Logger.sync.debug("Will fetch changes")
-	}
-
-	func willFetchRecordZoneChanges(_ willFetchRecordZoneChanges: CKSyncEngine.Event.WillFetchRecordZoneChanges) {
-		Logger.sync.debug("Will fetch record zone changes")
-	}
-
-	func didFetchRecordZoneChanges(_ didFetchRecordZoneChanges: CKSyncEngine.Event.DidFetchRecordZoneChanges) {
-		Logger.sync.debug("Did fetch record zone changes")
-	}
-
-	func didFetchChanges(_ didFetchChanges: CKSyncEngine.Event.DidFetchChanges) {
-		Logger.sync.debug("Did fetch changes")
-	}
-
-	func willSendChanges(_ willSendChanges: CKSyncEngine.Event.WillSendChanges) {
-		Logger.sync.debug("Will send changes")
-	}
-
-	func didSendChanges(_ didSendChanges: CKSyncEngine.Event.DidSendChanges) {
-		Logger.sync.debug("Did send changes")
 	}
 }
