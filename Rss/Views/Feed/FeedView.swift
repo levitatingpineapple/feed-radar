@@ -23,18 +23,3 @@ struct FeedView: View {
 		}
 	}
 }
-
-struct FeedIconView: View {
-	@AppStorage var iconData: Data?
-	
-	init(source: URL) {
-		_iconData = AppStorage(.iconKey(source: source))
-	}
-	
-	var body: Image {
-		iconData
-			.flatMap { UIImage(data: $0) }
-			.flatMap { Image(uiImage: $0).resizable() }
-		?? Image(.rss).renderingMode(.template).resizable()
-	}
-}

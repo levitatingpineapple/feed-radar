@@ -123,39 +123,6 @@ extension Data {
 	}
 }
 
-extension Array where Element == URL {
-	mutating func process(workers: UInt, partialCompletion: (Data, URL) async -> Void) async {
-		await withTaskGroup(of: Result<(Data, URL), any Error>.self) { taskGroup in
-			func addWorker() {
-				if let source = popLast() {
-					DispatchQueue.main.async { Store.shared.fetching.insert(source) }
-					taskGroup.addTask {
-						do {
-							// Delay ensures the initial animation has finished
-							DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-								Store.shared.fetching.remove(source)
-							}
-							let success = (try await URLSession(configuration: .default).data(from: source).0, source)
-							return Result.success(success)
-						} catch {
-							return Result.failure(error)
-						}
-					}
-				}
-			}
-			(0..<workers).forEach { _ in addWorker() }
-			while let next = await taskGroup.next() {
-				switch next {
-				case let .success((data, source)):
-					await partialCompletion(data, source)
-				case let .failure(error): Logger.store.debug("Failed to Download \(error)")
-				}
-				addWorker()
-			}
-		}
-	}
-}
-
 extension View {
 	func boxed(padded: Bool = true) -> some View {
 		self

@@ -42,7 +42,9 @@ struct FeedsView: View {
 				FeedImportView()
 			}
 		}
-		.refreshable { Store.shared.fetch() }
+		.refreshable {
+			await Store.shared.test()
+		}
 		.navigationTitle("Feeds")
 	}
 }

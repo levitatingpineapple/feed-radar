@@ -2,15 +2,12 @@ import SwiftUI
 
 struct FilterView: View {
 	typealias TintedImage = ModifiedContent<Image, _ForegroundStyleModifier<Color>>
-	@ObservedObject var store: Store = .shared
+	@ObservedObject var fetching: Fetcher = .shared
 	let filter: Item.Filter
 	let isCompact: Bool
 	let primaryImage: TintedImage
 	let secondaryImage: TintedImage?
 	let tertiaryImage: TintedImage?
-	var isFetching: Bool {
-		filter.feed.flatMap { store.fetching.contains($0.source) } ?? false
-	}
 
 	
 	init(filter: Item.Filter, isCompact: Bool = false) {
@@ -55,8 +52,11 @@ struct FilterView: View {
 	var icon: some View {
 		ZStack(alignment: .topTrailing) {
 			ZStack {
-				primaryImage.boxed()
-				if let feed = filter.feed { FeedIconView(source: feed.source).boxed(padded: false) }
+				if let feed = filter.feed {
+					FeedIconView(source: feed.source).boxed(padded: false)
+				} else {
+					primaryImage.boxed()
+				}
 			}.boxed(padded: filter.feed == nil)
 			HStack(spacing: 2) {
 				if let tertiaryImage { tertiaryImage.scaledToFit() }
@@ -70,14 +70,7 @@ struct FilterView: View {
 	
 	var body: some View {
 		HStack(spacing: 8) {
-			ZStack {
-				icon
-					.blur(radius: isFetching ? 2 : 0)
-					.opacity(isFetching ? 0.4 : 1)
-				ProgressView()
-					.frame(width: 32, height: 32)
-					.opacity(isFetching ? 1 : 0)
-			}.animation(.easeInOut(duration: 0.2), value: isFetching)
+			icon
 			Text(filter.title).lineLimit(1).layoutPriority(-1)
 			if !isCompact { Spacer() }
 			if filter.feed != nil || filter.isRead == false {
