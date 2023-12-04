@@ -18,7 +18,6 @@ struct FilterSettingsView: View {
 					Image(systemName: "circle.fill").tag(Optional<Bool>.some(false))
 					Image(systemName: "circle").tint(.accentColor).tag(Optional<Bool>.some(true))
 				}.pickerStyle(.segmented)
-				
 				Picker("Starred", selection: Binding(
 					get: { store.filter?.isStarred },
 					set: { store.filter?.isStarred = $0 }
@@ -41,9 +40,9 @@ struct FilterSettingsView: View {
 		}
 		.padding()
 		.background(
-			GeometryReader {
+			GeometryReader { proxy in
 				Color.clear.presentationDetents(
-					[.height($0.size.height)]
+					[.height(proxy.size.height)]
 				)
 			}
 		)

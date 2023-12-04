@@ -9,10 +9,9 @@ struct FilterView: View {
 	let secondaryImage: TintedImage?
 	let tertiaryImage: TintedImage?
 	var isFetching: Bool {
-		filter.feed
-			.flatMap { store.fetching.contains($0.source) }
-		?? false
+		filter.feed.flatMap { store.fetching.contains($0.source) } ?? false
 	}
+
 	
 	init(filter: Item.Filter, isCompact: Bool = false) {
 		self.filter = filter
@@ -20,15 +19,8 @@ struct FilterView: View {
 		
 		var feedImage: TintedImage? {
 			filter.feed
-				.flatMap {
-					$0.iconData
-						.flatMap { UIImage(data: $0) }
-						.flatMap { Image(uiImage: $0) }
-					?? Image(.rss).renderingMode(.template)
-				}
-				.flatMap {
-					$0.resizable().foregroundStyle(Color.primary) as? TintedImage
-				}
+				.flatMap { _ in Image(.rss).renderingMode(.template) }
+				.flatMap { $0.resizable().foregroundStyle(Color.primary) as? TintedImage }
 		}
 		
 		var inboxImage: TintedImage? {
@@ -62,7 +54,10 @@ struct FilterView: View {
 	
 	var icon: some View {
 		ZStack(alignment: .topTrailing) {
-			primaryImage.boxed(padded: filter.feed == nil)
+			ZStack {
+				primaryImage.boxed()
+				if let feed = filter.feed { FeedIconView(source: feed.source).boxed(padded: false) }
+			}.boxed(padded: filter.feed == nil)
 			HStack(spacing: 2) {
 				if let tertiaryImage { tertiaryImage.scaledToFit() }
 				if let secondaryImage { secondaryImage.scaledToFit() }
