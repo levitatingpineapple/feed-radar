@@ -22,7 +22,9 @@ struct WebViewController: UIViewControllerRepresentable {
 			title: title,
 			request: request,
 			scale: scale
-		) { viewController.attachmentsController.view.invalidateIntrinsicContentSize() }
+		) { [weak viewController] in
+			viewController?.attachmentsController.view.invalidateIntrinsicContentSize()
+		}
 		viewController.webView.loadHTMLString(
 			htmlString,
 			baseURL: base
