@@ -23,6 +23,7 @@ extension String {
 		)!
 	)
 	
+	static let filterKey = "filter"
 	static let contentScaleKey = "contentScale"
 	static let isReadFilteredKey = "isReadFiltered"
 	static func displayKey(source: URL) -> String { "display:" + source.absoluteString }

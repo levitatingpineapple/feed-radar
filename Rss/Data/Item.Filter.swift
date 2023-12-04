@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 
 extension Item {
-	struct Filter: Hashable {
+	struct Filter: Hashable, Codable {
 		var feed: Feed? = nil
 		var isRead: Bool? = nil
 		var isStarred: Bool? = nil
@@ -37,5 +37,15 @@ extension Item {
 			filter.isRead = false
 			return filter
 		}
+	}
+}
+
+extension Item.Filter: RawRepresentable {
+	init?(rawValue: Data) {
+		self = try! JSONDecoder().decode(Item.Filter.self, from: rawValue)
+	}
+	
+	var rawValue: Data {
+		try! JSONEncoder().encode(self)
 	}
 }

@@ -5,6 +5,8 @@ import GRDB
 import os.log
 import NotificationCenter
 
+import SwiftUI
+
 class Store: ObservableObject {
 	let queue: DatabaseQueue
 	static let shared = try! Store() // TODO: Inject as environment object
@@ -29,6 +31,16 @@ class Store: ObservableObject {
 			try Item.createTable(database: $0)
 			try Attachment.createTable(database: $0)
 		}
+		
+		filter = UserDefaults.standard
+			.data(forKey: .filterKey)
+			.flatMap { Item.Filter(rawValue: $0) }
+		
+		$filter
+			.removeDuplicates()
+			.sink { UserDefaults.standard.setValue($0?.rawValue, forKey: .filterKey) }
+			.store(in: &bag)
+		
 		$item
 			.removeDuplicates()
 			.scan((Optional<Item>.none, Optional<Item>.none)) { ($0.1, $1) }
@@ -39,11 +51,15 @@ class Store: ObservableObject {
 				}
 			}
 			.store(in: &bag)
+		
+		
+		
 		Item.RequestCount(filter: Item.Filter(isRead: false))
 			.publisher(in: self)
 			.replaceError(with: .zero)
 			.sink { UNUserNotificationCenter.current().setBadgeCount($0) }
 			.store(in: &bag)
+		
 	}
 	
 	// MARK: Feed
@@ -71,6 +87,9 @@ class Store: ObservableObject {
 					.isEmpty($0)
 			}
 		) ?? true {
+			if filter?.feed?.source.absoluteString.hasPrefix("zone:") == true {
+				fatalError("zone:zone: ‼️‼️‼️")
+			}
 			try? queue.write { try feed.insert($0) }
 			fetch(feed: feed)
 			if userInitiated {
@@ -235,8 +254,5 @@ class Store: ObservableObject {
 				}
 			}
 		}
-		
-		
 	}
-	
 }

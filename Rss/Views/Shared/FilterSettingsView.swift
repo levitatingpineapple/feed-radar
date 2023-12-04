@@ -9,16 +9,6 @@ struct FilterSettingsView: View {
 	
 	var body: some View {
 		VStack(alignment: .leading, spacing: .zero) {
-			Picker("Feed", selection: Binding(
-				get: { store.filter?.feed },
-				set: { store.filter?.feed = $0 }
-			)) {
-				Text("All").tag(Optional<Feed>.none)
-				ForEach(feeds, id: \.source) { feed in
-					Text(feed.title ?? feed.source.absoluteString)
-						.tag(Optional<Feed>.some(feed))
-				}
-			}.pickerStyle(.inline)
 			HStack {
 				Picker("Read", selection: Binding(
 					get: { store.filter?.isRead },
@@ -38,6 +28,16 @@ struct FilterSettingsView: View {
 					Image(systemName: "star").tag(Optional<Bool>.some(false))
 				}.pickerStyle(.segmented).tint(.orange)
 			}
+			Picker("Feed", selection: Binding(
+				get: { store.filter?.feed },
+				set: { store.filter?.feed = $0 }
+			)) {
+				Text("All").tag(Optional<Feed>.none)
+				ForEach(feeds, id: \.source) { feed in
+					Text(feed.title ?? feed.source.absoluteString)
+						.tag(Optional<Feed>.some(feed))
+				}
+			}.pickerStyle(.inline)
 		}
 		.padding()
 		.background(
