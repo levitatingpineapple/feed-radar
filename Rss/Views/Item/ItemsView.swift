@@ -3,9 +3,9 @@ import GRDBQuery
 
 struct ItemsView: View {
 	let filter: Item.Filter
-	@AppStorage(.isReadFilteredKey) var isReadFiltered = false
 	@Query<Item.Request> var items: Array<Item>
 	@ObservedObject var store: Store = .shared
+	@State private var isFilterSettingsPresented = false
 	
 	init(filter: Item.Filter) {
 		self.filter = filter
@@ -15,25 +15,25 @@ struct ItemsView: View {
 		)
 	}
 	
-	var filtered: Array<Item> { items.filter { !($0.isRead && isReadFiltered) } }
-	
 	var body: some View {
-		List(filtered, selection: $store.item) { item in
-			ItemView(item: item, showsFeed: filter == .unread || filter == .starred)
+		List(items, selection: $store.item) { item in
+			ItemView(item: item, showsFeed: filter.feed == nil)
 		}
 		.refreshable { Store.shared.fetch(feed: store.filter?.feed) }
-		.animation(.easeOut(duration: 0.2), value: filtered)
+		.animation(.default, value: items)
 		.listStyle(.plain)
-		.navigationTitle(filter.navigationTitle)
+		.navigationTitle(filter.title)
 		.navigationBarTitleDisplayMode(.inline)
 		.toolbar {
 			ToolbarItem(placement: .principal) {
 				FilterView(filter: filter, isCompact: true).bold()
 			}
 			ToolbarItem(placement: .topBarTrailing) {
-				SystemImageButton(
-					systemName: isReadFiltered ? "circle.fill" : "circle"
-				) { isReadFiltered.toggle() }
+				SystemImageButton(systemName: "line.3.horizontal.decrease") {
+					isFilterSettingsPresented = true
+				}.popover(isPresented: $isFilterSettingsPresented) {
+					FilterSettingsView()
+				}
 			}
 		}
 	}

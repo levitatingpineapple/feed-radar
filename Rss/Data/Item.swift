@@ -17,8 +17,6 @@ struct Item: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord
 	let content: String?
 	let url: URL?
 	
-	
-	// Sync
 	var isRead: Bool = false
 	var isStarred: Bool = false
 	var sync: Data? = nil
@@ -49,21 +47,9 @@ extension Item {
 		
 		let filter: Filter
 		
-		var predicate: some SQLSpecificExpressible {
-			switch filter {
-			case .unread:
-				Column.isRead.column == false
-			case .starred:
-				Column.isStarred.column == true
-			case let .feed(feed):
-				Column.source.column == feed.source
-			}
-		}
-		
 		func publisher(in store: Store) -> AnyPublisher<Array<Item>, Error> {
 			ValueObservation.tracking {
-				try Item
-					.filter(predicate)
+				try filter.items
 					.order(Column.time.column.desc)
 					.fetchAll($0)
 			}
@@ -79,22 +65,10 @@ extension Item {
 		
 		let filter: Filter
 		
-		var predicate: some SQLSpecificExpressible {
-			switch filter {
-			case .unread:
-				Column.isRead.column == false
-			case .starred:
-				Column.isStarred.column == true
-			case let .feed(feed):
-				Column.isRead.column == false &&
-				Column.source.column == feed.source
-			}
-		}
-		
 		func publisher(in store: Store) -> AnyPublisher<Int, Error> {
-			ValueObservation.tracking { try Item.filter(predicate).fetchCount($0) }
-			.publisher(in: store.queue, scheduling: .immediate)
-			.eraseToAnyPublisher()
+			ValueObservation.tracking { try filter.items.fetchCount($0) }
+				.publisher(in: store.queue, scheduling: .immediate)
+				.eraseToAnyPublisher()
 		}
 	}
 }

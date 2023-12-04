@@ -24,7 +24,7 @@ struct ItemDetailView: View {
 			case .link:
 				if ProcessInfo.processInfo.isiOSAppOnMac {
 					SystemImageButton(
-						systemName: display.isInverted ? "circle.lefthalf.filled": "circle.righthalf.filled"
+						systemName: display.isInverted ? "circle.lefthalf.filled" : "circle.righthalf.filled"
 					) { display.isInverted.toggle() }
 				} else {
 					SystemImageButton(
@@ -86,16 +86,9 @@ struct SystemImageButton: View {
 	let action: () -> Void
 	
 	var body: some View {
-		Image(systemName: systemName)
-			.foregroundStyle(Color.accentColor)
-			.frame(width: 30, height: 30)
-			.background(Color(.systemGray2).opacity(0.25))
-			.clipShape(
-				RoundedRectangle(
-					cornerSize: CGSize(width: 6, height: 6),
-					style: .continuous
-				)
-			)
+		Image(systemName: systemName).resizable()
+			.foregroundColor(.accentColor)
+			.boxed(padded: true)
 			.onTapGesture(perform: action)
 	}
 }

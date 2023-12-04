@@ -1,38 +1,118 @@
 import SwiftUI
 
 struct FilterView: View {
+	typealias TintedImage = ModifiedContent<Image, _ForegroundStyleModifier<Color>>
+	@ObservedObject var store: Store = .shared
 	let filter: Item.Filter
-	var isCompact: Bool = false
+	let isCompact: Bool
+	let primaryImage: TintedImage
+	let secondaryImage: TintedImage?
+	let tertiaryImage: TintedImage?
+	var isFetching: Bool {
+		filter.feed
+			.flatMap { store.fetching.contains($0.source) }
+		?? false
+	}
+	
+	init(filter: Item.Filter, isCompact: Bool = false) {
+		self.filter = filter
+		self.isCompact = isCompact
+		
+		var feedImage: TintedImage? {
+			filter.feed
+				.flatMap {
+					$0.iconData
+						.flatMap { UIImage(data: $0) }
+						.flatMap { Image(uiImage: $0) }
+					?? Image(.rss).renderingMode(.template)
+				}
+				.flatMap {
+					$0.resizable().foregroundStyle(Color.primary) as? TintedImage
+				}
+		}
+		
+		var inboxImage: TintedImage? {
+			if filter.feed == nil && (filter.isRead == nil) == (filter.isStarred == nil) {
+				return Image(systemName: "tray.fill").resizable()
+					.foregroundStyle(Color.purple) as? TintedImage
+			} else {
+				return nil
+			}
+		}
+		
+		var isReadImage: TintedImage? {
+			filter.isRead.flatMap {
+				Image(systemName: $0 ? "circle" : "circle.fill").resizable()
+					.foregroundStyle(Color.accentColor) as? TintedImage
+			}
+		}
+		
+		var isStarredImage: TintedImage? {
+			filter.isStarred.flatMap {
+				Image(systemName: $0 ? "star.fill" : "star" ).resizable()
+					.foregroundStyle(Color.orange) as? TintedImage
+			}
+		}
+		
+		let images = [feedImage, inboxImage, isReadImage, isStarredImage].compactMap { $0 }
+		primaryImage = images.first! // There must always be a primary image
+		secondaryImage = images.count > 1 ? images[1] : nil
+		tertiaryImage = images.count > 2 ? images[2] : nil
+	}
+	
+	var icon: some View {
+		ZStack(alignment: .topTrailing) {
+			primaryImage.boxed(padded: filter.feed == nil)
+			HStack(spacing: 2) {
+				if let tertiaryImage { tertiaryImage.scaledToFit() }
+				if let secondaryImage { secondaryImage.scaledToFit() }
+			}
+			.frame(height: 12)
+			.transformEffect(.init(translationX: 6, y: -6))
+			.shadow(color: Color(.systemBackground), radius: 8)
+		}
+	}
 	
 	var body: some View {
-		HStack {
-			switch filter {
-			case .unread:
-				HStack {
-					Image(systemName: "tray.fill")
-						.resizable()
-						.scaledToFit()
-						.frame(maxWidth: 28, maxHeight: 28)
-						.foregroundColor(.accentColor)
-					Text("Unread")
-				}
-			case .starred:
-				HStack {
-					Image(systemName: "star.fill")
-						.resizable()
-						.scaledToFit()
-						.frame(maxWidth: 28, maxHeight: 28)
-						.foregroundColor(.orange)
-					Text("Starred")
-				}
-			case let .feed(feed):
-				HStack {
-					FeedView(url: feed.source)
+		HStack(spacing: 8) {
+			ZStack {
+				icon
+					.blur(radius: isFetching ? 2 : 0)
+					.opacity(isFetching ? 0.4 : 1)
+				ProgressView()
+					.frame(width: 32, height: 32)
+					.opacity(isFetching ? 1 : 0)
+			}.animation(.easeInOut(duration: 0.2), value: isFetching)
+			Text(filter.title).lineLimit(1).layoutPriority(-1)
+			if !isCompact { Spacer() }
+			if filter.feed != nil || filter.isRead == false {
+				CountView(filter: filter.unread())
+					.background(Color.accentColor.opacity(0.8))
+					.clipShape(Capsule())
+			} else if filter.isStarred == true {
+				CountView(filter: filter)
+					.background(Color.orange.opacity(0.6))
+					.clipShape(Capsule())
+			}
+		}
+		.contentShape(Rectangle())
+		.contextMenu(
+			ContextMenu {
+				if let feed = filter.feed {
+					Button {
+						Store.shared.fetch(feed: feed)
+					} label: { Label("Fetch", systemImage: "arrow.clockwise") }
+					Button {
+						UIPasteboard.general.url = feed.source
+					} label: { Label("Copy Link", systemImage: "doc.on.doc") }
+					Button {
+						Store.shared.markAllAsRead(feed: feed)
+					} label: { Label("Mark all as read", systemImage: "circle") }
+					Button(role: .destructive ) {
+						Store.shared.removeAttachments(source: feed.source)
+					} label: { Label("Remove attachments", systemImage: "paperclip") }
 				}
 			}
-			if !isCompact { Spacer() }
-			CountView(filter: filter)
-		}
-
+		)
 	}
 }

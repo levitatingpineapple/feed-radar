@@ -31,7 +31,7 @@ struct ItemView: View {
 			VStack(alignment: .leading, spacing: 8) {
 				HStack(alignment: .top) {
 					VStack(alignment: .leading) {
-						if showsFeed { FeedView(url: item.source) }
+						if showsFeed { FeedView(source: item.source) }
 						Text(item.title ?? item.itemId).bold()
 					}
 					Spacer()

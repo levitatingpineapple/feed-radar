@@ -22,7 +22,6 @@
 		CE351BF32B0D3873006FF948 /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BF22B0D3873006FF948 /* Feed.swift */; };
 		CE351BF52B0D3880006FF948 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BF42B0D3880006FF948 /* Item.swift */; };
 		CE351BF72B0D388D006FF948 /* Attachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BF62B0D388D006FF948 /* Attachment.swift */; };
-		CE5FA35B2B092C230056DC70 /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5FA35A2B092C230056DC70 /* IconView.swift */; };
 		CE64CE2C2B07EF32006C9DB9 /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE64CE2B2B07EF32006C9DB9 /* ItemDetailView.swift */; };
 		CE76F89F2B1262FE007ED642 /* Sync.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE76F89E2B1262FE007ED642 /* Sync.swift */; };
 		CE7B3B902B15530000663605 /* Sync.EngineDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7B3B8F2B15530000663605 /* Sync.EngineDelegate.swift */; };
@@ -39,6 +38,7 @@
 		CEDEC5E62B067CA500D83636 /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = CEDEC5E52B067CA500D83636 /* style.css */; };
 		CEDEC5E82B06809000D83636 /* SafariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5E72B06809000D83636 /* SafariViewController.swift */; };
 		CEDEFFE72B17695000AC9623 /* NavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEFFE62B17695000AC9623 /* NavigationView.swift */; };
+		CEDFBB282B1D0BE9009607BC /* FilterSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDFBB272B1D0BE9009607BC /* FilterSettingsView.swift */; };
 		CEE41B412B0833C1005E0289 /* FeedImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE41B402B0833C1005E0289 /* FeedImportView.swift */; };
 		CEED7B8A2B0B9AB2004B29C6 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEED7B892B0B9AB2004B29C6 /* Store.swift */; };
 		CEED7B952B0B9E65004B29C6 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CEED7B942B0B9E65004B29C6 /* GRDB */; };
@@ -64,7 +64,6 @@
 		CE351BF22B0D3873006FF948 /* Feed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		CE351BF42B0D3880006FF948 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		CE351BF62B0D388D006FF948 /* Attachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attachment.swift; sourceTree = "<group>"; };
-		CE5FA35A2B092C230056DC70 /* IconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconView.swift; sourceTree = "<group>"; };
 		CE64CE2B2B07EF32006C9DB9 /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
 		CE76F89E2B1262FE007ED642 /* Sync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sync.swift; sourceTree = "<group>"; };
 		CE7B3B8F2B15530000663605 /* Sync.EngineDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sync.EngineDelegate.swift; sourceTree = "<group>"; };
@@ -84,6 +83,7 @@
 		CEDEC5E52B067CA500D83636 /* style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
 		CEDEC5E72B06809000D83636 /* SafariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariViewController.swift; sourceTree = "<group>"; };
 		CEDEFFE62B17695000AC9623 /* NavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationView.swift; sourceTree = "<group>"; };
+		CEDFBB272B1D0BE9009607BC /* FilterSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSettingsView.swift; sourceTree = "<group>"; };
 		CEE41B402B0833C1005E0289 /* FeedImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImportView.swift; sourceTree = "<group>"; };
 		CEED7B892B0B9AB2004B29C6 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CEFEC7C52B0AF42200FF8728 /* AttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsView.swift; sourceTree = "<group>"; };
@@ -172,8 +172,8 @@
 			children = (
 				CEDEFFE62B17695000AC9623 /* NavigationView.swift */,
 				CEA06C162B0FDFF400B3C516 /* FilterView.swift */,
-				CE5FA35A2B092C230056DC70 /* IconView.swift */,
 				CEA06C182B0FE01400B3C516 /* CountView.swift */,
+				CEDFBB272B1D0BE9009607BC /* FilterSettingsView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -355,7 +355,6 @@
 				CE18F38A2B094EB700FE509C /* Extensions.swift in Sources */,
 				CEFEC7C62B0AF42200FF8728 /* AttachmentsView.swift in Sources */,
 				CE351BE82B0D00C6006FF948 /* PlayerViewController.swift in Sources */,
-				CE5FA35B2B092C230056DC70 /* IconView.swift in Sources */,
 				CEA270A62B11788B00D220F0 /* Item.Filter.swift in Sources */,
 				CEE41B412B0833C1005E0289 /* FeedImportView.swift in Sources */,
 				CE64CE2C2B07EF32006C9DB9 /* ItemDetailView.swift in Sources */,
@@ -371,6 +370,7 @@
 				CEDEFFE72B17695000AC9623 /* NavigationView.swift in Sources */,
 				CEC27A8C2B17DD35000EBA44 /* Feed.Display.swift in Sources */,
 				CE8D430A2B0F071700BBA501 /* ItemView.swift in Sources */,
+				CEDFBB282B1D0BE9009607BC /* FilterSettingsView.swift in Sources */,
 				CE351BF32B0D3873006FF948 /* Feed.swift in Sources */,
 				CEDEC5E82B06809000D83636 /* SafariViewController.swift in Sources */,
 				CE76F89F2B1262FE007ED642 /* Sync.swift in Sources */,

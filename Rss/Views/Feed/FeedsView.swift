@@ -8,17 +8,20 @@ struct FeedsView: View {
 	var body: some View {
 		List(selection: $store.filter) {
 			Section {
-				NavigationLink(value: Item.Filter.unread) {
-					FilterView(filter: .unread)
+				NavigationLink(value: Item.Filter()) {
+					FilterView(filter: Item.Filter())
 				}
-				NavigationLink(value: Item.Filter.starred) {
-					FilterView(filter: .starred)
+				NavigationLink(value: Item.Filter(isRead: false)) {
+					FilterView(filter: Item.Filter(isRead: false))
+				}
+				NavigationLink(value: Item.Filter(isStarred: true)) {
+					FilterView(filter: Item.Filter(isStarred: true))
 				}
 			}
 			Section {
 				ForEach(feeds, id: \.source) { feed in
-					NavigationLink(value: Item.Filter.feed(feed)) {
-						FilterView(filter: .feed(feed))
+					NavigationLink(value: Item.Filter(feed: feed)) {
+						FilterView(filter: Item.Filter(feed: feed))
 					}
 					.swipeActions(edge: .leading, allowsFullSwipe: true) {
 						Button("Fetch") {

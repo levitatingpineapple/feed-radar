@@ -7,7 +7,7 @@ import NotificationCenter
 
 class Store: ObservableObject {
 	let queue: DatabaseQueue
-	static let shared = try! Store()
+	static let shared = try! Store() // TODO: Inject as environment object
 	private let sync = Sync()
 	private var bag = Set<AnyCancellable>()
 	@Published var fetching = Set<URL>()
@@ -39,7 +39,7 @@ class Store: ObservableObject {
 				}
 			}
 			.store(in: &bag)
-		Item.RequestCount(filter: .unread)
+		Item.RequestCount(filter: Item.Filter(isRead: false))
 			.publisher(in: self)
 			.replaceError(with: .zero)
 			.sink { UNUserNotificationCenter.current().setBadgeCount($0) }
@@ -117,7 +117,7 @@ class Store: ObservableObject {
 			var sources = feed
 				.flatMap { [$0.source] } ?? self.feeds.map { $0.source }
 				.filter { !fetching.contains($0) }
-			await sources.process(workers: 3) { data, source in
+			await sources.process(workers: 4) { data, source in
 				switch FeedParser(data: data).parse() {
 				case let .success(feed):
 					try? queue.write {
@@ -160,6 +160,7 @@ class Store: ObservableObject {
 	}
 	
 	// MARK: Item
+	
 	var touchedItems: Array<Item> {
 		(try? queue.write {
 			try? Item

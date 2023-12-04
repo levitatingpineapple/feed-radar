@@ -126,12 +126,15 @@ extension Array where Element == URL {
 	mutating func process(workers: UInt, partialCompletion: (Data, URL) async -> Void) async {
 		await withTaskGroup(of: Result<(Data, URL), any Error>.self) { taskGroup in
 			func addWorker() {
-				if let last = popLast() {
-					DispatchQueue.main.async { Store.shared.fetching.insert(last) }
+				if let source = popLast() {
+					DispatchQueue.main.async { Store.shared.fetching.insert(source) }
 					taskGroup.addTask {
 						do {
-							let success = (try await URLSession.shared.data(from: last).0, last)
-							DispatchQueue.main.async { Store.shared.fetching.remove(last) }
+							// Delay ensures the initial animation has finished
+							DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+								Store.shared.fetching.remove(source)
+							}
+							let success = (try await URLSession(configuration: .default).data(from: source).0, source)
 							return Result.success(success)
 						} catch {
 							return Result.failure(error)
@@ -149,5 +152,16 @@ extension Array where Element == URL {
 				addWorker()
 			}
 		}
+	}
+}
+
+extension View {
+	func boxed(padded: Bool = true) -> some View {
+		self
+			.scaledToFit()
+			.padding(padded ? 6 : 0)
+			.frame(width: 32, height: 32)
+			.background(Color(.systemGray2).opacity(0.25))
+			.clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 	}
 }

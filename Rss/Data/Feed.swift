@@ -15,6 +15,7 @@ struct Feed: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord
 	let icon: URL?
 	
 	var id: Int { source.hashValue }
+	var iconData: Data? { UserDefaults.standard.data(forKey: .iconKey(source: source)) }
 	
 	static func createTable(database: Database) throws {
 		try database.create(table: "feed", options: .ifNotExists) {
@@ -49,12 +50,12 @@ extension Feed {
 	
 	struct RequestSingle: Queryable {
 		static var defaultValue: Feed? = nil
-		let url: URL
+		let source: URL
 		
 		func publisher(in store: Store) -> AnyPublisher<Feed?, Error> {
 			ValueObservation.tracking {
 				try Feed
-					.filter(Column.source.column == url.absoluteString)
+					.filter(Column.source.column == source)
 					.fetchOne($0)
 			}
 			.publisher(in: store.queue, scheduling: .immediate)

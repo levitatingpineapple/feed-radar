@@ -19,10 +19,8 @@ struct CountView: View {
 			Text(String(count))
 				.lineLimit(1)
 				.foregroundStyle(Color.white)
-				.font(.caption).bold()
+				.font(.caption).fontWeight(.heavy)
 				.padding(.vertical, 4).padding(.horizontal, 8)
-				.background(Color.accentColor)
-				.clipShape(Capsule())
 		}
 	}
 }
