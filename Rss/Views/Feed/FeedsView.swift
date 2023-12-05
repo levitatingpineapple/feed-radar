@@ -4,6 +4,7 @@ import GRDBQuery
 struct FeedsView: View {
 	@Query(Feed.Request(), in: \.store) private var feeds: Array<Feed>
 	@ObservedObject var store: Store = .shared
+	@State private var isImportPresented = false
 	
 	var body: some View {
 		List(selection: $store.filter) {
@@ -25,7 +26,7 @@ struct FeedsView: View {
 					}
 					.swipeActions(edge: .leading, allowsFullSwipe: true) {
 						Button("Fetch") {
-							Store.shared.fetch(feed: feed)
+							Task { await Store.shared.fetch(feed: feed) }
 						}.tint(.accentColor)
 					}
 				}
@@ -39,11 +40,15 @@ struct FeedsView: View {
 		}
 		.toolbar {
 			ToolbarItem {
-				FeedImportView()
+				SystemImageButton(systemName: "plus") {
+					isImportPresented = true
+				}.popover(isPresented: $isImportPresented) {
+					FeedImportView()
+				}
 			}
 		}
 		.refreshable {
-			await Store.shared.test()
+			await Store.shared.fetch()
 		}
 		.navigationTitle("Feeds")
 	}

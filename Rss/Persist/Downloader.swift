@@ -1,9 +1,9 @@
 import SwiftUI
 
 class Downloader: ObservableObject {
-	@Published var tasks = Dictionary<URL, Download>()
+	static let shared = Downloader() // TODO: Inject as environment object
 	
-	static let shared = Downloader()
+	@Published var tasks = Dictionary<URL, Download>()
 	
 	func download(attachment: Attachment) {
 		if tasks.keys.contains(attachment.url) { return }

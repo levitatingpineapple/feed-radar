@@ -2,24 +2,50 @@ import SwiftUI
 
 struct FeedImportView: View {
 	@State var isPresented = false
-	@State var isImporting = false
 	@State var input = String()
-	@State var test = String()
+	@State var sources = Array<URL>()
+	
+	@Environment(\.dismiss) var dismiss
+	
+	func add(source: URL) {
+		let feed = Feed(source: source)
+		Store.shared.add(feed: feed)
+		sources.removeAll { $0 == source }
+	}
 	
 	var body: some View {
-		SystemImageButton(
-			systemName: "plus"
-		) { isPresented = true }
-		.popover(isPresented: $isPresented) {
-			VStack {
-				TextField("Feed URLs", text: $input, axis: .vertical)
-				Spacer()
-				Button("Import") {
-					if let source = URL(string: input) {
-						Store.shared.add(feed: Feed(source: source))
+		Group {
+			if sources.isEmpty {
+				VStack {
+					TextEditor(text: $input).cornerRadius(4)
+					Spacer()
+					Button("Extract Feed Links") {
+						sources = input
+							.matches(of: #/(https?://[a-zA-Z0-9;,./?:@&=+$\-_.!]*)/#)
+							.compactMap { match in URL(string: String(match.output.1)) }
+					}.buttonStyle(.borderedProminent)
+				}.padding()
+			} else {
+				VStack {
+					ScrollView {
+						VStack {
+							ForEach(sources, id: \.self) { source in
+								HStack {
+									SystemImageButton(systemName: "plus") { add(source: source) }
+									Text(source.absoluteString).lineLimit(1).truncationMode(.middle)
+									Spacer()
+								}
+							}
+						}.padding()
 					}
-				}.buttonStyle(.borderedProminent)
-			}.padding().frame(idealWidth: 400, idealHeight: 600)
+					Button("Import All") {
+						sources.forEach { add(source: $0) }
+						dismiss()
+					}.buttonStyle(.borderedProminent).padding()
+				}
+			}
 		}
+		.frame(idealWidth: 540, idealHeight: 800)
+		.onChange(of: isPresented) { sources = Array<URL>() }
 	}
 }

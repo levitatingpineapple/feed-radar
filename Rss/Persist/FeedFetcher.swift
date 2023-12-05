@@ -1,12 +1,12 @@
 import Foundation
 import os.log
 
-class Fetcher: ObservableObject {
-	static let shared = Fetcher() // TODO: Inject as environment object
+class FeedFetcher: ObservableObject {
+	static let shared = FeedFetcher() // TODO: Inject as environment object
 	
 	@Published var tasks = Set<URL>()
 	
-	func process(sources: Array<URL>, workers: UInt, partialCompletion: (Data, URL) async -> Void) async {
+	func fetch(sources: Array<URL>, workers: UInt, partialCompletion: (Data, URL) async -> Void) async {
 		var toFetch = sources.filter { !tasks.contains($0) }
 		await withTaskGroup(of: Result<(Data, URL), any Error>.self) { taskGroup in
 			func addWorker() {

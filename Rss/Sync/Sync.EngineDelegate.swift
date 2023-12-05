@@ -71,7 +71,11 @@ fileprivate extension Sync {
 			} else {
 				Logger.sync.info("Received item update, no matching local item: \(modification.record.recordID)")
 				orphanedRecords.insert(modification.record)
-				Store.shared.fetch(feed: Feed(source: modification.record.recordID.source))
+				Task {
+					await Store.shared.fetch(
+						feed: Feed(source: modification.record.recordID.source)
+					)
+				}
 			}
 		}
 		if !fetchedRecordZoneChanges.deletions.isEmpty {

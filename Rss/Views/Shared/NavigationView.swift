@@ -21,7 +21,7 @@ struct NavigationView: View {
 			navigationSplitViewVisibility = horizontalSizeClass == .regular
 			? .all
 			: .automatic
-			store.fetch()
+			Task { await store.fetch() }
 			let _ = try? await UNUserNotificationCenter
 				.current()
 				.requestAuthorization(options: .badge)

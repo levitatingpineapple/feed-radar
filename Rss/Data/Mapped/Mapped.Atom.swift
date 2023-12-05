@@ -20,7 +20,7 @@ extension Mapped {
 							time: atomEntrie.published?.timeIntervalSince1970,
 							title: atomEntrie.title,
 							author: atomEntrie.authors?
-								.compactMap { $0.name }
+								.compactMap { $0.name?.trimmingCharacters(in: .whitespacesAndNewlines) }
 								.joined(separator: ", "),
 							content: atomEntrie.content?.value,
 							url: atomEntrie.links?.first?.attributes?.href?.url

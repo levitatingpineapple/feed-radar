@@ -3,7 +3,7 @@ import SwiftUI
 struct FeedIconView: View {
 	let source: URL
 	@AppStorage var iconData: Data?
-	@ObservedObject var fetching: Fetcher = .shared
+	@ObservedObject var fetching: FeedFetcher = .shared
 	
 	init(source: URL) {
 		self.source = source

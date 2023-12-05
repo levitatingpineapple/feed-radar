@@ -19,7 +19,7 @@ struct ItemsView: View {
 		List(items, selection: $store.item) { item in
 			ItemView(item: item, showsFeed: filter.feed == nil)
 		}
-		.refreshable { await Store.shared.test(feed: store.filter?.feed) }
+		.refreshable { await Store.shared.fetch(feed: store.filter?.feed) }
 		.animation(.default, value: items)
 		.listStyle(.plain)
 		.navigationTitle(filter.title)

@@ -16,10 +16,10 @@ class Store: ObservableObject {
 	
 	init() throws {
 		var configuration = Configuration()
-		configuration.publicStatementArguments = true
-		configuration.prepareDatabase {
-			$0.trace { Logger.store.trace("\($0.description)") }
-		}
+//		configuration.publicStatementArguments = true
+//		configuration.prepareDatabase {
+//			$0.trace { Logger.store.trace("\($0.description)") }
+//		}
 		queue = try DatabaseQueue(
 			path: URL.documents.appendingPathComponent("rss.db").path,
 			configuration: configuration
@@ -80,7 +80,7 @@ class Store: ObservableObject {
 			}
 		) ?? true {
 			try? queue.write { try feed.insert($0) }
-			fetch(feed: feed)
+			Task { await fetch(feed: feed) }
 			if userInitiated {
 				Task { await self.sync.queueAdded(feed) }
 			}
@@ -119,8 +119,8 @@ class Store: ObservableObject {
 		}
 	}
 	
-	func test(feed: Feed? = nil) async {
-		await Fetcher.shared.process(
+	func fetch(feed: Feed? = nil) async {
+		await FeedFetcher.shared.fetch(
 			sources: feed.flatMap { [$0.source] } ?? self.feeds.map { $0.source },
 			workers: 3
 		) { data, source in
@@ -162,10 +162,6 @@ class Store: ObservableObject {
 				Logger.store.error("Parses Error \(error)")
 			}
 		}
-	}
-	
-	func fetch(feed: Feed? = nil) {
-		Task { await test(feed: feed) }
 	}
 	
 	// MARK: Item

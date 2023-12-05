@@ -2,7 +2,7 @@ import SwiftUI
 
 struct FilterView: View {
 	typealias TintedImage = ModifiedContent<Image, _ForegroundStyleModifier<Color>>
-	@ObservedObject var fetching: Fetcher = .shared
+	@ObservedObject var fetching: FeedFetcher = .shared
 	let filter: Item.Filter
 	let isCompact: Bool
 	let primaryImage: TintedImage
@@ -88,7 +88,7 @@ struct FilterView: View {
 			ContextMenu {
 				if let feed = filter.feed {
 					Button {
-						Store.shared.fetch(feed: feed)
+						Task { await Store.shared.fetch(feed: feed) }
 					} label: { Label("Fetch", systemImage: "arrow.clockwise") }
 					Button {
 						UIPasteboard.general.url = feed.source

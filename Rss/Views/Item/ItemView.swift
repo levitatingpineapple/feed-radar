@@ -38,7 +38,7 @@ struct ItemView: View {
 					tags
 				}
 				HStack {
-					if let author = item.author { Text(author) }
+					if let author = item.author { Text(author).lineLimit(1) }
 					Spacer()
 					if let time = item.time {
 						if Date.now.timeIntervalSince1970 - time < (60 * 60 * 24 * 8) {
