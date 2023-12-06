@@ -37,7 +37,7 @@
 		CEB836372B20078C00480E39 /* Store.Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB836362B20078C00480E39 /* Store.Feed.swift */; };
 		CEB836392B20086A00480E39 /* Store.Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB836382B20086A00480E39 /* Store.Item.swift */; };
 		CED3B25F2B20D2E9008D9C7E /* Readability.js in Resources */ = {isa = PBXBuildFile; fileRef = CED3B25E2B20D2E9008D9C7E /* Readability.js */; };
-		CEDEC5CD2B0650F700D83636 /* RssApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5CC2B0650F700D83636 /* RssApp.swift */; };
+		CEDEC5CD2B0650F700D83636 /* FeedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5CC2B0650F700D83636 /* FeedApp.swift */; };
 		CEDEC5D32B0650F800D83636 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDEC5D22B0650F800D83636 /* Assets.xcassets */; };
 		CEDEC5E12B065DB200D83636 /* Mapped.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5E02B065DB200D83636 /* Mapped.swift */; };
 		CEDEC5E62B067CA500D83636 /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = CEDEC5E52B067CA500D83636 /* style.css */; };
@@ -85,10 +85,10 @@
 		CEB836362B20078C00480E39 /* Store.Feed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.Feed.swift; sourceTree = "<group>"; };
 		CEB836382B20086A00480E39 /* Store.Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.Item.swift; sourceTree = "<group>"; };
 		CED3B25E2B20D2E9008D9C7E /* Readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = Readability.js; path = Readability/Readability.js; sourceTree = SOURCE_ROOT; };
-		CEDEC5C92B0650F700D83636 /* Rss.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rss.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEDEC5CC2B0650F700D83636 /* RssApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RssApp.swift; sourceTree = "<group>"; };
+		CEDEC5C92B0650F700D83636 /* Feed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Feed.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEDEC5CC2B0650F700D83636 /* FeedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedApp.swift; sourceTree = "<group>"; };
 		CEDEC5D22B0650F800D83636 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		CEDEC5D42B0650F800D83636 /* Rss.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Rss.entitlements; sourceTree = "<group>"; };
+		CEDEC5D42B0650F800D83636 /* Feed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Feed.entitlements; sourceTree = "<group>"; };
 		CEDEC5E02B065DB200D83636 /* Mapped.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mapped.swift; sourceTree = "<group>"; };
 		CEDEC5E52B067CA500D83636 /* style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
 		CEDEC5E72B06809000D83636 /* SafariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariViewController.swift; sourceTree = "<group>"; };
@@ -139,7 +139,7 @@
 			children = (
 				CEA06C122B0FC9E100B3C516 /* Info.plist */,
 				CEDEC5D22B0650F800D83636 /* Assets.xcassets */,
-				CEDEC5D42B0650F800D83636 /* Rss.entitlements */,
+				CEDEC5D42B0650F800D83636 /* Feed.entitlements */,
 				CEDEC5E52B067CA500D83636 /* style.css */,
 				CED3B25E2B20D2E9008D9C7E /* Readability.js */,
 			);
@@ -224,7 +224,7 @@
 		CEDEC5C02B0650F700D83636 = {
 			isa = PBXGroup;
 			children = (
-				CEDEC5CB2B0650F700D83636 /* Rss */,
+				CEDEC5CB2B0650F700D83636 /* Feed */,
 				CEDEC5CA2B0650F700D83636 /* Products */,
 				CEDEC5E22B06707500D83636 /* Frameworks */,
 			);
@@ -233,15 +233,15 @@
 		CEDEC5CA2B0650F700D83636 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CEDEC5C92B0650F700D83636 /* Rss.app */,
+				CEDEC5C92B0650F700D83636 /* Feed.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CEDEC5CB2B0650F700D83636 /* Rss */ = {
+		CEDEC5CB2B0650F700D83636 /* Feed */ = {
 			isa = PBXGroup;
 			children = (
-				CEDEC5CC2B0650F700D83636 /* RssApp.swift */,
+				CEDEC5CC2B0650F700D83636 /* FeedApp.swift */,
 				CEB836352B20023100480E39 /* Fetch */,
 				CE13C0E72B1617D800058F60 /* Store */,
 				CE13C0E82B1617E000058F60 /* Sync */,
@@ -249,7 +249,7 @@
 				CE64CE282B07EEB0006C9DB9 /* Views */,
 				CE18F3862B094B8600FE509C /* Support */,
 			);
-			path = Rss;
+			path = Feed;
 			sourceTree = "<group>";
 		};
 		CEDEC5E22B06707500D83636 /* Frameworks */ = {
@@ -287,9 +287,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CEDEC5C82B0650F700D83636 /* Rss */ = {
+		CEDEC5C82B0650F700D83636 /* Feed */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CEDEC5DA2B0650F800D83636 /* Build configuration list for PBXNativeTarget "Rss" */;
+			buildConfigurationList = CEDEC5DA2B0650F800D83636 /* Build configuration list for PBXNativeTarget "Feed" */;
 			buildPhases = (
 				CEDEC5C52B0650F700D83636 /* Sources */,
 				CEDEC5C62B0650F700D83636 /* Frameworks */,
@@ -299,14 +299,14 @@
 			);
 			dependencies = (
 			);
-			name = Rss;
+			name = Feed;
 			packageProductDependencies = (
 				CEED7B942B0B9E65004B29C6 /* GRDB */,
 				CEED7B972B0B9E98004B29C6 /* FeedKit */,
 				CEED7B9A2B0B9EAE004B29C6 /* GRDBQuery */,
 			);
 			productName = Rss;
-			productReference = CEDEC5C92B0650F700D83636 /* Rss.app */;
+			productReference = CEDEC5C92B0650F700D83636 /* Feed.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -324,7 +324,7 @@
 					};
 				};
 			};
-			buildConfigurationList = CEDEC5C42B0650F700D83636 /* Build configuration list for PBXProject "Rss" */;
+			buildConfigurationList = CEDEC5C42B0650F700D83636 /* Build configuration list for PBXProject "Feed" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -342,7 +342,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CEDEC5C82B0650F700D83636 /* Rss */,
+				CEDEC5C82B0650F700D83636 /* Feed */,
 			);
 		};
 /* End PBXProject section */
@@ -402,7 +402,7 @@
 				CE351BF32B0D3873006FF948 /* Feed.swift in Sources */,
 				CEDEC5E82B06809000D83636 /* SafariViewController.swift in Sources */,
 				CE76F89F2B1262FE007ED642 /* Sync.swift in Sources */,
-				CEDEC5CD2B0650F700D83636 /* RssApp.swift in Sources */,
+				CEDEC5CD2B0650F700D83636 /* FeedApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,7 +528,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Rss/Support/Rss.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Feed/Support/Feed.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -538,7 +538,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Rss/Support/Info.plist;
+				INFOPLIST_FILE = Feed/Support/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Feed Radar";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -556,10 +556,10 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.levitatingpineapple.rss;
+				PRODUCT_BUNDLE_IDENTIFIER = com.levitatingpineapple.feed;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Rss;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Feed;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -575,7 +575,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Rss/Support/Rss.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Feed/Support/Feed.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -585,7 +585,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Rss/Support/Info.plist;
+				INFOPLIST_FILE = Feed/Support/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Feed Radar";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -603,10 +603,10 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.levitatingpineapple.rss;
+				PRODUCT_BUNDLE_IDENTIFIER = com.levitatingpineapple.feed;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Rss;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Feed;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -620,7 +620,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CEDEC5C42B0650F700D83636 /* Build configuration list for PBXProject "Rss" */ = {
+		CEDEC5C42B0650F700D83636 /* Build configuration list for PBXProject "Feed" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEDEC5D82B0650F800D83636 /* Debug */,
@@ -629,7 +629,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CEDEC5DA2B0650F800D83636 /* Build configuration list for PBXNativeTarget "Rss" */ = {
+		CEDEC5DA2B0650F800D83636 /* Build configuration list for PBXNativeTarget "Feed" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEDEC5DB2B0650F800D83636 /* Debug */,

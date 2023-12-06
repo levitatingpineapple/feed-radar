@@ -12,7 +12,7 @@ extension EnvironmentValues {
 }
 
 @main 
-struct RssApp: App {
+struct FeedApp: App {
 	var body: some Scene {
 		WindowGroup { NavigationView() }
 	}
