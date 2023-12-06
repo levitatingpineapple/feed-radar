@@ -5,12 +5,13 @@ import GRDBQuery
 
 struct Item: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord {
 	enum Column: String {
-		case itemId, source, time, title, author, content, url, isRead, isStarred, sync
+		case source, itemId, time, title, author, content, url, 
+			 isRead, isStarred, sync, extracted
 		var column: GRDB.Column { GRDB.Column(self.rawValue) }
 	}
 	
-	let itemId: String
 	let source: URL
+	let itemId: String
 	let time: TimeInterval?
 	let title: String?
 	let author: String?
@@ -19,7 +20,8 @@ struct Item: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord
 	
 	var isRead: Bool = false
 	var isStarred: Bool = false
-	var sync: Data? = nil
+	var sync: Data?
+	var extracted: String?
 	
 	var id: Int { .hashValues(source, itemId) }
 	
@@ -35,6 +37,7 @@ struct Item: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord
 			$0.column(Column.isRead.rawValue, .boolean)
 			$0.column(Column.isStarred.rawValue, .boolean)
 			$0.column(Column.sync.rawValue, .blob)
+			$0.column(Column.extracted.rawValue, .text)
 			$0.primaryKey([Column.source.rawValue, Column.itemId.rawValue], onConflict: .replace)
 			$0.foreignKey([Column.source.rawValue], references: "feed", onDelete: .cascade)
 		}

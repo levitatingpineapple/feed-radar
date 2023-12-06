@@ -11,7 +11,6 @@ a {
 a:hover { text-decoration: underline; }
 body {
 	-webkit-text-size-adjust: none;
-	box-sizing: border-box;
 	word-wrap: break-word;
 	background-color: var(--background);
 	color: var(--primary);
@@ -19,7 +18,7 @@ body {
 	padding: var(--large);
 	margin: auto;
 	tab-size: 4;
-	line-height: 140%;
+	line-height: 1.4;
 	max-width: 720px;
 }
 blockquote,
@@ -70,8 +69,10 @@ table {
 	display: inline-block;
 	overflow-x: auto;
 }
-tbody>tr:last-child td:last-child { border-bottom-right-radius: calc(var(--large) - var(--small)); }
-tbody>tr:last-child td:first-child { border-bottom-left-radius: calc(var(--large) - var(--small)); }
+tbody>tr:last-child 
+td:last-child { border-bottom-right-radius: calc(var(--large) - var(--small)); }
+tbody>tr:last-child 
+td:first-child { border-bottom-left-radius: calc(var(--large) - var(--small)); }
 td { background-color: var(--background); }
 td,
 th { padding: var(--small) var(--medium); }

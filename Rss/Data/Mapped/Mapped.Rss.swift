@@ -14,8 +14,8 @@ extension Mapped {
 			items: (rss.items ?? Array<RSSFeedItem>()).compactMap { rssItem in
 				return rssItem.guid?.value.flatMap {
 					Item(
-						itemId: $0,
 						source: source,
+						itemId: $0,
 						time: rssItem.pubDate?.timeIntervalSince1970,
 						title: rssItem.title,
 						author: rssItem.author ?? rss.items?.first?.dublinCore?.dcCreator,

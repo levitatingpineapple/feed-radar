@@ -18,7 +18,9 @@ struct FeedView: View {
 		if let feed {
 			HStack {
 				FeedIconView(source: feed.source).boxed(padded: false)
-				Text(feed.title ?? feed.source.absoluteString).lineLimit(1).layoutPriority(-1)
+				Text(feed.title ?? feed.source.absoluteString)
+					.lineLimit(1)
+					.layoutPriority(-1)
 			}
 		}
 	}

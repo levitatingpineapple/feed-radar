@@ -2,7 +2,7 @@ import Foundation
 import os.log
 
 class FeedFetcher: ObservableObject {
-	static let shared = FeedFetcher() // TODO: Inject as environment object
+	static let shared = FeedFetcher() // TODO: Inject as an environment object
 	
 	@Published var tasks = Set<URL>()
 	

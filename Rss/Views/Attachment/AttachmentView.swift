@@ -4,7 +4,7 @@ struct AttachmentView<Selector: View>: View {
 	let attachment: Attachment
 	let invalidateSize: () -> Void
 	@State private var aspectRatio: Double = 16 / 9
-	@ObservedObject var downloads: Downloader = .shared
+	@ObservedObject var downloads: AttachhmentsFetcher = .shared
 	@ViewBuilder var selector: () -> Selector
 	
 	var url: URL {

@@ -15,8 +15,8 @@ extension Mapped {
 				$0.compactMap { jsonItem in
 					if let itemId = jsonItem.id {
 						Item(
-							itemId: itemId,
 							source: source,
+							itemId: itemId,
 							time: jsonItem.datePublished?.timeIntervalSince1970,
 							title: jsonItem.title,
 							author: jsonItem.author?.name,

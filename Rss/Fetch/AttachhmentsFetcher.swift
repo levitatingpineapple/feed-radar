@@ -1,9 +1,9 @@
 import SwiftUI
 
-class Downloader: ObservableObject {
-	static let shared = Downloader() // TODO: Inject as environment object
+class AttachhmentsFetcher: ObservableObject {
+	static let shared = AttachhmentsFetcher() // TODO: Inject as an environment object
 	
-	@Published var tasks = Dictionary<URL, Download>()
+	@Published var tasks = Dictionary<URL, Task>()
 	
 	func download(attachment: Attachment) {
 		if tasks.keys.contains(attachment.url) { return }
@@ -36,8 +36,8 @@ class Downloader: ObservableObject {
 	}
 }
 
-extension Downloader {
-	enum Download: Equatable {
+extension AttachhmentsFetcher {
+	enum Task: Equatable {
 		case progress(Double)
 		case completed(URL)
 		case error

@@ -6,7 +6,7 @@ import CryptoKit
 // TODO: Add retry
 struct DownloadView: View {
 	let attachment: Attachment
-	@ObservedObject var downloads: Downloader = .shared
+	@ObservedObject var downloads: AttachhmentsFetcher = .shared
 	@State private var quickLook: URL?
 
 	var body: some View {
@@ -27,7 +27,7 @@ struct DownloadView: View {
 				}
 			} else {
 				Button {
-					Downloader.shared.download(attachment: attachment)
+					AttachhmentsFetcher.shared.download(attachment: attachment)
 				} label: {
 					Image(systemName: "arrow.down.circle").resizable().scaledToFit()
 				}
