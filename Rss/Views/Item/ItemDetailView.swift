@@ -54,9 +54,7 @@ struct ItemDetailView: View {
 		VStack(spacing: .zero) {
 			switch display {
 			case .content:
-				if let content = item.content {
-					contentView(body: content)
-				}
+				if let content = item.content { contentView(body: content) }
 			case .extractedContent:
 				if let url = item.url {
 					if let extracted = item.extracted {
@@ -77,9 +75,7 @@ struct ItemDetailView: View {
 					}
 				}
 			case .webView:
-				if let url = item.url {
-					SafariViewController(url: url).ignoresSafeArea()
-				}
+				if let url = item.url { SafariViewController(url: url).ignoresSafeArea() }
 			}
 		}
 		.toolbarBackground(Material.bar, for: .navigationBar)

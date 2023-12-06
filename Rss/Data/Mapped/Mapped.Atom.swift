@@ -17,7 +17,7 @@ extension Mapped {
 						Item(
 							source: source,
 							itemId: itemId,
-							time: atomEntrie.published?.timeIntervalSince1970,
+							time: (atomEntrie.updated ?? atomEntrie.published)?.timeIntervalSince1970,
 							title: atomEntrie.title,
 							author: atomEntrie.authors?
 								.compactMap { $0.name?.trimmingCharacters(in: .whitespacesAndNewlines) }

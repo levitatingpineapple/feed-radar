@@ -11,6 +11,7 @@ a {
 a:hover { text-decoration: underline; }
 body {
 	-webkit-text-size-adjust: none;
+	box-sizing: border-box;
 	word-wrap: break-word;
 	background-color: var(--background);
 	color: var(--primary);

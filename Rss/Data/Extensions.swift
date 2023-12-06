@@ -31,15 +31,6 @@ extension String {
 	
 	var url: URL? { URL(string: self) }
 	var type: UTType? { UTType(mimeType: self) }
-	func indented(_ indent: Int) -> String {
-		replacingOccurrences(
-			of: "\n",
-			with: Array<String>(
-				repeating: "\t", 
-				count: indent
-			).joined() + "\n"
-		)
-	}
 	func strippingPrefix(_ prefix: String) -> String {
 		hasPrefix(prefix) ? String(dropFirst(prefix.count)) : self
 	}

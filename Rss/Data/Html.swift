@@ -30,13 +30,13 @@ struct Html {
 		<meta name="viewport" content="initial-scale=\(String(format: "%.1f", scale))">
 		<style>
 			:root {
-				\(theme.indented(4))
+				\(theme)
 			}
-			\(style.indented(3))
+			\(style)
 		</style>
 	</head>
 	<body>
-		\(body.indented(2))
+		\(body)
 	</body>
 </html>
 """

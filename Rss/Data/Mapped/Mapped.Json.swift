@@ -17,7 +17,7 @@ extension Mapped {
 						Item(
 							source: source,
 							itemId: itemId,
-							time: jsonItem.datePublished?.timeIntervalSince1970,
+							time: (jsonItem.dateModified ?? jsonItem.datePublished)?.timeIntervalSince1970,
 							title: jsonItem.title,
 							author: jsonItem.author?.name,
 							content: jsonItem.contentHtml ?? jsonItem.contentText,
