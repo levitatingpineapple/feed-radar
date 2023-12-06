@@ -36,7 +36,7 @@ struct ItemDetailView: View {
 	}
 	
 	func contentView(body: String) -> some View {
-		WebViewController(
+		ContentVieweController(
 			htmlString: Html(
 				scale: scale,
 				style: .style,
@@ -44,7 +44,7 @@ struct ItemDetailView: View {
 				environmentValues: environmentValues
 			).string,
 			title: item.title ?? item.itemId,
-			base: (item.url ?? item.source).base,
+			url: (item.url ?? item.source),
 			request: Attachment.Request(source: item.source, itemId: item.itemId),
 			scale: $scale
 		).ignoresSafeArea()
@@ -64,13 +64,7 @@ struct ItemDetailView: View {
 							ProgressView()
 							Text("Extracting")
 						}.onAppear {
-							Task {
-								if let extracted = try? await ContentExtractor().extract(from: url) {
-									var item = item
-									item.extracted = extracted
-									Store.shared.update(item: item)
-								}
-							}
+							Task { try? await ContentExtractor.shared.extract(item: item) }
 						}
 					}
 				}
@@ -81,6 +75,9 @@ struct ItemDetailView: View {
 		.toolbarBackground(Material.bar, for: .navigationBar)
 		.toolbar {
 			ToolbarItem { displayView }
+		}
+		.onChange(of: item) {
+			Task { try? await ContentExtractor.shared.extract(item: item) }
 		}
 	}
 }

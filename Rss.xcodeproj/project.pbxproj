@@ -50,7 +50,7 @@
 		CEED7B982B0B9E98004B29C6 /* FeedKit in Frameworks */ = {isa = PBXBuildFile; productRef = CEED7B972B0B9E98004B29C6 /* FeedKit */; };
 		CEED7B9B2B0B9EAE004B29C6 /* GRDBQuery in Frameworks */ = {isa = PBXBuildFile; productRef = CEED7B9A2B0B9EAE004B29C6 /* GRDBQuery */; };
 		CEFEC7C62B0AF42200FF8728 /* AttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C52B0AF42200FF8728 /* AttachmentsView.swift */; };
-		CEFEC7C82B0AF43E00FF8728 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C72B0AF43E00FF8728 /* WebViewController.swift */; };
+		CEFEC7C82B0AF43E00FF8728 /* ContentVieweController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C72B0AF43E00FF8728 /* ContentVieweController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -97,7 +97,7 @@
 		CEE41B402B0833C1005E0289 /* FeedImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImportView.swift; sourceTree = "<group>"; };
 		CEED7B892B0B9AB2004B29C6 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CEFEC7C52B0AF42200FF8728 /* AttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsView.swift; sourceTree = "<group>"; };
-		CEFEC7C72B0AF43E00FF8728 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		CEFEC7C72B0AF43E00FF8728 /* ContentVieweController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentVieweController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,14 +114,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		CE13C0E72B1617D800058F60 /* Persist */ = {
+		CE13C0E72B1617D800058F60 /* Store */ = {
 			isa = PBXGroup;
 			children = (
 				CEED7B892B0B9AB2004B29C6 /* Store.swift */,
 				CEB836362B20078C00480E39 /* Store.Feed.swift */,
 				CEB836382B20086A00480E39 /* Store.Item.swift */,
 			);
-			path = Persist;
+			path = Store;
 			sourceTree = "<group>";
 		};
 		CE13C0E82B1617E000058F60 /* Sync */ = {
@@ -162,7 +162,7 @@
 			children = (
 				CE351BE72B0D00C6006FF948 /* PlayerViewController.swift */,
 				CEDEC5E72B06809000D83636 /* SafariViewController.swift */,
-				CEFEC7C72B0AF43E00FF8728 /* WebViewController.swift */,
+				CEFEC7C72B0AF43E00FF8728 /* ContentVieweController.swift */,
 			);
 			path = Representables;
 			sourceTree = "<group>";
@@ -243,7 +243,7 @@
 			children = (
 				CEDEC5CC2B0650F700D83636 /* RssApp.swift */,
 				CEB836352B20023100480E39 /* Fetch */,
-				CE13C0E72B1617D800058F60 /* Persist */,
+				CE13C0E72B1617D800058F60 /* Store */,
 				CE13C0E82B1617E000058F60 /* Sync */,
 				CEED7B882B0B9AA0004B29C6 /* Data */,
 				CE64CE282B07EEB0006C9DB9 /* Views */,
@@ -385,7 +385,7 @@
 				CEE41B412B0833C1005E0289 /* FeedImportView.swift in Sources */,
 				CE64CE2C2B07EF32006C9DB9 /* ItemDetailView.swift in Sources */,
 				CE351BE62B0D007C006FF948 /* CircularProgressView.swift in Sources */,
-				CEFEC7C82B0AF43E00FF8728 /* WebViewController.swift in Sources */,
+				CEFEC7C82B0AF43E00FF8728 /* ContentVieweController.swift in Sources */,
 				CE351BEA2B0D1D28006FF948 /* AttachmentView.swift in Sources */,
 				CE351BDE2B0BE768006FF948 /* FeedsView.swift in Sources */,
 				CE7618162B1E5E1400C80C25 /* FeedIconView.swift in Sources */,

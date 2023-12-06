@@ -3,10 +3,10 @@ import UIKit
 import SwiftUI
 import WebKit
 
-struct WebViewController: UIViewControllerRepresentable {
+struct ContentVieweController: UIViewControllerRepresentable {
 	let htmlString: String
 	let title: String
-	let base: URL?
+	let url: URL?
 	let request: Attachment.Request
 	@Binding var scale: Double
 	
@@ -25,17 +25,19 @@ struct WebViewController: UIViewControllerRepresentable {
 		) { [weak viewController] in
 			viewController?.attachmentsController.view.invalidateIntrinsicContentSize()
 		}
+		viewController.url = url
 		viewController.webView.loadHTMLString(
 			htmlString,
-			baseURL: base
+			baseURL: url
 		)
 	}
 }
 
-extension WebViewController {
+extension ContentVieweController {
 	class ViewController: UIViewController {
 		let attachmentsController = UIHostingController<AttachmentsView?>(rootView: .none)
 		let webView = WKWebView()
+		var url: URL?
 		private var observation: NSKeyValueObservation?
 		
 		deinit { observation = nil }
@@ -72,7 +74,7 @@ extension WebViewController {
 	
 }
 
-extension WebViewController.ViewController: WKNavigationDelegate {
+extension ContentVieweController.ViewController: WKNavigationDelegate {
 	func webView(
 		_ webView: WKWebView,
 		decidePolicyFor navigationAction: WKNavigationAction,
@@ -80,7 +82,7 @@ extension WebViewController.ViewController: WKNavigationDelegate {
 	) {
 		if let url = navigationAction.request.url,
 		   // External url which is not an iframe opened in browser
-		   url != webView.url && navigationAction.targetFrame?.isMainFrame == true {
+		   url != self.url && navigationAction.targetFrame?.isMainFrame == true {
 			decisionHandler(.cancel)
 			UIApplication.shared.open(url)
 		} else {

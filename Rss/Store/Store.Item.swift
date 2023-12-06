@@ -49,6 +49,7 @@ extension Store {
 		}
 		Task { await sync.queueUpdated(item) }
 	}
+
 	
 	/// Fixes visual bug, where list item looses selection
 	/// This bug does not affect navigation

@@ -3,7 +3,6 @@ import GRDB
 import os.log
 import FeedKit
 
-
 extension Store {
 	var feeds: Array<Feed> {
 		(try? queue.write {
@@ -113,5 +112,4 @@ extension Store {
 			}
 		}
 	}
-	
 }
