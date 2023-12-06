@@ -1,12 +1,12 @@
 import SwiftUI
 
-enum Display: Int {
-	case content
-	case extractedContent
-	case webView
-}
-
 struct ItemDetailView: View {
+	enum Display: Int {
+		case content
+		case extractedContent
+		case webView
+	}
+	
 	let item: Item
 	@Environment(\.colorScheme) var colorScheme
 	@Environment(\.self) var environmentValues
@@ -56,16 +56,14 @@ struct ItemDetailView: View {
 			case .content:
 				if let content = item.content { contentView(body: content) }
 			case .extractedContent:
-				if let url = item.url {
-					if let extracted = item.extracted {
-						contentView(body: extracted)
-					} else {
-						HStack(spacing: 8) {
-							ProgressView()
-							Text("Extracting")
-						}.onAppear {
-							Task { try? await ContentExtractor.shared.extract(item: item) }
-						}
+				if let extracted = item.extracted {
+					contentView(body: extracted)
+				} else {
+					HStack(spacing: 8) {
+						ProgressView()
+						Text("Extracting")
+					}.onAppear {
+						Task { try? await ContentExtractor.shared.extract(item: item) }
 					}
 				}
 			case .webView:
@@ -77,7 +75,9 @@ struct ItemDetailView: View {
 			ToolbarItem { displayView }
 		}
 		.onChange(of: item) {
-			Task { try? await ContentExtractor.shared.extract(item: item) }
+			if display == .extractedContent {
+				Task { try? await ContentExtractor.shared.extract(item: item) }
+			}
 		}
 	}
 }
