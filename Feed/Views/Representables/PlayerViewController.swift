@@ -8,7 +8,6 @@ struct PlayerViewController: UIViewControllerRepresentable {
 	func makeUIViewController(context: Context) -> AVPlayerViewController {
 		try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
 		let playerViewController = AVPlayerViewController()
-		playerViewController.view?.backgroundColor = .clear
 		playerViewController.player = AVPlayer()
 		return playerViewController
 	}

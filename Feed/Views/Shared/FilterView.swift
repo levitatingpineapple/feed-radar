@@ -70,12 +70,7 @@ struct FilterView: View {
 	}
 	
 	func countView(filter: Filter, color: Color) -> some View {
-		CountView(
-			count: Query(
-				Item.RequestCount(filter: filter),
-				in: \.store
-			)
-		)
+		CountView(filter: filter)
 		.background(color)
 		.clipShape(Capsule())
 	}

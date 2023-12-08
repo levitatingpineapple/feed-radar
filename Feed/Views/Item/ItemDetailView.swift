@@ -19,7 +19,6 @@ struct ItemDeatilWrapperView: View {
 	}
 }
 
-
 struct ItemDetailView: View {
 	enum Display: Int {
 		case content
