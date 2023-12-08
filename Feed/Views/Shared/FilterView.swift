@@ -83,7 +83,7 @@ struct FilterView: View {
 			if filter.feed != nil || filter.isRead == false {
 				countView(filter: filter.unread(), color: .accentColor.opacity(0.8))
 			} else if filter.isStarred == true {
-				countView(filter: filter.unread(), color: .orange.opacity(0.6))
+				countView(filter: filter, color: .orange.opacity(0.6))
 			}
 		}
 		.contentShape(Rectangle())

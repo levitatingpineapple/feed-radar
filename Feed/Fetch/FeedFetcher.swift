@@ -1,15 +1,19 @@
 import Foundation
 import os.log
+import Combine
 
 class FeedFetcher: ObservableObject {
 	static let shared = FeedFetcher() // TODO: Inject as an environment object
 	
 	@Published var tasks = Set<URL>()
 	
+//	var test = Dictionary<URL, PassthroughSubject<Bool, Never>>()
+	
+	
 	func fetch(sources: Array<URL>, workers: UInt, partialCompletion: (Data, URL) async -> Void) async {
 		var toFetch = sources.filter { !tasks.contains($0) }
 		await withTaskGroup(of: Result<(Data, URL), any Error>.self) { taskGroup in
-			func addWorker() {
+			func addWorker(taskGroup: inout TaskGroup<Result<(Data, URL), any Error>>) {
 				if let source = toFetch.popLast() {
 					DispatchQueue.main.async { self.tasks.insert(source) }
 					taskGroup.addTask {
@@ -23,7 +27,7 @@ class FeedFetcher: ObservableObject {
 					}
 				}
 			}
-			(0..<workers).forEach { _ in addWorker() }
+			(0..<workers).forEach { _ in addWorker(taskGroup: &taskGroup) }
 			while let next = await taskGroup.next() {
 				switch next {
 				case let .success((data, source)):
@@ -31,7 +35,7 @@ class FeedFetcher: ObservableObject {
 					await partialCompletion(data, source)
 				case let .failure(error): Logger.store.debug("Failed to Download \(error)")
 				}
-				addWorker()
+				addWorker(taskGroup: &taskGroup)
 			}
 		}
 	}

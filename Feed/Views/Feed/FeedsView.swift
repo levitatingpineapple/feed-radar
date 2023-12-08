@@ -6,24 +6,20 @@ struct FeedsView: View {
 	@ObservedObject var store: Store = .shared
 	@State private var isImportPresented = false
 	
+	private func link(filter: Filter) -> some View {
+		NavigationLink(value: filter) { FilterView(filter: filter) }
+	}
+	
 	var body: some View {
 		List(selection: $store.filter) {
 			Section {
-				NavigationLink(value: Filter()) {
-					FilterView(filter: Filter())
-				}
-				NavigationLink(value: Filter(isRead: false)) {
-					FilterView(filter: Filter(isRead: false))
-				}
-				NavigationLink(value: Filter(isStarred: true)) {
-					FilterView(filter: Filter(isStarred: true))
-				}
+				link(filter: Filter())
+				link(filter: Filter(isRead: false))
+				link(filter: Filter(isStarred: true))
 			}
 			Section {
 				ForEach(feeds, id: \.source) { feed in
-					NavigationLink(value: Filter(feed: feed)) {
-						FilterView(filter: Filter(feed: feed))
-					}
+					link(filter: Filter(feed: feed))
 					.swipeActions(edge: .leading, allowsFullSwipe: true) {
 						Button("Fetch") {
 							Task { await Store.shared.fetch(feed: feed) }
@@ -31,9 +27,8 @@ struct FeedsView: View {
 					}
 				}
 				.onDelete {
-					$0.forEach { index in
-						let feed = feeds[index]
-						Store.shared.delete(feed: feed)
+					$0.forEach {
+						Store.shared.delete(feed: feeds[$0])
 					}
 				}
 			}
