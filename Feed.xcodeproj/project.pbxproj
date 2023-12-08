@@ -11,6 +11,7 @@
 		CE13C0EA2B1665C900058F60 /* AttachhmentsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13C0E92B1665C900058F60 /* AttachhmentsFetcher.swift */; };
 		CE18F38A2B094EB700FE509C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE18F3892B094EB700FE509C /* Extensions.swift */; };
 		CE18F38C2B09800C00FE509C /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE18F38B2B09800C00FE509C /* FeedView.swift */; };
+		CE1D89F02B232F2C00CC2CFF /* LoadingOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1D89EF2B232F2C00CC2CFF /* LoadingOverlayView.swift */; };
 		CE351BDE2B0BE768006FF948 /* FeedsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BDD2B0BE768006FF948 /* FeedsView.swift */; };
 		CE351BE02B0BE7C6006FF948 /* ItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BDF2B0BE7C6006FF948 /* ItemsView.swift */; };
 		CE351BE42B0D003D006FF948 /* DownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE351BE32B0D003D006FF948 /* DownloadView.swift */; };
@@ -50,7 +51,7 @@
 		CEED7B982B0B9E98004B29C6 /* FeedKit in Frameworks */ = {isa = PBXBuildFile; productRef = CEED7B972B0B9E98004B29C6 /* FeedKit */; };
 		CEED7B9B2B0B9EAE004B29C6 /* GRDBQuery in Frameworks */ = {isa = PBXBuildFile; productRef = CEED7B9A2B0B9EAE004B29C6 /* GRDBQuery */; };
 		CEFEC7C62B0AF42200FF8728 /* AttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C52B0AF42200FF8728 /* AttachmentsView.swift */; };
-		CEFEC7C82B0AF43E00FF8728 /* ContentVieweController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C72B0AF43E00FF8728 /* ContentVieweController.swift */; };
+		CEFEC7C82B0AF43E00FF8728 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C72B0AF43E00FF8728 /* ContentViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		CE13C0E92B1665C900058F60 /* AttachhmentsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachhmentsFetcher.swift; sourceTree = "<group>"; };
 		CE18F3892B094EB700FE509C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		CE18F38B2B09800C00FE509C /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
+		CE1D89EF2B232F2C00CC2CFF /* LoadingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlayView.swift; sourceTree = "<group>"; };
 		CE351BDD2B0BE768006FF948 /* FeedsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsView.swift; sourceTree = "<group>"; };
 		CE351BDF2B0BE7C6006FF948 /* ItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsView.swift; sourceTree = "<group>"; };
 		CE351BE32B0D003D006FF948 /* DownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadView.swift; sourceTree = "<group>"; };
@@ -97,7 +99,7 @@
 		CEE41B402B0833C1005E0289 /* FeedImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImportView.swift; sourceTree = "<group>"; };
 		CEED7B892B0B9AB2004B29C6 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CEFEC7C52B0AF42200FF8728 /* AttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsView.swift; sourceTree = "<group>"; };
-		CEFEC7C72B0AF43E00FF8728 /* ContentVieweController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentVieweController.swift; sourceTree = "<group>"; };
+		CEFEC7C72B0AF43E00FF8728 /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,7 +164,8 @@
 			children = (
 				CE351BE72B0D00C6006FF948 /* PlayerViewController.swift */,
 				CEDEC5E72B06809000D83636 /* SafariViewController.swift */,
-				CEFEC7C72B0AF43E00FF8728 /* ContentVieweController.swift */,
+				CEFEC7C72B0AF43E00FF8728 /* ContentViewController.swift */,
+				CE1D89EF2B232F2C00CC2CFF /* LoadingOverlayView.swift */,
 			);
 			path = Representables;
 			sourceTree = "<group>";
@@ -366,6 +369,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEB155B52B1A419400AB785C /* Html.swift in Sources */,
+				CE1D89F02B232F2C00CC2CFF /* LoadingOverlayView.swift in Sources */,
 				CE351BF02B0D26C7006FF948 /* Mapped.Json.swift in Sources */,
 				CE351BE02B0BE7C6006FF948 /* ItemsView.swift in Sources */,
 				CE18F38C2B09800C00FE509C /* FeedView.swift in Sources */,
@@ -385,7 +389,7 @@
 				CEE41B412B0833C1005E0289 /* FeedImportView.swift in Sources */,
 				CE64CE2C2B07EF32006C9DB9 /* ItemDetailView.swift in Sources */,
 				CE351BE62B0D007C006FF948 /* CircularProgressView.swift in Sources */,
-				CEFEC7C82B0AF43E00FF8728 /* ContentVieweController.swift in Sources */,
+				CEFEC7C82B0AF43E00FF8728 /* ContentViewController.swift in Sources */,
 				CE351BEA2B0D1D28006FF948 /* AttachmentView.swift in Sources */,
 				CE351BDE2B0BE768006FF948 /* FeedsView.swift in Sources */,
 				CE7618162B1E5E1400C80C25 /* FeedIconView.swift in Sources */,

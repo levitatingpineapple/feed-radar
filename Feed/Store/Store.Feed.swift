@@ -77,7 +77,7 @@ extension Store {
 		if feed == nil { lastFullFetch = Date.now.timeIntervalSince1970 }
 		await FeedFetcher.shared.fetch(
 			sources: feed.flatMap { [$0.source] } ?? self.feeds.map { $0.source },
-			workers: 3
+			workers: 8
 		) { data, source in
 			switch FeedParser(data: data).parse() {
 			case let .success(feed):

@@ -3,7 +3,6 @@ import GRDBQuery
 
 struct FilterView: View {
 	typealias TintedImage = ModifiedContent<Image, _ForegroundStyleModifier<Color>>
-	@ObservedObject var fetching: FeedFetcher = .shared
 	let filter: Filter
 	let isCompact: Bool
 	let primaryImage: TintedImage

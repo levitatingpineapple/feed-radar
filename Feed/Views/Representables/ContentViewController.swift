@@ -3,7 +3,7 @@ import UIKit
 import SwiftUI
 import WebKit
 
-struct ContentVieweController: UIViewControllerRepresentable {
+struct ContentViewController: UIViewControllerRepresentable {
 	let htmlString: String
 	let title: String
 	let url: URL?
@@ -33,7 +33,7 @@ struct ContentVieweController: UIViewControllerRepresentable {
 	}
 }
 
-extension ContentVieweController {
+extension ContentViewController {
 	class ViewController: UIViewController {
 		let attachmentsController = UIHostingController<AttachmentsView?>(rootView: .none)
 		let webView = WKWebView()
@@ -74,7 +74,7 @@ extension ContentVieweController {
 	
 }
 
-extension ContentVieweController.ViewController: WKNavigationDelegate {
+extension ContentViewController.ViewController: WKNavigationDelegate {
 	func webView(
 		_ webView: WKWebView,
 		decidePolicyFor navigationAction: WKNavigationAction,

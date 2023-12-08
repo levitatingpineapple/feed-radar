@@ -2,20 +2,27 @@ import Foundation
 import os.log
 import Combine
 
-class FeedFetcher: ObservableObject {
+class FeedFetcher {
 	static let shared = FeedFetcher() // TODO: Inject as an environment object
+	private var loadingSubjects = Dictionary<URL, CurrentValueSubject<Bool, Never>>()
 	
-	@Published var tasks = Set<URL>()
-	
-//	var test = Dictionary<URL, PassthroughSubject<Bool, Never>>()
-	
+	func isLoading(source: URL) -> CurrentValueSubject<Bool, Never> {
+		if let publisher = loadingSubjects[source] {
+			return publisher
+		} else {
+			loadingSubjects[source] = CurrentValueSubject<Bool, Never>(false)
+			return isLoading(source: source)
+		}
+	}
 	
 	func fetch(sources: Array<URL>, workers: UInt, partialCompletion: (Data, URL) async -> Void) async {
-		var toFetch = sources.filter { !tasks.contains($0) }
+		var toFetch = sources.filter { isLoading(source: $0).value == false }
 		await withTaskGroup(of: Result<(Data, URL), any Error>.self) { taskGroup in
 			func addWorker(taskGroup: inout TaskGroup<Result<(Data, URL), any Error>>) {
 				if let source = toFetch.popLast() {
-					DispatchQueue.main.async { self.tasks.insert(source) }
+					DispatchQueue.main.async {
+						self.isLoading(source: source).send(true)
+					}
 					taskGroup.addTask {
 						do {
 							return Result.success(
@@ -31,7 +38,9 @@ class FeedFetcher: ObservableObject {
 			while let next = await taskGroup.next() {
 				switch next {
 				case let .success((data, source)):
-					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { self.tasks.remove(source) }
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+						self.isLoading(source: source).send(false)
+					}
 					await partialCompletion(data, source)
 				case let .failure(error): Logger.store.debug("Failed to Download \(error)")
 				}
@@ -40,3 +49,4 @@ class FeedFetcher: ObservableObject {
 		}
 	}
 }
+
