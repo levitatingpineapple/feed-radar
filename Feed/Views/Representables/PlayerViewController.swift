@@ -26,10 +26,10 @@ struct PlayerViewController: UIViewControllerRepresentable {
 		if let player = playerViewController.player {
 			player.replaceCurrentItem(with: nil)
 			let playerItem = AVPlayerItem(url: url)
-			if let item = Store.shared.item {
+			if let item = Store.shared.selectedItem {
 				let title = AVMutableMetadataItem()
 				title.identifier = AVMetadataIdentifier.commonIdentifierTitle
-				title.value = (item.title ?? item.itemId) as NSString
+				title.value = item.title as NSString
 				playerItem.externalMetadata.append(title)
 				if let imageData = UserDefaults.standard.data(forKey: .iconKey(source: item.source)) {
 					let image = AVMutableMetadataItem()

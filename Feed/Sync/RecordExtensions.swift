@@ -5,12 +5,12 @@ import os.log
 extension CKRecord {
 	// Fetches local and merges it with the record, if it's newer.
 	var mergedItem: Item? {
-		if var item = Store.shared.item(source: recordID.zoneID.source, itemId: recordID.itemId),
+		if var item = Store.shared.item(id: recordID.itemId),
 		   item.record.modificationDate ?? .distantPast < modificationDate ?? .distantFuture {
 			let isRead = self[Item.Column.isRead.rawValue] as! Bool
 			let isStarred = self[Item.Column.isStarred.rawValue] as! Bool
 			Logger.sync.info("""
-Merging (remote was newer) ✅ \(self.recordID.itemId)
+Merging (remote was newer) ✅ \(self.recordID.recordName)
 	isRead: \(item.isRead.description) ---> \(isRead.description)
 	isStarred: \(item.isStarred.description) ---> \(isStarred.description)
 """)
@@ -19,33 +19,30 @@ Merging (remote was newer) ✅ \(self.recordID.itemId)
 			item.record = self
 			return item
 		} else {
-			Logger.sync.info("Merging (remote was older) ❌ \(self.recordID.itemId)")
+			Logger.sync.info("Merging (remote was older) ❌ \(self.recordID.recordName)")
 			return nil
 		}
 	}
 }
 
 extension CKRecordZone.ID {
-	var source: URL { URL(string: zoneName.strippingPrefix(.cloudKitZoneIdPrefix))! }
+	var source: URL { URL(string: zoneName)! }
 }
 
 extension CKRecord.ID {
-	var itemId: String { recordName.strippingPrefix(.cloudKitRecordIdPrefix) }
+	var itemId: Item.ID { Int64(recordName, radix: 16)! }
 	var source: URL { zoneID.source }
 }
 
 extension Feed {
-	var zoneID: CKRecordZone.ID {
-		CKRecordZone.ID(zoneName: .cloudKitZoneIdPrefix + source.absoluteString)
-	}
-	
+	var zoneID: CKRecordZone.ID { CKRecordZone.ID(zoneName: source.absoluteString) }
 	var zone: CKRecordZone { CKRecordZone(zoneID: zoneID) }
 }
 
 extension Item {
 	var recordID: CKRecord.ID {
 		CKRecord.ID(
-			recordName: .cloudKitRecordIdPrefix + itemId,
+			recordName: String(format: "%llx", id),
 			zoneID: Feed(source: source).zoneID
 		)
 	}
@@ -57,7 +54,7 @@ extension Item {
 					unarchiver.requiresSecureCoding = true
 					return CKRecord(coder: unarchiver)
 				} else {
-					Logger.sync.fault("Clould not decode record for \(itemId)")
+					Logger.sync.fault("Clould not decode record for \(id)")
 					return .none
 				}
 			} ?? CKRecord(

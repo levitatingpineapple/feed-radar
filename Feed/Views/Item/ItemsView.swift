@@ -2,25 +2,28 @@ import SwiftUI
 import GRDBQuery
 
 struct ItemsView: View {
-	let filter: Item.Filter
-	@Query<Item.Request> var items: Array<Item>
+	let filter: Filter
+	@Query<Item.RequestIDs> var itemIds: Array<Item.ID>
 	@ObservedObject var store: Store = .shared
 	@State private var isFilterSettingsPresented = false
 	
-	init(filter: Item.Filter) {
+	init(filter: Filter) {
 		self.filter = filter
-		_items = Query(
-			Binding(get: { Item.Request(filter: filter) }, set: { _ in }),
+		_itemIds = Query(
+			Binding(
+				get: { Item.RequestIDs(filter: filter) },
+				set: { _ in }
+			),
 			in: \.store
 		)
 	}
 	
 	var body: some View {
-		List(items, selection: $store.item) { item in
-			ItemView(item: item, showsFeed: filter.feed == nil)
+		List(itemIds, id: \.self, selection: $store.itemId) { id in
+			LazyItemView(showsFeed: filter.feed == nil, id: id)
 		}
 		.refreshable { await Store.shared.fetch(feed: store.filter?.feed) }
-		.animation(.default, value: items)
+		.animation(.default, value: itemIds)
 		.listStyle(.plain)
 		.navigationTitle(filter.title)
 		.navigationBarTitleDisplayMode(.inline)
@@ -29,7 +32,7 @@ struct ItemsView: View {
 				FilterView(filter: filter, isCompact: true).bold()
 			}
 			ToolbarItem(placement: .topBarTrailing) {
-				SystemImageButton(systemName: "line.3.horizontal.decrease") {
+				SystemImageButton(systemName: "line.3.horizontal.decrease", color: .accentColor) {
 					isFilterSettingsPresented = true
 				}.popover(isPresented: $isFilterSettingsPresented) {
 					FilterSettingsView()

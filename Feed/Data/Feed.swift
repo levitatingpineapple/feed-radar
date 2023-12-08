@@ -3,7 +3,6 @@ import Combine
 import GRDB
 import GRDBQuery
 
-
 struct Feed: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord {
 	enum Column: String {
 		case source, title, icon

@@ -11,8 +11,6 @@ extension Logger {
 extension String {
 	static let cloudKitContainerIdentifier = "iCloud.levitatingpineapple.todo"
 	static let cloudKitStateSerializationKey = "cloudKitStateSerialization"
-	static let cloudKitRecordIdPrefix = "record:"
-	static let cloudKitZoneIdPrefix = "zone:"
 	
 	
 	static let loggingSubsystem: String = "com.levitatingPineapple.rss"
@@ -33,6 +31,15 @@ extension String {
 	var type: UTType? { UTType(mimeType: self) }
 	func strippingPrefix(_ prefix: String) -> String {
 		hasPrefix(prefix) ? String(dropFirst(prefix.count)) : self
+	}
+	var stableHash: Int64 {
+		Int64(
+			bitPattern: self
+				.data(using: .utf8)!
+				.reduce(into: UInt64(5381)) { result, byte in
+					result = 0x7F * (result & 0x00FFFFFFFFFFFFFF) + UInt64(byte)
+				}
+		)
 	}
 }
 

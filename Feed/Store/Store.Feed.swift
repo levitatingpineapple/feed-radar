@@ -67,7 +67,14 @@ extension Store {
 		}
 	}
 	
+	func fetch(after elapsed: TimeInterval) {
+		if Date.now.timeIntervalSince1970 - (lastFullFetch ?? .zero) > elapsed {
+			Task { await fetch() }
+		}
+	}
+	
 	func fetch(feed: Feed? = nil) async {
+		if feed == nil { lastFullFetch = Date.now.timeIntervalSince1970 }
 		await FeedFetcher.shared.fetch(
 			sources: feed.flatMap { [$0.source] } ?? self.feeds.map { $0.source },
 			workers: 3
@@ -91,7 +98,7 @@ extension Store {
 					
 					// 2. Items: Merge fetched items with synced state (isRead, isStarred) and insert
 					for var item in mapped.items {
-						if let stored = try? self.item(source: item.source, itemId: item.itemId, $0) {
+						if let stored = try? Item.filter(id: item.id).fetchOne($0) {
 							item.isRead = stored.isRead
 							item.isStarred = stored.isStarred
 							item.sync = stored.sync

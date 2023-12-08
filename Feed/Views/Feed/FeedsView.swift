@@ -9,20 +9,20 @@ struct FeedsView: View {
 	var body: some View {
 		List(selection: $store.filter) {
 			Section {
-				NavigationLink(value: Item.Filter()) {
-					FilterView(filter: Item.Filter())
+				NavigationLink(value: Filter()) {
+					FilterView(filter: Filter())
 				}
-				NavigationLink(value: Item.Filter(isRead: false)) {
-					FilterView(filter: Item.Filter(isRead: false))
+				NavigationLink(value: Filter(isRead: false)) {
+					FilterView(filter: Filter(isRead: false))
 				}
-				NavigationLink(value: Item.Filter(isStarred: true)) {
-					FilterView(filter: Item.Filter(isStarred: true))
+				NavigationLink(value: Filter(isStarred: true)) {
+					FilterView(filter: Filter(isStarred: true))
 				}
 			}
 			Section {
 				ForEach(feeds, id: \.source) { feed in
-					NavigationLink(value: Item.Filter(feed: feed)) {
-						FilterView(filter: Item.Filter(feed: feed))
+					NavigationLink(value: Filter(feed: feed)) {
+						FilterView(filter: Filter(feed: feed))
 					}
 					.swipeActions(edge: .leading, allowsFullSwipe: true) {
 						Button("Fetch") {
@@ -40,16 +40,14 @@ struct FeedsView: View {
 		}
 		.toolbar {
 			ToolbarItem {
-				SystemImageButton(systemName: "plus") {
+				SystemImageButton(systemName: "plus", color: .accentColor) {
 					isImportPresented = true
 				}.popover(isPresented: $isImportPresented) {
 					FeedImportView()
 				}
 			}
 		}
-		.refreshable {
-			await Store.shared.fetch()
-		}
+		.refreshable { await Store.shared.fetch() }
 		.navigationTitle("Feeds")
 	}
 }

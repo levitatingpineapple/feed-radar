@@ -14,22 +14,18 @@ extension Store {
 		}) ?? Array<Item>()
 	}
 	
-	func item(source: URL, itemId: String) -> Item? {
-		try? queue.write {
-			try item(source: source, itemId: itemId, $0)
-		}
+	var selectedItem: Item? {
+		itemId.flatMap { item(id: $0) }
 	}
 	
-	func item(source: URL, itemId: String, _ database: Database) throws -> Item? {
-		try Item
-			.filter(Column(Item.Column.source.rawValue) == source)
-			.filter(Column(Item.Column.itemId.rawValue) == itemId)
-			.fetchOne(database)
+	func item(id: Item.ID) -> Item? {
+		try? queue.write {
+			try Item.filter(id: id).fetchOne($0)
+		}
 	}
  
 	func update(item: Item) {
 		try? queue.write { try item.update($0) }
-		reselect(item: item)
 	}
 	
 	func toggleRead(for item: Item) {
@@ -48,17 +44,5 @@ extension Store {
 			try newItem.update($0, columns: [Item.Column.isStarred.rawValue])
 		}
 		Task { await sync.queueUpdated(item) }
-	}
-
-	
-	/// Fixes visual bug, where list item looses selection
-	/// This bug does not affect navigation
-	func reselect(item: Item?) {
-		DispatchQueue.main.async {
-			if self.item?.source == item?.source,
-			   self.item?.itemId == item?.itemId {
-				self.item = item
-			}
-		}
 	}
 }

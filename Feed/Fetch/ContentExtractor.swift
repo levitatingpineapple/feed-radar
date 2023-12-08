@@ -5,8 +5,8 @@ actor ContentExtractor {
 	private let readability = Readability()
 	
 	func extract(item: Item) async throws {
-		if let url = item.url{
-			if var fetchedItem = Store.shared.item(source: item.source, itemId: item.itemId),
+		if let url = item.url {
+			if var fetchedItem = Store.shared.item(id: item.id),
 			   fetchedItem.extracted == nil {
 				fetchedItem.extracted = try await readability.extract(from: url)
 				Store.shared.update(item: fetchedItem)

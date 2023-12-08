@@ -30,7 +30,7 @@ extension Sync: CKSyncEngineDelegate {
 				.filter { context.options.scope.contains($0) }
 		) { recordID in
 			Logger.sync.info("Dequeued \(recordID.recordName)")
-			return Store.shared.item(source: recordID.zoneID.source, itemId: recordID.itemId)?.record
+			return Store.shared.item(id: recordID.itemId)?.record
 		}
 	}
 }

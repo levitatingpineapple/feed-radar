@@ -6,22 +6,30 @@ import os.log
 import NotificationCenter
 
 class Store: ObservableObject {
+	static let shared = try! Store() // TODO: Environment object
 	let queue: DatabaseQueue
-	static let shared = try! Store() // TODO: Inject as environment object
 	let sync = Sync()
+	var lastFullFetch: TimeInterval?
 	private var bag = Set<AnyCancellable>()
 	
-	@Published var filter: Item.Filter?
-	@Published var item: Item?
+	@Published var filter: Filter?
+	@Published var itemId: Item.ID?
 	
 	init() throws {
 		var configuration = Configuration()
 		configuration.publicStatementArguments = true
 		configuration.prepareDatabase {
-			$0.trace { Logger.store.trace("\($0.description)") }
+			$0.trace {
+				if $0.description.hasPrefix("PRAGMA") ||
+				   $0.description.hasPrefix("BEGIN") ||
+				   $0.description.hasPrefix("COMMIT") {
+					return
+				}
+				Logger.store.trace("\($0.description)")
+			}
 		}
 		queue = try DatabaseQueue(
-			path: URL.documents.appendingPathComponent("rss.db").path,
+			path: URL.documents.appendingPathComponent("feeds.db").path,
 			configuration: configuration
 		)
 		try queue.write {
@@ -30,46 +38,41 @@ class Store: ObservableObject {
 			try Attachment.createTable(database: $0)
 		}
 		
-		// Persist last used filter
+		// Persist filter selection
 		filter = UserDefaults.standard
 			.data(forKey: .filterKey)
-			.flatMap { Item.Filter(rawValue: $0) }
+			.flatMap { Filter(rawValue: $0) }
 		$filter
 			.removeDuplicates()
 			.sink { UserDefaults.standard.setValue($0?.rawValue, forKey: .filterKey) }
 			.store(in: &bag)
 		
-		// Mark deselected items as read
-		$item
+		// Mark items as read as they are deselected
+		$itemId
 			.removeDuplicates()
-			.scan((Optional<Item>.none, Optional<Item>.none)) { ($0.1, $1) }
+			.scan((Optional<Item.ID>.none, Optional<Item.ID>.none)) { ($0.1, $1) }
 			.sink { (deselected, selected) in
-				if let deselected, deselected.isRead == false {
-					self.toggleRead(for: deselected)
-					self.reselect(item: selected)
-				}
+				if let deselected { self.markAsRead(id: deselected) }
 			}
 			.store(in: &bag)
 		
 		// Update unread badge
-		Item.RequestCount(filter: Item.Filter(isRead: false))
+		Item.RequestCount(filter: Filter(isRead: false))
 			.publisher(in: self)
 			.replaceError(with: .zero)
 			.sink { UNUserNotificationCenter.current().setBadgeCount($0) }
 			.store(in: &bag)
 	}
 	
-	func removeAttachments(source: URL, itemId: String? = nil) {
-		var predicate: some SQLSpecificExpressible {
-			if let itemId {
-				Attachment.Column.source.column == source &&
-				Attachment.Column.itemId.column == itemId
-			} else {
-				Attachment.Column.source.column == source
-			}
+	func markAsRead(id: Item.ID) {
+		if let item = self.item(id: id), item.isRead == false {
+			self.toggleRead(for: item)
 		}
+	}
+	
+	func removeAttachments(id: Item.ID?) {
 		try? queue.write {
-			if let attachments = try? Attachment.filter(predicate).fetchAll($0) {
+			if let attachments = try? Attachment.filter(Attachment.Column.id.column == id).fetchAll($0) {
 				attachments.forEach {
 					try? FileManager.default.removeItem(at: $0.localUrl.deletingLastPathComponent())
 					AttachhmentsFetcher.shared.tasks.removeValue(forKey: $0.url)

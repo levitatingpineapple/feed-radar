@@ -13,17 +13,17 @@ extension Mapped {
 			),
 			items: json.items.flatMap {
 				$0.compactMap { jsonItem in
-					if let itemId = jsonItem.id {
+					jsonItem.id.flatMap { id in
 						Item(
+							id: (source.absoluteString + id).stableHash,
 							source: source,
-							itemId: itemId,
+							title: jsonItem.title ?? id,
 							time: (jsonItem.dateModified ?? jsonItem.datePublished)?.timeIntervalSince1970,
-							title: jsonItem.title,
 							author: jsonItem.author?.name,
 							content: jsonItem.contentHtml ?? jsonItem.contentText,
 							url: jsonItem.url?.url
 						)
-					} else { nil }
+					}
 				}
 			} ?? Array<Item>(),
 			attachments: json.items.flatMap {
@@ -34,8 +34,7 @@ extension Mapped {
 							if let url = attachment.url?.url,
 							   let type = attachment.mimeType?.type {
 								Attachment(
-									source: source,
-									itemId: itemId,
+									id: (source.absoluteString + itemId).stableHash,
 									url: url,
 									type: type,
 									title: attachment.title

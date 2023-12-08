@@ -13,21 +13,19 @@ extension Mapped {
 			),
 			items: atom.entries.flatMap {
 				$0.compactMap { atomEntrie in
-					if let itemId = atomEntrie.id {
+					atomEntrie.id.flatMap { itemId in
 						Item(
+							id: (source.absoluteString + itemId).stableHash,
 							source: source,
-							itemId: itemId,
+							title: atomEntrie.title ?? itemId,
 							time: (atomEntrie.updated ?? atomEntrie.published)?.timeIntervalSince1970,
-							title: atomEntrie.title,
 							author: atomEntrie.authors?
 								.compactMap { $0.name?.trimmingCharacters(in: .whitespacesAndNewlines) }
 								.joined(separator: ", "),
 							content: atomEntrie.content?.value,
 							url: atomEntrie.links?.first?.attributes?.href?.url
 						)
-					} else { nil }
-					
-					
+					}
 				}
 			} ?? Array<Item>(),
 			attachments: atom.entries.flatMap {
@@ -38,8 +36,7 @@ extension Mapped {
 							if let url = mediaContent.attributes?.url?.url,
 							   let type = mediaContent.attributes?.type?.type {
 								Attachment(
-									source: source,
-									itemId: itemId,
+									id: (source.absoluteString + itemId).stableHash,
 									url: url,
 									type: type,
 									title: mediaContent.mediaTitle?.value

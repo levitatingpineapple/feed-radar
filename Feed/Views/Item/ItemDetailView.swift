@@ -1,4 +1,24 @@
 import SwiftUI
+import GRDBQuery
+
+struct ItemDeatilWrapperView: View {
+	@Query<Item.RequestSingle> var item: Item?
+	
+	init(id: Item.ID) {
+		_item = Query(
+			Binding(
+				get: { Item.RequestSingle(id: id) },
+				set: { _ in }
+			),
+			in: \.store
+		)
+	}
+	
+	var body: some View {
+		if let item { ItemDetailView(item: item) }
+	}
+}
+
 
 struct ItemDetailView: View {
 	enum Display: Int {
@@ -8,10 +28,6 @@ struct ItemDetailView: View {
 	}
 	
 	let item: Item
-	@Environment(\.colorScheme) var colorScheme
-	@Environment(\.self) var environmentValues
-	@AppStorage var display: Display
-	@AppStorage(.contentScaleKey) private var scale: Double = 1
 	
 	init(item: Item) {
 		self.item = item
@@ -20,6 +36,11 @@ struct ItemDetailView: View {
 			.displayKey(source: item.source)
 		)
 	}
+	
+	@Environment(\.colorScheme) var colorScheme
+	@Environment(\.self) var environmentValues
+	@AppStorage var display: Display
+	@AppStorage(.contentScaleKey) private var scale: Double = 1
 	
 	var displayView: some View {
 		HStack {
@@ -32,10 +53,14 @@ struct ItemDetailView: View {
 				Image(systemName: "doc.plaintext").tag(Display.extractedContent)
 				Image(systemName: "globe").tag(Display.webView)
 			}.pickerStyle(.segmented).frame(width: 108)
+			SystemImageButton(
+				systemName: item.isStarred ? "star.fill" : "star",
+				color: .orange
+			) { Store.shared.toggleStarred(for: item) }
 		}
 	}
 	
-	func contentView(body: String) -> some View {
+	func contentView(_ body: String) -> some View {
 		ContentVieweController(
 			htmlString: Html(
 				scale: scale,
@@ -43,9 +68,9 @@ struct ItemDetailView: View {
 				body: body,
 				environmentValues: environmentValues
 			).string,
-			title: item.title ?? item.itemId,
+			title: item.title,
 			url: (item.url ?? item.source),
-			request: Attachment.Request(source: item.source, itemId: item.itemId),
+			request: Attachment.Request(id: item.id),
 			scale: $scale
 		).ignoresSafeArea()
 	}
@@ -54,10 +79,10 @@ struct ItemDetailView: View {
 		VStack(spacing: .zero) {
 			switch display {
 			case .content:
-				if let content = item.content { contentView(body: content) }
+				if let content = item.content { contentView(content) }
 			case .extractedContent:
 				if let extracted = item.extracted {
-					contentView(body: extracted)
+					contentView(extracted)
 				} else {
 					HStack(spacing: 8) {
 						ProgressView()
@@ -84,11 +109,12 @@ struct ItemDetailView: View {
 
 struct SystemImageButton: View {
 	let systemName: String
+	var color: Color? = nil
 	let action: () -> Void
 	
 	var body: some View {
 		Image(systemName: systemName).resizable()
-			.foregroundColor(.accentColor)
+			.foregroundColor(color)
 			.boxed(padded: true)
 			.onTapGesture(perform: action)
 	}

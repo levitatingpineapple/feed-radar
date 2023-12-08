@@ -1,16 +1,17 @@
 import SwiftUI
+import GRDBQuery
 
 struct FilterView: View {
 	typealias TintedImage = ModifiedContent<Image, _ForegroundStyleModifier<Color>>
 	@ObservedObject var fetching: FeedFetcher = .shared
-	let filter: Item.Filter
+	let filter: Filter
 	let isCompact: Bool
 	let primaryImage: TintedImage
 	let secondaryImage: TintedImage?
 	let tertiaryImage: TintedImage?
 
 	
-	init(filter: Item.Filter, isCompact: Bool = false) {
+	init(filter: Filter, isCompact: Bool = false) {
 		self.filter = filter
 		self.isCompact = isCompact
 		
@@ -68,19 +69,26 @@ struct FilterView: View {
 		}
 	}
 	
+	func countView(filter: Filter, color: Color) -> some View {
+		CountView(
+			count: Query(
+				Item.RequestCount(filter: filter),
+				in: \.store
+			)
+		)
+		.background(color)
+		.clipShape(Capsule())
+	}
+	
 	var body: some View {
 		HStack(spacing: 8) {
 			icon
 			Text(filter.title).lineLimit(1).layoutPriority(-1)
 			if !isCompact { Spacer() }
 			if filter.feed != nil || filter.isRead == false {
-				CountView(filter: filter.unread())
-					.background(Color.accentColor.opacity(0.8))
-					.clipShape(Capsule())
+				countView(filter: filter.unread(), color: .accentColor.opacity(0.8))
 			} else if filter.isStarred == true {
-				CountView(filter: filter)
-					.background(Color.orange.opacity(0.6))
-					.clipShape(Capsule())
+				countView(filter: filter.unread(), color: .orange.opacity(0.6))
 			}
 		}
 		.contentShape(Rectangle())
@@ -96,9 +104,6 @@ struct FilterView: View {
 					Button {
 						Store.shared.markAllAsRead(feed: feed)
 					} label: { Label("Mark all as read", systemImage: "circle") }
-					Button(role: .destructive ) {
-						Store.shared.removeAttachments(source: feed.source)
-					} label: { Label("Remove attachments", systemImage: "paperclip") }
 				}
 			}
 		)

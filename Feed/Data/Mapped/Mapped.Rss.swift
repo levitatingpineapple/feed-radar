@@ -12,12 +12,12 @@ extension Mapped {
 				?? (rss.link?.url ?? source).favicon
 			),
 			items: (rss.items ?? Array<RSSFeedItem>()).compactMap { rssItem in
-				return rssItem.guid?.value.flatMap {
+				rssItem.guid?.value.flatMap { itemId in
 					Item(
+						id: (source.absoluteString + itemId).stableHash,
 						source: source,
-						itemId: $0,
+						title: rssItem.title ?? itemId,
 						time: rssItem.pubDate?.timeIntervalSince1970,
-						title: rssItem.title,
 						author: rssItem.author ?? rss.items?.first?.dublinCore?.dcCreator,
 						content: rssItem.content?.contentEncoded ?? rssItem.description,
 						url: rssItem.link?.url
@@ -30,8 +30,7 @@ extension Mapped {
 					   let url = rssItem.enclosure?.attributes?.url?.url,
 					   let type = rssItem.enclosure?.attributes?.type?.type {
 						Attachment(
-							source: source,
-							itemId: itemId,
+							id: (source.absoluteString + itemId).stableHash,
 							url: url,
 							type: type,
 							title: nil

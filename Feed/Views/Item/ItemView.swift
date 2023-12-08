@@ -1,12 +1,29 @@
 import SwiftUI
+import GRDBQuery
+
+struct LazyItemView: View {
+	@State private var showsItem: Bool = false
+	let showsFeed: Bool
+	let id: Item.ID
+	
+	var body: some View {
+		if showsItem {
+			ItemView(
+				item: Query(Item.RequestSingle(id: id), in: \.store),
+				showsFeed: showsFeed
+			)
+		} else {
+			Color.clear.onAppear { showsItem = true }
+		}
+	}
+}
 
 struct ItemView: View {
 	@ObservedObject var store: Store = .shared
-	
-	let item: Item
+	@Query<Item.RequestSingle> var item: Item?
 	let showsFeed: Bool
 	
-	var tags: some View {
+	func tags(item: Item) -> some View {
 		ZStack(alignment: .trailing) {
 			Color.clear.frame(width: 30, height: 14)
 			HStack(spacing: 4) {
@@ -26,65 +43,67 @@ struct ItemView: View {
 	}
 	
 	var body: some View {
-		ZStack {
-			NavigationLink(value: item) { EmptyView() }.opacity(.zero)
-			VStack(alignment: .leading, spacing: 8) {
-				HStack(alignment: .top) {
-					VStack(alignment: .leading) {
-						if showsFeed { FeedView(source: item.source) }
-						Text(item.title ?? item.itemId).bold()
-					}
-					Spacer()
-					tags
-				}
-				HStack {
-					if let author = item.author { Text(author).lineLimit(1) }
-					Spacer()
-					if let time = item.time {
-						if Date.now.timeIntervalSince1970 - time < (60 * 60 * 24 * 8) {
-							Text(
-								Date(timeIntervalSince1970: time),
-								format: .relative(presentation: .named)
-							)
-						} else {
-							Text(
-								Date(timeIntervalSince1970: time),
-								format: Date.FormatStyle(date: .abbreviated, time: .omitted)
-							)
+		if let item {
+			ZStack {
+				NavigationLink(value: item.id) { EmptyView() }.opacity(.zero)
+				VStack(alignment: .leading, spacing: 8) {
+					HStack(alignment: .top) {
+						VStack(alignment: .leading) {
+							if showsFeed { FeedView(source: item.source) }
+							Text(item.title).bold()
 						}
+						Spacer()
+						tags(item: item)
 					}
-				}.font(.caption).foregroundColor(.secondary)
-			}
-			.swipeActions(edge: .leading) {
-				Button {
-					Store.shared.toggleRead(for: item)
-				} label: {
-					Image(systemName: item.isRead ? "circle.fill" : "circle.slash.fill")
-				}.tint(.accentColor)
-			}
-			.swipeActions(edge: .trailing) {
-				Button {
-					Store.shared.toggleStarred(for: item)
-				} label: {
-					Image(systemName: item.isStarred ? "star.slash.fill" : "star.fill")
-				}.tint(.orange)
-			}
-			.contextMenu(
-				ContextMenu {
-					if let url = item.url {
-						Button {
-							UIPasteboard.general.url = url
-						} label: { Label("Copy Link", systemImage: "doc.on.doc") }
-						Button {
-							UIApplication.shared.open(url)
-						} label: { Label("Open in Browser", systemImage: "safari") }
-						ShareLink(item: url)
-					}
-					Button(role: .destructive ) {
-						Store.shared.removeAttachments(source: item.source, itemId: item.itemId)
-					} label: { Label("Remove attachments", systemImage: "paperclip") }
+					HStack {
+						if let author = item.author { Text(author).lineLimit(1) }
+						Spacer()
+						if let time = item.time {
+							if Date.now.timeIntervalSince1970 - time < (60 * 60 * 24 * 8) {
+								Text(
+									Date(timeIntervalSince1970: time),
+									format: .relative(presentation: .named)
+								)
+							} else {
+								Text(
+									Date(timeIntervalSince1970: time),
+									format: Date.FormatStyle(date: .abbreviated, time: .omitted)
+								)
+							}
+						}
+					}.font(.caption).foregroundColor(.secondary)
 				}
-			)
+				.swipeActions(edge: .leading) {
+					Button {
+						Store.shared.toggleRead(for: item)
+					} label: {
+						Image(systemName: item.isRead ? "circle.fill" : "circle.slash.fill")
+					}.tint(.accentColor)
+				}
+				.swipeActions(edge: .trailing) {
+					Button {
+						Store.shared.toggleStarred(for: item)
+					} label: {
+						Image(systemName: item.isStarred ? "star.slash.fill" : "star.fill")
+					}.tint(.orange)
+				}
+				.contextMenu(
+					ContextMenu {
+						if let url = item.url {
+							Button {
+								UIPasteboard.general.url = url
+							} label: { Label("Copy Link", systemImage: "doc.on.doc") }
+							Button {
+								UIApplication.shared.open(url)
+							} label: { Label("Open in Browser", systemImage: "safari") }
+							ShareLink(item: url)
+						}
+						Button(role: .destructive ) {
+							Store.shared.removeAttachments(id: item.id)
+						} label: { Label("Remove attachments", systemImage: "paperclip") }
+					}
+				)
+			}
 		}
 	}
 }
