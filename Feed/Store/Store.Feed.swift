@@ -24,7 +24,7 @@ extension Store {
 			try? queue.write { try feed.insert($0) }
 			Task { await fetch(feed: feed) }
 			if userInitiated {
-				Task { await self.sync?.queueAdded(feed) }
+				Task { await self.sync?.added(feed) }
 			}
 		}
 	}
@@ -32,7 +32,7 @@ extension Store {
 	func delete(feed: Feed, userInitiated: Bool = true) {
 		try? queue.write { let _ = try feed.delete($0) }
 		if userInitiated {
-			Task { await self.sync?.queueDeleted(feed) }
+			Task { await self.sync?.deleted(feed) }
 		}
 	}
 	
@@ -55,7 +55,7 @@ extension Store {
 			if let items = try? unread.fetchAll($0) {
 				try unread.updateAll($0, [Item.Column.isRead.column.set(to: true)])
 				Task {
-					for item in items { await sync?.queueUpdated(item) }
+					for item in items { await sync?.updated(item) }
 				}
 			}
 		}

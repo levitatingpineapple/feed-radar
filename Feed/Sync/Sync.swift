@@ -2,9 +2,9 @@ import CloudKit
 import os.log
 
 protocol SyncDelegate: Actor {
-	func queueAdded(_ feed: Feed)
-	func queueDeleted(_ feed: Feed)
-	func queueUpdated(_ item: Item)
+	func added(_ feed: Feed)
+	func deleted(_ feed: Feed)
+	func updated(_ item: Item)
 	func processOrphanedRecords(for feed: Feed)
 }
 
@@ -67,21 +67,21 @@ Merging (remote was newer) ✅ \(remote.recordID.recordName)
 // MARK: Sync Delegate
 
 extension Sync: SyncDelegate {
-	func queueAdded(_ feed: Feed) {
+	func added(_ feed: Feed) {
 		Logger.sync.info("Queue add zone: \(feed.zone)")
 		engine.state.add(
 			pendingDatabaseChanges: [ .saveZone(feed.zone) ]
 		)
 	}
 	
-	func queueDeleted(_ feed: Feed) {
+	func deleted(_ feed: Feed) {
 		Logger.sync.info("Queue delete zone: \(feed.zoneID)")
 		engine.state.add(
 			pendingDatabaseChanges: [ .deleteZone(feed.zoneID) ]
 		)
 	}
 	
-	func queueUpdated(_ item: Item) {
+	func updated(_ item: Item) {
 		Logger.sync.info("Queue record: \(item.recordID)")
 		engine.state.add(
 			pendingRecordZoneChanges: [
@@ -202,7 +202,7 @@ fileprivate extension Sync {
 				   let mergedItem = mergedItem(serverRecord) {
 					Logger.sync.error("Server record changed, merging remote changes: \(failedRecordSave.record.recordID)")
 					store.update(item: mergedItem)
-					queueUpdated(mergedItem)
+					updated(mergedItem)
 				} else {
 					Logger.sync.fault("Missing server record or local item \(failedRecordSave.record.recordID)")
 				}

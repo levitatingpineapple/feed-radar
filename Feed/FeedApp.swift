@@ -1,13 +1,12 @@
 import SwiftUI
 
+struct StoreKey: EnvironmentKey {
+	static let defaultValue = try! Store()
+}
+
 extension EnvironmentValues {
-	private struct StoreKey: EnvironmentKey {
-		static let defaultValue = try! Store()
-	}
-	
 	var store: Store {
 		get { self[StoreKey.self] }
-		set { self[StoreKey.self] = newValue }
 	}
 }
 
@@ -25,7 +24,7 @@ struct TestApp: App {
 		WindowGroup {
 			VStack {
 				Image(.rss)
-				Text("Testing")
+				Text("Running unit tests…")
 				ProgressView()
 			}
 		}
@@ -33,9 +32,9 @@ struct TestApp: App {
 }
 
 struct FeedApp: App {
-	@StateObject var store = try! Store()
+	@StateObject var navigationModel = NavigationModel(store: StoreKey.defaultValue)
 	
 	var body: some Scene {
-		WindowGroup { NavigationView().environmentObject(store) }
+		WindowGroup { NavigationView().environmentObject(navigationModel) }
 	}
 }

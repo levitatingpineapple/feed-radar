@@ -34,7 +34,7 @@ extension Store {
 			newItem.isRead.toggle()
 			try newItem.update($0, columns: [Item.Column.isRead.rawValue])
 		}
-		Task { await sync?.queueUpdated(item) }
+		Task { await sync?.updated(item) }
 	}
 	
 	func toggleStarred(for item: Item) {
@@ -43,6 +43,6 @@ extension Store {
 			newItem.isStarred.toggle()
 			try newItem.update($0, columns: [Item.Column.isStarred.rawValue])
 		}
-		Task { await sync?.queueUpdated(item) }
+		Task { await sync?.updated(item) }
 	}
 }
