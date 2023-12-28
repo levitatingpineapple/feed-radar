@@ -33,8 +33,6 @@ struct TestApp: App {
 
 struct FeedApp: App {
 	var body: some Scene {
-		WindowGroup {
-			NavigationView()
-		}
+		WindowGroup { NavigationView() }
 	}
 }

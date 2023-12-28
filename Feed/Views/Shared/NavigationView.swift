@@ -4,7 +4,7 @@ struct NavigationView: View {
 	@Environment(\.store) var store: Store
 	@Environment(\.scenePhase) var scenePhase
 	@Environment(\.horizontalSizeClass) var horizontalSizeClass
-	@ObservedObject var navigation = Navigation(store: StoreKey.defaultValue)
+	@StateObject var navigation = Navigation(store: StoreKey.defaultValue)
 	@State var navigationSplitViewVisibility: NavigationSplitViewVisibility = .automatic
 	
 	var body: some View {
