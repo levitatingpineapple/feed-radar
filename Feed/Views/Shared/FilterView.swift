@@ -8,7 +8,8 @@ struct FilterView: View {
 	let primaryImage: TintedImage
 	let secondaryImage: TintedImage?
 	let tertiaryImage: TintedImage?
-
+	
+	@EnvironmentObject var store: Store
 	
 	init(filter: Filter, isCompact: Bool = false) {
 		self.filter = filter
@@ -90,13 +91,13 @@ struct FilterView: View {
 			ContextMenu {
 				if let feed = filter.feed {
 					Button {
-						Task { await Store.shared.fetch(feed: feed) }
+						Task { await store.fetch(feed: feed) }
 					} label: { Label("Fetch", systemImage: "arrow.clockwise") }
 					Button {
 						UIPasteboard.general.url = feed.source
 					} label: { Label("Copy Link", systemImage: "doc.on.doc") }
 					Button {
-						Store.shared.markAllAsRead(feed: feed)
+						store.markAllAsRead(feed: feed)
 					} label: { Label("Mark all as read", systemImage: "circle") }
 				}
 			}

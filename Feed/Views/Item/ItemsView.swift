@@ -4,7 +4,7 @@ import GRDBQuery
 struct ItemsView: View {
 	let filter: Filter
 	@Query<Item.RequestIDs> var itemIds: Array<Item.ID>
-	@ObservedObject var store: Store = .shared
+	@EnvironmentObject var store: Store
 	@State private var isFilterSettingsPresented = false
 	
 	init(filter: Filter) {
@@ -22,7 +22,7 @@ struct ItemsView: View {
 		List(itemIds, id: \.self, selection: $store.itemId) { id in
 			LazyItemView(showsFeed: filter.feed == nil, id: id)
 		}
-		.refreshable { await Store.shared.fetch(feed: store.filter?.feed) }
+		.refreshable { await store.fetch(feed: store.filter?.feed) }
 		.animation(.default, value: itemIds)
 		.listStyle(.plain)
 		.navigationTitle(filter.title)

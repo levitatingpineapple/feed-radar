@@ -2,9 +2,10 @@ import SwiftUI
 import GRDBQuery
 
 struct LazyItemView: View {
-	@State private var showsItem: Bool = false
 	let showsFeed: Bool
 	let id: Item.ID
+	
+	@State private var showsItem: Bool = false
 	
 	var body: some View {
 		if showsItem {
@@ -19,7 +20,7 @@ struct LazyItemView: View {
 }
 
 struct ItemView: View {
-	@ObservedObject var store: Store = .shared
+	@EnvironmentObject var store: Store
 	@Query<Item.RequestSingle> var item: Item?
 	let showsFeed: Bool
 	
@@ -75,14 +76,14 @@ struct ItemView: View {
 				}
 				.swipeActions(edge: .leading) {
 					Button {
-						Store.shared.toggleRead(for: item)
+						store.toggleRead(for: item)
 					} label: {
 						Image(systemName: item.isRead ? "circle.fill" : "circle.slash.fill")
 					}.tint(.accentColor)
 				}
 				.swipeActions(edge: .trailing) {
 					Button {
-						Store.shared.toggleStarred(for: item)
+						store.toggleStarred(for: item)
 					} label: {
 						Image(systemName: item.isStarred ? "star.slash.fill" : "star.fill")
 					}.tint(.orange)
@@ -99,7 +100,7 @@ struct ItemView: View {
 							ShareLink(item: url)
 						}
 						Button(role: .destructive ) {
-							Store.shared.removeAttachments(id: item.id)
+							store.removeAttachments(id: item.id)
 						} label: { Label("Remove attachments", systemImage: "paperclip") }
 					}
 				)

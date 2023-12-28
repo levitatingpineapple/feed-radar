@@ -36,6 +36,7 @@ struct ItemDetailView: View {
 		)
 	}
 	
+	@EnvironmentObject var store: Store
 	@Environment(\.colorScheme) var colorScheme
 	@Environment(\.self) var environmentValues
 	@AppStorage var display: Display
@@ -55,7 +56,7 @@ struct ItemDetailView: View {
 			SystemImageButton(
 				systemName: item.isStarred ? "star.fill" : "star",
 				color: .orange
-			) { Store.shared.toggleStarred(for: item) }
+			) { store.toggleStarred(for: item) }
 		}
 	}
 	
@@ -87,7 +88,7 @@ struct ItemDetailView: View {
 						ProgressView()
 						Text("Extracting")
 					}.onAppear {
-						Task { try? await ContentExtractor.shared.extract(item: item) }
+						Task { try? await ContentExtractor.shared.extract(item: item, into: store) }
 					}
 				}
 			case .webView:
@@ -100,7 +101,7 @@ struct ItemDetailView: View {
 		}
 		.onChange(of: item) {
 			if display == .extractedContent {
-				Task { try? await ContentExtractor.shared.extract(item: item) }
+				Task { try? await ContentExtractor.shared.extract(item: item, into: store) }
 			}
 		}
 	}

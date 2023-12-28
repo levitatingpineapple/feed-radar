@@ -25,18 +25,19 @@ struct PlayerViewController: UIViewControllerRepresentable {
 		if let player = playerViewController.player {
 			player.replaceCurrentItem(with: nil)
 			let playerItem = AVPlayerItem(url: url)
-			if let item = Store.shared.selectedItem {
-				let title = AVMutableMetadataItem()
-				title.identifier = AVMetadataIdentifier.commonIdentifierTitle
-				title.value = item.title as NSString
-				playerItem.externalMetadata.append(title)
-				if let imageData = UserDefaults.standard.data(forKey: .iconKey(source: item.source)) {
-					let image = AVMutableMetadataItem()
-					image.identifier = .commonIdentifierArtwork
-					image.value = imageData as NSData
-					playerItem.externalMetadata.append(image)
-				}
-			}
+			// TODO: Store
+//			if let item = Store.shared.selectedItem {
+//				let title = AVMutableMetadataItem()
+//				title.identifier = AVMetadataIdentifier.commonIdentifierTitle
+//				title.value = item.title as NSString
+//				playerItem.externalMetadata.append(title)
+//				if let imageData = UserDefaults.standard.data(forKey: .iconKey(source: item.source)) {
+//					let image = AVMutableMetadataItem()
+//					image.identifier = .commonIdentifierArtwork
+//					image.value = imageData as NSData
+//					playerItem.externalMetadata.append(image)
+//				}
+//			}
 			player.replaceCurrentItem(with: playerItem)
 			Task { [weak player] in
 				if let tracks = try? await player?.currentItem?.asset.load(.tracks) {

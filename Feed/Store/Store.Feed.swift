@@ -13,12 +13,6 @@ extension Store {
 		}) ?? Array<Feed>()
 	}
 	
-	private func feed(source: URL, _ database: Database) throws -> Feed? {
-		try Feed
-			.filter(Column(Feed.Column.source.rawValue) == source)
-			.fetchOne(database)
-	}
-	
 	func add(feed: Feed, userInitiated: Bool = true) {
 		if (
 			try? queue.write {
@@ -30,7 +24,7 @@ extension Store {
 			try? queue.write { try feed.insert($0) }
 			Task { await fetch(feed: feed) }
 			if userInitiated {
-				Task { await self.sync.queueAdded(feed) }
+				Task { await self.sync?.queueAdded(feed) }
 			}
 		}
 	}
@@ -38,7 +32,7 @@ extension Store {
 	func delete(feed: Feed, userInitiated: Bool = true) {
 		try? queue.write { let _ = try feed.delete($0) }
 		if userInitiated {
-			Task { await self.sync.queueDeleted(feed) }
+			Task { await self.sync?.queueDeleted(feed) }
 		}
 	}
 	
@@ -61,7 +55,7 @@ extension Store {
 			if let items = try? unread.fetchAll($0) {
 				try unread.updateAll($0, [Item.Column.isRead.column.set(to: true)])
 				Task {
-					for item in items { await sync.queueUpdated(item) }
+					for item in items { await sync?.queueUpdated(item) }
 				}
 			}
 		}
@@ -85,7 +79,11 @@ extension Store {
 					let mapped = Mapped(feed: feed, at: source)
 					
 					// 1. Check if feed has changed. Insert and fetch it's icon
-					if mapped.feed != (try? self.feed(source: mapped.feed.source, $0)) {
+					if mapped.feed != (
+						try? Feed
+							.filter(Feed.Column.source.column == source)
+							.fetchOne($0)
+					) {
 						try? mapped.feed.insert($0)
 						Task {
 							if let iconUrl = mapped.feed.icon,
@@ -112,7 +110,7 @@ extension Store {
 					for attachment in mapped.attachments { try? attachment.insert($0) }
 					
 					// 4. Process orphaned sync records
-					Task { await self.sync.processOrphanedRecords(for: mapped.feed) }
+					Task { await self.sync?.processOrphanedRecords(for: mapped.feed) }
 				}
 			case let .failure(error):
 				Logger.store.error("Parses Error \(error)")

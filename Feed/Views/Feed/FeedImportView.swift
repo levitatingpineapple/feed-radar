@@ -4,12 +4,12 @@ struct FeedImportView: View {
 	@State var isPresented = false
 	@State var input = String()
 	@State var sources = Array<URL>()
-	
+	@EnvironmentObject var store: Store
 	@Environment(\.dismiss) var dismiss
 	
 	func add(source: URL) {
 		let feed = Feed(source: source)
-		Store.shared.add(feed: feed)
+		store.add(feed: feed)
 		sources.removeAll { $0 == source }
 	}
 	

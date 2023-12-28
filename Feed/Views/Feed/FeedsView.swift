@@ -3,7 +3,7 @@ import GRDBQuery
 
 struct FeedsView: View {
 	@Query(Feed.Request(), in: \.store) private var feeds: Array<Feed>
-	@ObservedObject var store: Store = .shared
+	@EnvironmentObject var store: Store
 	@State private var isImportPresented = false
 	
 	private func link(filter: Filter) -> some View {
@@ -22,14 +22,12 @@ struct FeedsView: View {
 					link(filter: Filter(feed: feed))
 					.swipeActions(edge: .leading, allowsFullSwipe: true) {
 						Button("Fetch") {
-							Task { await Store.shared.fetch(feed: feed) }
+							Task { await store.fetch(feed: feed) }
 						}.tint(.accentColor)
 					}
 				}
 				.onDelete {
-					$0.forEach {
-						Store.shared.delete(feed: feeds[$0])
-					}
+					$0.forEach { store.delete(feed: feeds[$0]) }
 				}
 			}
 		}
@@ -42,7 +40,7 @@ struct FeedsView: View {
 				}
 			}
 		}
-		.refreshable { await Store.shared.fetch() }
+		.refreshable { await store.fetch() }
 		.navigationTitle("Feeds")
 	}
 }

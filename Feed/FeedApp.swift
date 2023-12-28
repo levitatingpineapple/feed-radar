@@ -2,7 +2,7 @@ import SwiftUI
 
 extension EnvironmentValues {
 	private struct StoreKey: EnvironmentKey {
-		static var defaultValue: Store { .shared }
+		static let defaultValue = try! Store()
 	}
 	
 	var store: Store {
@@ -11,9 +11,31 @@ extension EnvironmentValues {
 	}
 }
 
-@main 
-struct FeedApp: App {
+@main
+struct AppLauncher {
+	static func main() throws {
+		NSClassFromString("XCTestCase") == nil
+			? FeedApp.main()
+			: TestApp.main()
+	}
+}
+
+struct TestApp: App {
 	var body: some Scene {
-		WindowGroup { NavigationView() }
+		WindowGroup {
+			VStack {
+				Image(.rss)
+				Text("Testing")
+				ProgressView()
+			}
+		}
+	}
+}
+
+struct FeedApp: App {
+	@StateObject var store = try! Store()
+	
+	var body: some Scene {
+		WindowGroup { NavigationView().environmentObject(store) }
 	}
 }

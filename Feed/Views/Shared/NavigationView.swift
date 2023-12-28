@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct NavigationView: View {
-	@ObservedObject var store: Store = .shared
+	@EnvironmentObject var store: Store
 	@Environment(\.horizontalSizeClass) var horizontalSizeClass
 	@Environment(\.scenePhase) var scenePhase
 	@State var navigationSplitViewVisibility: NavigationSplitViewVisibility = .automatic

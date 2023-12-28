@@ -5,17 +5,29 @@ import GRDB
 import os.log
 import NotificationCenter
 
-class Store: ObservableObject {
-	static let shared = try! Store() // TODO: Environment object
+protocol StoreDelegate {
+	var feeds: Array<Feed> { get }
+	func fetch(feed: Feed?) async
+	func add(feed: Feed, userInitiated: Bool)
+	func delete(feed: Feed, userInitiated: Bool)
+	func deleteAllFeeds()
+	
+	var touchedItems: Array<Item> { get }
+	func item(id: Item.ID) -> Item?
+	func update(item: Item)
+}
+
+final class Store: ObservableObject, StoreDelegate {
+//	static let shared = try! Store() // TODO: Environment object
 	let queue: DatabaseQueue
-	let sync = Sync()
+	var sync: SyncDelegate?
 	var lastFullFetch: TimeInterval?
 	private var bag = Set<AnyCancellable>()
 	
 	@Published var filter: Filter?
 	@Published var itemId: Item.ID?
 	
-	init() throws {
+	init(testName: String? = nil) throws {
 		var configuration = Configuration()
 		configuration.publicStatementArguments = true
 		configuration.prepareDatabase {
@@ -28,10 +40,17 @@ class Store: ObservableObject {
 				Logger.store.trace("\($0.description)")
 			}
 		}
-		queue = try DatabaseQueue(
-			path: URL.documents.appendingPathComponent("feeds.db").path,
-			configuration: configuration
-		)
+		
+		if let testName {
+			queue = try DatabaseQueue(named: testName, configuration: configuration)
+		} else {
+			queue = try DatabaseQueue(
+				path: URL.documents.appendingPathComponent("feeds.db").path,
+				configuration: configuration
+			)
+			sync = Sync(store: self)
+		}
+		
 		try queue.write {
 			try Feed.createTable(database: $0)
 			try Item.createTable(database: $0)

@@ -3,7 +3,7 @@ import GRDBQuery
 
 struct FilterSettingsView: View {
 	@Query(Feed.Request(), in: \.store) private var feeds: Array<Feed>
-	@ObservedObject var store: Store = .shared
+	@EnvironmentObject var store: Store
 	@Environment(\.dismiss) var dismiss
 	
 	
