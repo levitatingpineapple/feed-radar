@@ -3,7 +3,8 @@ import GRDBQuery
 
 struct FeedsView: View {
 	@Query(Feed.Request(), in: \.store) private var feeds: Array<Feed>
-	@EnvironmentObject var store: Store
+	@Environment(\.store) var store: Store
+	@EnvironmentObject var navigation: Navigation
 	@State private var isImportPresented = false
 	
 	private func link(filter: Filter) -> some View {
@@ -11,7 +12,7 @@ struct FeedsView: View {
 	}
 	
 	var body: some View {
-		List(selection: $store.filter) {
+		List(selection: $navigation.filter) {
 			Section {
 				link(filter: Filter())
 				link(filter: Filter(isRead: false))

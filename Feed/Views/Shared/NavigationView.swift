@@ -1,20 +1,21 @@
 import SwiftUI
 
 struct NavigationView: View {
-	@EnvironmentObject var store: Store
-	@Environment(\.horizontalSizeClass) var horizontalSizeClass
+	@Environment(\.store) var store: Store
 	@Environment(\.scenePhase) var scenePhase
+	@Environment(\.horizontalSizeClass) var horizontalSizeClass
+	@ObservedObject var navigation = Navigation(store: StoreKey.defaultValue)
 	@State var navigationSplitViewVisibility: NavigationSplitViewVisibility = .automatic
 	
 	var body: some View {
 		NavigationSplitView(columnVisibility: $navigationSplitViewVisibility) {
 			FeedsView()
 		} content: {
-			if let filter = store.filter {
+			if let filter = navigation.filter {
 				ItemsView(filter: filter)
 			}
 		} detail: {
-			if let id = store.itemId {
+			if let id = navigation.itemId {
 				ItemDeatilWrapperView(id: id)
 			}
 		}
@@ -27,11 +28,12 @@ struct NavigationView: View {
 				.current()
 				.requestAuthorization(options: .badge)
 		}
+		.environmentObject(navigation)
 		.onChange(of: scenePhase) {
 			if scenePhase == .active {
 				store.fetch(after: 300)
 			} else {
-				if let id = store.itemId { store.markAsRead(id: id) }
+				if let id = navigation.itemId { store.markAsRead(id: id) }
 			}
 		}
 	}

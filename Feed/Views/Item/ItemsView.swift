@@ -4,8 +4,9 @@ import GRDBQuery
 struct ItemsView: View {
 	let filter: Filter
 	@Query<Item.RequestIDs> var itemIds: Array<Item.ID>
-	@EnvironmentObject var store: Store
-	@State private var isFilterSettingsPresented = false
+	@State var isFilterSettingsPresented = false
+	@Environment(\.store) var store: Store
+	@EnvironmentObject var navigation: Navigation
 	
 	init(filter: Filter) {
 		self.filter = filter
@@ -19,10 +20,10 @@ struct ItemsView: View {
 	}
 	
 	var body: some View {
-		List(itemIds, id: \.self, selection: $store.itemId) { id in
+		List(itemIds, id: \.self, selection: $navigation.itemId) { id in
 			LazyItemView(showsFeed: filter.feed == nil, id: id)
 		}
-		.refreshable { await store.fetch(feed: store.filter?.feed) }
+		.refreshable { await store.fetch(feed: navigation.filter?.feed) }
 		.animation(.default, value: itemIds)
 		.listStyle(.plain)
 		.navigationTitle(filter.title)

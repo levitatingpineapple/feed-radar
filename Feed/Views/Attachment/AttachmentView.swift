@@ -4,11 +4,12 @@ struct AttachmentView<Selector: View>: View {
 	let attachment: Attachment
 	let invalidateSize: () -> Void
 	@State private var aspectRatio: Double = 16 / 9
-	@ObservedObject var downloads: AttachhmentsFetcher = .shared
+	@Environment(\.store) var store: Store
+	@EnvironmentObject var navigation: Navigation
 	@ViewBuilder var selector: () -> Selector
 	
 	var url: URL {
-		if case let .completed(url) = downloads.tasks[attachment.url] {
+		if case let .completed(url) = Attachments.shared.tasks[attachment.url] {
 			url
 		} else {
 			attachment.url
@@ -40,9 +41,13 @@ struct AttachmentView<Selector: View>: View {
 					}
 				} else if attachment.type.conforms(to: .audiovisualContent) {
 					VStack {
-						PlayerViewController(url: url, aspectRatio: $aspectRatio)
-							.aspectRatio(aspectRatio, contentMode: .fit)
-							.onChange(of: aspectRatio) { invalidateSize() }
+						PlayerViewController(
+							url: url,
+							item: navigation.itemId.flatMap { store.item(id: $0) },
+							aspectRatio: $aspectRatio
+						)
+						.aspectRatio(aspectRatio, contentMode: .fit)
+						.onChange(of: aspectRatio) { invalidateSize() }
 					}
 					
 				}
@@ -53,22 +58,22 @@ struct AttachmentView<Selector: View>: View {
 		}
 		.background(Color(.secondarySystemBackground))
 		.cornerRadius(16)
-		.onAppear { checkLocalFile() }
+		.onAppear { Attachments.shared.load(local: attachment) }
 		.onChange(of: attachment) {
-			checkLocalFile()
 			aspectRatio = 16 / 9
+			Attachments.shared.load(local: attachment)
 		}
 	}
 	
-	private func checkLocalFile() {
-		Task {
-			if FileManager.default.fileExists(
-				atPath: attachment.localUrl.path
-			) && downloads.tasks[attachment.url] == nil {
-				DispatchQueue.main.async {
-					downloads.tasks[attachment.url] = .completed(attachment.localUrl)
-				}
-			}
-		}
-	}
+//	private func checkLocalFile() {
+//		Task {
+//			if FileManager.default.fileExists(
+//				atPath: attachment.localUrl.path
+//			) && attachments.tasks[attachment.url] == nil {
+//				DispatchQueue.main.async {
+//					attachments.tasks[attachment.url] = .completed(attachment.localUrl)
+//				}
+//			}
+//		}
+//	}
 }

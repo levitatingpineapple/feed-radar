@@ -3,6 +3,7 @@ import AVKit
 
 struct PlayerViewController: UIViewControllerRepresentable {
 	let url: URL
+	let item: Item?
 	@Binding var aspectRatio: Double
 	
 	func makeUIViewController(context: Context) -> AVPlayerViewController {
@@ -26,18 +27,18 @@ struct PlayerViewController: UIViewControllerRepresentable {
 			player.replaceCurrentItem(with: nil)
 			let playerItem = AVPlayerItem(url: url)
 			// TODO: Store
-//			if let item = Store.shared.selectedItem {
-//				let title = AVMutableMetadataItem()
-//				title.identifier = AVMetadataIdentifier.commonIdentifierTitle
-//				title.value = item.title as NSString
-//				playerItem.externalMetadata.append(title)
-//				if let imageData = UserDefaults.standard.data(forKey: .iconKey(source: item.source)) {
-//					let image = AVMutableMetadataItem()
-//					image.identifier = .commonIdentifierArtwork
-//					image.value = imageData as NSData
-//					playerItem.externalMetadata.append(image)
-//				}
-//			}
+			if let item {
+				let title = AVMutableMetadataItem()
+				title.identifier = AVMetadataIdentifier.commonIdentifierTitle
+				title.value = item.title as NSString
+				playerItem.externalMetadata.append(title)
+				if let imageData = UserDefaults.standard.data(forKey: .iconKey(source: item.source)) {
+					let image = AVMutableMetadataItem()
+					image.identifier = .commonIdentifierArtwork
+					image.value = imageData as NSData
+					playerItem.externalMetadata.append(image)
+				}
+			}
 			player.replaceCurrentItem(with: playerItem)
 			Task { [weak player] in
 				if let tracks = try? await player?.currentItem?.asset.load(.tracks) {

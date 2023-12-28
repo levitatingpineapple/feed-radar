@@ -3,7 +3,7 @@ import os.log
 import Combine
 
 class FeedFetcher {
-	static let shared = FeedFetcher() // TODO: Inject as an environment object
+	static let shared = FeedFetcher()
 	private var loadingSubjects = Dictionary<URL, CurrentValueSubject<Bool, Never>>()
 	
 	func isLoading(source: URL) -> CurrentValueSubject<Bool, Never> {

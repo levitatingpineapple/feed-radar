@@ -20,7 +20,7 @@ struct LazyItemView: View {
 }
 
 struct ItemView: View {
-	@EnvironmentObject var store: Store
+	@Environment(\.store) var store: Store
 	@Query<Item.RequestSingle> var item: Item?
 	let showsFeed: Bool
 	
@@ -100,7 +100,9 @@ struct ItemView: View {
 							ShareLink(item: url)
 						}
 						Button(role: .destructive ) {
-							store.removeAttachments(id: item.id)
+							store.attachments(id: item.id)?.forEach {
+								Attachments.shared.remove(local: $0)
+							}
 						} label: { Label("Remove attachments", systemImage: "paperclip") }
 					}
 				)

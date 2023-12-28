@@ -4,7 +4,7 @@ struct FeedImportView: View {
 	@State var isPresented = false
 	@State var input = String()
 	@State var sources = Array<URL>()
-	@EnvironmentObject var store: Store
+	@Environment(\.store) var store: Store
 	@Environment(\.dismiss) var dismiss
 	
 	func add(source: URL) {

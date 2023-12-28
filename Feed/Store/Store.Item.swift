@@ -14,10 +14,6 @@ extension Store {
 		}) ?? Array<Item>()
 	}
 	
-	var selectedItem: Item? {
-		itemId.flatMap { item(id: $0) }
-	}
-	
 	func item(id: Item.ID) -> Item? {
 		try? queue.write {
 			try Item.filter(id: id).fetchOne($0)
@@ -44,5 +40,19 @@ extension Store {
 			try newItem.update($0, columns: [Item.Column.isStarred.rawValue])
 		}
 		Task { await sync?.updated(item) }
+	}
+	
+	func markAsRead(id: Item.ID) {
+		if let item = self.item(id: id), item.isRead == false {
+			self.toggleRead(for: item)
+		}
+	}
+	
+	func attachments(id: Item.ID) -> Array<Attachment>? {
+		try? queue.write {
+			try Attachment
+				.filter(Attachment.Column.id.column == id)
+				.fetchAll($0)
+		}
 	}
 }

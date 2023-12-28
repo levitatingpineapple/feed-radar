@@ -1,8 +1,7 @@
 import SwiftUI
 
-class AttachhmentsFetcher: ObservableObject {
-	static let shared = AttachhmentsFetcher() // TODO: Inject as an environment object
-	
+class Attachments: ObservableObject {
+	static let shared = Attachments()
 	@Published var tasks = Dictionary<URL, Task>()
 	
 	func download(attachment: Attachment) {
@@ -34,9 +33,22 @@ class AttachhmentsFetcher: ObservableObject {
 		}
 		dataTask.resume()
 	}
+	
+	func load(local attachment: Attachment) {
+		if FileManager.default.fileExists(atPath: attachment.localUrl.path)
+		   && tasks[attachment.url] == nil {
+			tasks[attachment.url] = .completed(attachment.localUrl)
+		}
+	}
+	
+	func remove(local attachment: Attachment) {
+		tasks.removeValue(forKey: attachment.url)
+		try? FileManager.default
+			.removeItem(at: attachment.localUrl.deletingLastPathComponent())
+	}
 }
 
-extension AttachhmentsFetcher {
+extension Attachments {
 	enum Task: Equatable {
 		case progress(Double)
 		case completed(URL)

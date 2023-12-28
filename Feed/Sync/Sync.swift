@@ -9,7 +9,7 @@ protocol SyncDelegate: Actor {
 }
 
 final actor Sync {
-	fileprivate let store: StoreDelegate
+	fileprivate let store: Store
 	fileprivate var engine: CKSyncEngine!
 	fileprivate var orphanedRecords = Set<CKRecord>()
 	var stateSerialization: CKSyncEngine.State.Serialization? {

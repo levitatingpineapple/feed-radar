@@ -78,7 +78,7 @@ extension Store {
 				try? queue.write {
 					let mapped = Mapped(feed: feed, at: source)
 					
-					// 1. Check if feed has changed. Insert and fetch it's icon
+					// 1. If feed has changed, insert and fetch it's icon
 					if mapped.feed != (
 						try? Feed
 							.filter(Feed.Column.source.column == source)
@@ -94,7 +94,7 @@ extension Store {
 						}
 					}
 					
-					// 2. Items: Merge fetched items with synced state (isRead, isStarred) and insert
+					// 2. Merge fetched items with synced state (isRead, isStarred) and insert
 					for var item in mapped.items {
 						if let stored = try? Item.filter(id: item.id).fetchOne($0) {
 							item.isRead = stored.isRead

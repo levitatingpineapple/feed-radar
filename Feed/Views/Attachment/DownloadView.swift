@@ -6,12 +6,12 @@ import CryptoKit
 // TODO: Add retry
 struct DownloadView: View {
 	let attachment: Attachment
-	@ObservedObject var downloads: AttachhmentsFetcher = .shared
+	@ObservedObject var attachments: Attachments = .shared
 	@State private var quickLook: URL?
 
 	var body: some View {
 		Group {
-			if let download = downloads.tasks[attachment.url] {
+			if let download = attachments.tasks[attachment.url] {
 				switch download {
 				case let .progress(progress):
 					CircularProgressView(width: 24 / 10, progress: progress)
@@ -27,7 +27,7 @@ struct DownloadView: View {
 				}
 			} else {
 				Button {
-					AttachhmentsFetcher.shared.download(attachment: attachment)
+					attachments.download(attachment: attachment)
 				} label: {
 					Image(systemName: "arrow.down.circle").resizable().scaledToFit()
 				}

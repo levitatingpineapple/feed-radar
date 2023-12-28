@@ -32,9 +32,9 @@ struct TestApp: App {
 }
 
 struct FeedApp: App {
-	@StateObject var navigationModel = NavigationModel(store: StoreKey.defaultValue)
-	
 	var body: some Scene {
-		WindowGroup { NavigationView().environmentObject(navigationModel) }
+		WindowGroup {
+			NavigationView()
+		}
 	}
 }

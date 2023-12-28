@@ -36,7 +36,7 @@ struct ItemDetailView: View {
 		)
 	}
 	
-	@EnvironmentObject var store: Store
+	@Environment(\.store) var store: Store
 	@Environment(\.colorScheme) var colorScheme
 	@Environment(\.self) var environmentValues
 	@AppStorage var display: Display

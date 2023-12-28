@@ -1,0 +1,30 @@
+{
+	"version": "https://jsonfeed.org/version/1.1",
+	"title": "My Example Feed",
+	"home_page_url": "https://example.org/",
+	"feed_url": "https://example.org/feed.json",
+	"items": [
+		{
+			"id": "0",
+			"content_html": "<p>First Item has HTML Content</p>",
+			"url": "https://example.org/initial-post",
+			"attachments": [
+				{
+					"url": "https://example.org/initial-post/attachment",
+					"title": "An Attachment",
+					"mime_type": "image/jpeg",
+				},
+				{
+					"url": "https://example.org/initial-post/attachment2",
+					"title": "Another Attachment",
+					"mime_type": "image/jpeg",
+				}
+			]
+		},
+		{
+			"id": "1",
+			"content_text": "Second Item has plain text content",
+			"url": "https://example.org/second-item"
+		}
+	]
+}

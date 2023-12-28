@@ -9,7 +9,7 @@ struct FilterView: View {
 	let secondaryImage: TintedImage?
 	let tertiaryImage: TintedImage?
 	
-	@EnvironmentObject var store: Store
+	@Environment(\.store) var store: Store
 	
 	init(filter: Filter, isCompact: Bool = false) {
 		self.filter = filter
