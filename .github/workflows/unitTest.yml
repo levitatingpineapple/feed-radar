@@ -18,6 +18,8 @@ jobs:
         run: |
           brew install xcbeautify
       - name: Build and Test
+        env:
+          GIT_SSH_COMMAND: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
         run: |
           DEVICE=`xcrun xctrace list devices | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//"`
           echo $device
