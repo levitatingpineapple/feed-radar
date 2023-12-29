@@ -19,6 +19,6 @@ jobs:
           brew install xcbeautify
       - name: Build and Test
         run: |
-          device=`xcrun xctrace list devices | grep -oE 'iPhone.*?[^\(]+' | head -1`
+          DEVICE=`xcrun xctrace list devices | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//"`
           echo $device
           xcodebuild test -scheme "Feed" -destination "platform=iOS Simulator,name=$DEVICE" | xcbeautify
