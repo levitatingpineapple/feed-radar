@@ -1,4 +1,4 @@
 [submodule "Readability"]
 	path = Readability
-	url = git@github.com:mozilla/readability.git
+	url = https://github.com/mozilla/readability.git
 	branch = main
