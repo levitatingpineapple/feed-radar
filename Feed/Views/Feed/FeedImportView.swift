@@ -9,7 +9,7 @@ struct FeedImportView: View {
 	
 	func add(source: URL) {
 		let feed = Feed(source: source)
-		store.add(feed: feed)
+		Task { await store.add(feed: feed) }
 		sources.removeAll { $0 == source }
 	}
 	

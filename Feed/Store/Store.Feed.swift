@@ -13,18 +13,18 @@ extension Store {
 		}) ?? Array<Feed>()
 	}
 	
-	func add(feed: Feed, userInitiated: Bool = true) {
-		if (
+	func add(feed: Feed, userInitiated: Bool = true) async {
+		if await (
 			try? queue.write {
 				try Feed
 					.filter(Column(Item.Column.source.rawValue) == feed.source)
 					.isEmpty($0)
 			}
 		) ?? true {
-			try? queue.write { try feed.insert($0) }
-			Task { await fetch(feed: feed) }
+			try? await queue.write { try feed.insert($0) }
+			await fetch(feed: feed)
 			if userInitiated {
-				Task { await self.sync?.added(feed) }
+				await self.sync?.added(feed)
 			}
 		}
 	}

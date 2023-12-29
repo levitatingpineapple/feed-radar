@@ -13,8 +13,7 @@ final class FeedTests: XCTestCase {
 	}
 	
 	override func setUp() async throws {
-		store.add(feed: Feed(source: source))
-		try await Task.sleep(nanoseconds: 100_000_000) // Wait for the fetch to finish
+		await store.add(feed: Feed(source: source))
 	}
 	
 	func testFeeds() {
@@ -48,9 +47,4 @@ final class FeedTests: XCTestCase {
 	func testAttachments() {
 		assert(store.attachments(id: item.id)?.count == 2)
 	}
-	
-	func testDeleteAttachments() {
-		
-	}
 }
-

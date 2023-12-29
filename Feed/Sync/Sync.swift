@@ -162,7 +162,7 @@ fileprivate extension Sync {
 	func fetchedDatabaseChanges(_ fetchedDatabaseChanges: CKSyncEngine.Event.FetchedDatabaseChanges) {
 		for modification in fetchedDatabaseChanges.modifications {
 			Logger.sync.info("New zone added: \(modification.zoneID)")
-			store.add(feed: Feed(source: modification.zoneID.source), userInitiated: false)
+			Task { await store.add(feed: Feed(source: modification.zoneID.source), userInitiated: false) }
 		}
 		for deletion in fetchedDatabaseChanges.deletions {
 			Logger.sync.info("Received zone deletion: \(deletion.zoneID)")
