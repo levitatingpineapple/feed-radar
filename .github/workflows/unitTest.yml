@@ -1,23 +1,25 @@
 name: iOS starter workflow
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+	push:
+		branches: [ "main" ]
+	pull_request:
+		branches: [ "main" ]
 
 jobs:
-  build:
-    name: Build and Test default scheme using any available iPhone simulator
-    runs-on: macos-13
+	build:
+		name: Build and Test default scheme using any available iPhone simulator
+		runs-on: macos-13
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Environment
-        run: |
-          brew install xcbeautify
-      - name: Build and Test
-        run: |
-          xcrun xctrace list devices
-          xcodebuild test -scheme "Feed" -destination "platform=iOS Simulator,name=iPhone 14,OS=17.2" | xcbeautify
+		steps:
+			- name: Checkout
+				uses: actions/checkout@v3
+			 #Ensure the xcode version is available		
+			- name: List Xcode installations
+			run: sudo ls -1 /Applications | grep "Xcode"
+			- name: Select Xcode 15.1
+				run: sudo xcode-select -s /Applications/Xcode_15.1.app/Contents/Developer
+			- name: Build and Test
+				run: |
+					xcrun xctrace list devices
+					xcodebuild test -scheme "Feed" -destination "platform=iOS Simulator,name=iPhone 14,OS=17.2" | xcbeautify
