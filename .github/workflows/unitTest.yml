@@ -19,4 +19,4 @@ jobs:
           brew install xcbeautify
       - name: Build and Test
         run: |
-          xcodebuild test -scheme "Feed" -destination "platform=iOS Simulator,name=iPhone 14,OS=17.2" | xcbeautify
+          xcrun xctrace list devices
