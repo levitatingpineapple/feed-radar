@@ -9,11 +9,14 @@ on:
 jobs:
   build:
     name: Build and Test default scheme using any available iPhone simulator
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Setup Environment
+        run: |
+          brew install xcbeautify
       - name: Build and Test
         run: |
-          xcrun xctrace list devices
+          xcodebuild test -scheme "Feed" -destination "platform=iOS Simulator,name=iPhone 14,OS=17.2" | xcbeautify
