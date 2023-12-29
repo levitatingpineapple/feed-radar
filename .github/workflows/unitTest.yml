@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build and Test default scheme using any available iPhone simulator
-    runs-on: macos-latest
+    runs-on: macos-13
 
     steps:
       - name: Checkout
@@ -20,3 +20,4 @@ jobs:
       - name: Build and Test
         run: |
           xcrun xctrace list devices
+          xcodebuild test -scheme "Feed" -destination "platform=iOS Simulator,name=iPhone 14,OS=17.2" | xcbeautify
