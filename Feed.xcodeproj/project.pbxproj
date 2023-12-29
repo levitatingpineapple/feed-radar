@@ -40,6 +40,9 @@
 		CEB836392B20086A00480E39 /* Store.Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB836382B20086A00480E39 /* Store.Item.swift */; };
 		CED3B25F2B20D2E9008D9C7E /* Readability.js in Resources */ = {isa = PBXBuildFile; fileRef = CED3B25E2B20D2E9008D9C7E /* Readability.js */; };
 		CED4617C2B3DA56C00AA8B96 /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4617B2B3DA56C00AA8B96 /* Navigation.swift */; };
+		CED461802B3E55AA00AA8B96 /* FeedKit in Frameworks */ = {isa = PBXBuildFile; productRef = CED4617F2B3E55AA00AA8B96 /* FeedKit */; };
+		CED461832B3E55E900AA8B96 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CED461822B3E55E900AA8B96 /* GRDB */; };
+		CED461862B3E561F00AA8B96 /* GRDBQuery in Frameworks */ = {isa = PBXBuildFile; productRef = CED461852B3E561F00AA8B96 /* GRDBQuery */; };
 		CEDEC5CD2B0650F700D83636 /* FeedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5CC2B0650F700D83636 /* FeedApp.swift */; };
 		CEDEC5D32B0650F800D83636 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDEC5D22B0650F800D83636 /* Assets.xcassets */; };
 		CEDEC5E12B065DB200D83636 /* Mapped.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5E02B065DB200D83636 /* Mapped.swift */; };
@@ -49,9 +52,6 @@
 		CEDFBB282B1D0BE9009607BC /* FilterSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDFBB272B1D0BE9009607BC /* FilterSettingsView.swift */; };
 		CEE41B412B0833C1005E0289 /* FeedImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE41B402B0833C1005E0289 /* FeedImportView.swift */; };
 		CEED7B8A2B0B9AB2004B29C6 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEED7B892B0B9AB2004B29C6 /* Store.swift */; };
-		CEED7B952B0B9E65004B29C6 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CEED7B942B0B9E65004B29C6 /* GRDB */; };
-		CEED7B982B0B9E98004B29C6 /* FeedKit in Frameworks */ = {isa = PBXBuildFile; productRef = CEED7B972B0B9E98004B29C6 /* FeedKit */; };
-		CEED7B9B2B0B9EAE004B29C6 /* GRDBQuery in Frameworks */ = {isa = PBXBuildFile; productRef = CEED7B9A2B0B9EAE004B29C6 /* GRDBQuery */; };
 		CEFEC7C62B0AF42200FF8728 /* AttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C52B0AF42200FF8728 /* AttachmentsView.swift */; };
 		CEFEC7C82B0AF43E00FF8728 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C72B0AF43E00FF8728 /* ContentViewController.swift */; };
 /* End PBXBuildFile section */
@@ -129,9 +129,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEED7B952B0B9E65004B29C6 /* GRDB in Frameworks */,
-				CEED7B982B0B9E98004B29C6 /* FeedKit in Frameworks */,
-				CEED7B9B2B0B9EAE004B29C6 /* GRDBQuery in Frameworks */,
+				CED461832B3E55E900AA8B96 /* GRDB in Frameworks */,
+				CED461802B3E55AA00AA8B96 /* FeedKit in Frameworks */,
+				CED461862B3E561F00AA8B96 /* GRDBQuery in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -363,9 +363,9 @@
 			);
 			name = Feed;
 			packageProductDependencies = (
-				CEED7B942B0B9E65004B29C6 /* GRDB */,
-				CEED7B972B0B9E98004B29C6 /* FeedKit */,
-				CEED7B9A2B0B9EAE004B29C6 /* GRDBQuery */,
+				CED4617F2B3E55AA00AA8B96 /* FeedKit */,
+				CED461822B3E55E900AA8B96 /* GRDB */,
+				CED461852B3E561F00AA8B96 /* GRDBQuery */,
 			);
 			productName = Rss;
 			productReference = CEDEC5C92B0650F700D83636 /* Feed.app */;
@@ -400,9 +400,9 @@
 			);
 			mainGroup = CEDEC5C02B0650F700D83636;
 			packageReferences = (
-				CEED7B932B0B9E65004B29C6 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
-				CEED7B962B0B9E98004B29C6 /* XCRemoteSwiftPackageReference "FeedKit" */,
-				CEED7B992B0B9EAE004B29C6 /* XCRemoteSwiftPackageReference "GRDBQuery" */,
+				CED4617E2B3E55AA00AA8B96 /* XCRemoteSwiftPackageReference "FeedKit" */,
+				CED461812B3E55E900AA8B96 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+				CED461842B3E561F00AA8B96 /* XCRemoteSwiftPackageReference "GRDBQuery" */,
 			);
 			productRefGroup = CEDEC5CA2B0650F700D83636 /* Products */;
 			projectDirPath = "";
@@ -790,46 +790,46 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CEED7B932B0B9E65004B29C6 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+		CED4617E2B3E55AA00AA8B96 /* XCRemoteSwiftPackageReference "FeedKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:groue/GRDB.swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.21.0;
-			};
-		};
-		CEED7B962B0B9E98004B29C6 /* XCRemoteSwiftPackageReference "FeedKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:nmdias/FeedKit.git";
+			repositoryURL = "https://github.com/nmdias/FeedKit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 9.1.2;
 			};
 		};
-		CEED7B992B0B9EAE004B29C6 /* XCRemoteSwiftPackageReference "GRDBQuery" */ = {
+		CED461812B3E55E900AA8B96 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:groue/GRDBQuery.git";
+			repositoryURL = "https://github.com/groue/GRDB.swift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.7.0;
+				minimumVersion = 6.0.0;
+			};
+		};
+		CED461842B3E561F00AA8B96 /* XCRemoteSwiftPackageReference "GRDBQuery" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDBQuery.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.8.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CEED7B942B0B9E65004B29C6 /* GRDB */ = {
+		CED4617F2B3E55AA00AA8B96 /* FeedKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CEED7B932B0B9E65004B29C6 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
-			productName = GRDB;
-		};
-		CEED7B972B0B9E98004B29C6 /* FeedKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEED7B962B0B9E98004B29C6 /* XCRemoteSwiftPackageReference "FeedKit" */;
+			package = CED4617E2B3E55AA00AA8B96 /* XCRemoteSwiftPackageReference "FeedKit" */;
 			productName = FeedKit;
 		};
-		CEED7B9A2B0B9EAE004B29C6 /* GRDBQuery */ = {
+		CED461822B3E55E900AA8B96 /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CEED7B992B0B9EAE004B29C6 /* XCRemoteSwiftPackageReference "GRDBQuery" */;
+			package = CED461812B3E55E900AA8B96 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		CED461852B3E561F00AA8B96 /* GRDBQuery */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CED461842B3E561F00AA8B96 /* XCRemoteSwiftPackageReference "GRDBQuery" */;
 			productName = GRDBQuery;
 		};
 /* End XCSwiftPackageProductDependency section */
