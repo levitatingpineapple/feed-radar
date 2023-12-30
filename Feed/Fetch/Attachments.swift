@@ -4,6 +4,7 @@ class Attachments: ObservableObject {
 	static let shared = Attachments()
 	@Published var tasks = Dictionary<URL, Task>()
 	
+	/// Downloads an attachment to user's documents directory.
 	func download(attachment: Attachment) {
 		if tasks.keys.contains(attachment.url) { return }
 		self.tasks[attachment.url] = .progress(.zero)

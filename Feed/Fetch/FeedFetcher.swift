@@ -2,10 +2,23 @@ import Foundation
 import os.log
 import Combine
 
+
+/// Handles feed fetching state and order.
+///
+/// # UI Optimization
+/// [Navigation](Navigation.swift#L8)
+/// ### Another
 class FeedFetcher {
+	
+	/// Global instance
 	static let shared = FeedFetcher()
+	
 	private var loadingSubjects = Dictionary<URL, CurrentValueSubject<Bool, Never>>()
 	
+	/// Returns a publisher that emits download status for a given feed.
+	///
+	/// - Parameter source: Source URL of the feed
+	/// - Returns: Dwnload state publisher
 	func isLoading(source: URL) -> CurrentValueSubject<Bool, Never> {
 		if let publisher = loadingSubjects[source] {
 			return publisher
@@ -15,6 +28,12 @@ class FeedFetcher {
 		}
 	}
 	
+	/// Concurently and consequetively fetches feeds. Running a partial completion after each worker finishes.
+	///
+	/// - Parameters:
+	///   - sources: List of feed URLs to fetch
+	///   - workers: Number of concurrent workers to use
+	///   - partialCompletion: Completion that runs after each worker finishes
 	func fetch(sources: Array<URL>, workers: UInt, partialCompletion: (Data, URL) async -> Void) async {
 		var toFetch = sources.filter { isLoading(source: $0).value == false }
 		await withTaskGroup(of: Result<(Data, URL), any Error>.self) { taskGroup in

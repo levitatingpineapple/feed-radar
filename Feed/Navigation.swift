@@ -1,6 +1,10 @@
 import Combine
 import SwiftUI
 
+/// Scene's navigation model.
+///
+/// Handles navigation state for a given scene.
+/// The navigation state is persisted in user defaults.
 final class Navigation: ObservableObject {
 	@Published var filter: Filter?
 	@Published var itemId: Item.ID?
@@ -10,7 +14,6 @@ final class Navigation: ObservableObject {
 	init(store: Store) {
 		self.store = store
 		
-		// Persist filter selection
 		filter = UserDefaults.standard
 			.data(forKey: .filterKey)
 			.flatMap { Filter(rawValue: $0) }
@@ -19,7 +22,6 @@ final class Navigation: ObservableObject {
 			.sink { UserDefaults.standard.setValue($0?.rawValue, forKey: .filterKey) }
 			.store(in: &bag)
 		
-		// Mark items as read as they are deselected
 		$itemId
 			.removeDuplicates()
 			.scan((Optional<Item.ID>.none, Optional<Item.ID>.none)) { ($0.1, $1) }
@@ -28,7 +30,6 @@ final class Navigation: ObservableObject {
 			}
 			.store(in: &bag)
 		
-		// Update unread badge
 		Item.RequestCount(filter: Filter(isRead: false))
 			.publisher(in: self.store)
 			.replaceError(with: .zero)
