@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:">
+      location = "self:/Users/user/repo/levitatingpineapple/feed-radar/FeedRadar.xcodeproj">
    </FileRef>
 </Workspace>

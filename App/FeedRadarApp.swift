@@ -14,7 +14,7 @@ extension EnvironmentValues {
 struct AppLauncher {
 	static func main() throws {
 		NSClassFromString("XCTestCase") == nil
-			? FeedApp.main()
+			? FeedRadarApp.main()
 			: TestApp.main()
 	}
 }
@@ -31,7 +31,7 @@ struct TestApp: App {
 	}
 }
 
-struct FeedApp: App {
+struct FeedRadarApp: App {
 	var body: some Scene {
 		WindowGroup { NavigationView() }
 	}

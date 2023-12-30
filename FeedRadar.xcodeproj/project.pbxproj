@@ -43,7 +43,7 @@
 		CED461802B3E55AA00AA8B96 /* FeedKit in Frameworks */ = {isa = PBXBuildFile; productRef = CED4617F2B3E55AA00AA8B96 /* FeedKit */; };
 		CED461832B3E55E900AA8B96 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CED461822B3E55E900AA8B96 /* GRDB */; };
 		CED461862B3E561F00AA8B96 /* GRDBQuery in Frameworks */ = {isa = PBXBuildFile; productRef = CED461852B3E561F00AA8B96 /* GRDBQuery */; };
-		CEDEC5CD2B0650F700D83636 /* FeedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5CC2B0650F700D83636 /* FeedApp.swift */; };
+		CEDEC5CD2B0650F700D83636 /* FeedRadarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5CC2B0650F700D83636 /* FeedRadarApp.swift */; };
 		CEDEC5D32B0650F800D83636 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDEC5D22B0650F800D83636 /* Assets.xcassets */; };
 		CEDEC5E12B065DB200D83636 /* Mapped.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5E02B065DB200D83636 /* Mapped.swift */; };
 		CEDEC5E62B067CA500D83636 /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = CEDEC5E52B067CA500D83636 /* style.css */; };
@@ -72,7 +72,7 @@
 		CE18F3892B094EB700FE509C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		CE18F38B2B09800C00FE509C /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		CE1D89EF2B232F2C00CC2CFF /* LoadingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlayView.swift; sourceTree = "<group>"; };
-		CE23A0C42B3B8BC200DC6B76 /* FeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE23A0C42B3B8BC200DC6B76 /* FeedRadarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeedRadarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE23A0C62B3B8BC200DC6B76 /* FeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedTests.swift; sourceTree = "<group>"; };
 		CE23A0CD2B3BAE2800DC6B76 /* feed.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = feed.json; sourceTree = "<group>"; };
 		CE351BDD2B0BE768006FF948 /* FeedsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsView.swift; sourceTree = "<group>"; };
@@ -102,10 +102,10 @@
 		CEB836382B20086A00480E39 /* Store.Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.Item.swift; sourceTree = "<group>"; };
 		CED3B25E2B20D2E9008D9C7E /* Readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = Readability.js; path = Readability/Readability.js; sourceTree = SOURCE_ROOT; };
 		CED4617B2B3DA56C00AA8B96 /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
-		CEDEC5C92B0650F700D83636 /* Feed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Feed.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEDEC5CC2B0650F700D83636 /* FeedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedApp.swift; sourceTree = "<group>"; };
+		CEDEC5C92B0650F700D83636 /* FeedRadar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeedRadar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEDEC5CC2B0650F700D83636 /* FeedRadarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedRadarApp.swift; sourceTree = "<group>"; };
 		CEDEC5D22B0650F800D83636 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		CEDEC5D42B0650F800D83636 /* Feed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Feed.entitlements; sourceTree = "<group>"; };
+		CEDEC5D42B0650F800D83636 /* Entitlements.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Entitlements.entitlements; sourceTree = "<group>"; };
 		CEDEC5E02B065DB200D83636 /* Mapped.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mapped.swift; sourceTree = "<group>"; };
 		CEDEC5E52B067CA500D83636 /* style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
 		CEDEC5E72B06809000D83636 /* SafariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariViewController.swift; sourceTree = "<group>"; };
@@ -162,20 +162,20 @@
 			children = (
 				CEA06C122B0FC9E100B3C516 /* Info.plist */,
 				CEDEC5D22B0650F800D83636 /* Assets.xcassets */,
-				CEDEC5D42B0650F800D83636 /* Feed.entitlements */,
+				CEDEC5D42B0650F800D83636 /* Entitlements.entitlements */,
 				CEDEC5E52B067CA500D83636 /* style.css */,
 				CED3B25E2B20D2E9008D9C7E /* Readability.js */,
 			);
 			path = Support;
 			sourceTree = "<group>";
 		};
-		CE23A0C52B3B8BC200DC6B76 /* FeedTests */ = {
+		CE23A0C52B3B8BC200DC6B76 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				CE23A0C62B3B8BC200DC6B76 /* FeedTests.swift */,
 				CED4617D2B3DCD0800AA8B96 /* Fixtures */,
 			);
-			path = FeedTests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		CE351BF12B0D26D2006FF948 /* Mapped */ = {
@@ -265,26 +265,25 @@
 		CEDEC5C02B0650F700D83636 = {
 			isa = PBXGroup;
 			children = (
-				CEDEC5CB2B0650F700D83636 /* Feed */,
-				CE23A0C52B3B8BC200DC6B76 /* FeedTests */,
+				CEDEC5CB2B0650F700D83636 /* App */,
+				CE23A0C52B3B8BC200DC6B76 /* Tests */,
 				CEDEC5CA2B0650F700D83636 /* Products */,
-				CEDEC5E22B06707500D83636 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		CEDEC5CA2B0650F700D83636 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CEDEC5C92B0650F700D83636 /* Feed.app */,
-				CE23A0C42B3B8BC200DC6B76 /* FeedTests.xctest */,
+				CEDEC5C92B0650F700D83636 /* FeedRadar.app */,
+				CE23A0C42B3B8BC200DC6B76 /* FeedRadarTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CEDEC5CB2B0650F700D83636 /* Feed */ = {
+		CEDEC5CB2B0650F700D83636 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				CEDEC5CC2B0650F700D83636 /* FeedApp.swift */,
+				CEDEC5CC2B0650F700D83636 /* FeedRadarApp.swift */,
 				CED4617B2B3DA56C00AA8B96 /* Navigation.swift */,
 				CEB836352B20023100480E39 /* Fetch */,
 				CE13C0E72B1617D800058F60 /* Store */,
@@ -293,14 +292,7 @@
 				CE64CE282B07EEB0006C9DB9 /* Views */,
 				CE18F3862B094B8600FE509C /* Support */,
 			);
-			path = Feed;
-			sourceTree = "<group>";
-		};
-		CEDEC5E22B06707500D83636 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
+			path = App;
 			sourceTree = "<group>";
 		};
 		CEED7B882B0B9AA0004B29C6 /* Data */ = {
@@ -331,9 +323,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CE23A0C32B3B8BC200DC6B76 /* FeedTests */ = {
+		CE23A0C32B3B8BC200DC6B76 /* FeedRadarTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CE23A0CC2B3B8BC200DC6B76 /* Build configuration list for PBXNativeTarget "FeedTests" */;
+			buildConfigurationList = CE23A0CC2B3B8BC200DC6B76 /* Build configuration list for PBXNativeTarget "FeedRadarTests" */;
 			buildPhases = (
 				CE23A0C02B3B8BC200DC6B76 /* Sources */,
 				CE23A0C12B3B8BC200DC6B76 /* Frameworks */,
@@ -344,14 +336,14 @@
 			dependencies = (
 				CE23A0C92B3B8BC200DC6B76 /* PBXTargetDependency */,
 			);
-			name = FeedTests;
+			name = FeedRadarTests;
 			productName = FeedTests;
-			productReference = CE23A0C42B3B8BC200DC6B76 /* FeedTests.xctest */;
+			productReference = CE23A0C42B3B8BC200DC6B76 /* FeedRadarTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		CEDEC5C82B0650F700D83636 /* Feed */ = {
+		CEDEC5C82B0650F700D83636 /* FeedRadar */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CEDEC5DA2B0650F800D83636 /* Build configuration list for PBXNativeTarget "Feed" */;
+			buildConfigurationList = CEDEC5DA2B0650F800D83636 /* Build configuration list for PBXNativeTarget "FeedRadar" */;
 			buildPhases = (
 				CEDEC5C52B0650F700D83636 /* Sources */,
 				CEDEC5C62B0650F700D83636 /* Frameworks */,
@@ -361,14 +353,14 @@
 			);
 			dependencies = (
 			);
-			name = Feed;
+			name = FeedRadar;
 			packageProductDependencies = (
 				CED4617F2B3E55AA00AA8B96 /* FeedKit */,
 				CED461822B3E55E900AA8B96 /* GRDB */,
 				CED461852B3E561F00AA8B96 /* GRDBQuery */,
 			);
 			productName = Rss;
-			productReference = CEDEC5C92B0650F700D83636 /* Feed.app */;
+			productReference = CEDEC5C92B0650F700D83636 /* FeedRadar.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -379,7 +371,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1510;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					CE23A0C32B3B8BC200DC6B76 = {
 						CreatedOnToolsVersion = 15.1;
@@ -390,7 +382,7 @@
 					};
 				};
 			};
-			buildConfigurationList = CEDEC5C42B0650F700D83636 /* Build configuration list for PBXProject "Feed" */;
+			buildConfigurationList = CEDEC5C42B0650F700D83636 /* Build configuration list for PBXProject "FeedRadar" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -408,8 +400,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CEDEC5C82B0650F700D83636 /* Feed */,
-				CE23A0C32B3B8BC200DC6B76 /* FeedTests */,
+				CEDEC5C82B0650F700D83636 /* FeedRadar */,
+				CE23A0C32B3B8BC200DC6B76 /* FeedRadarTests */,
 			);
 		};
 /* End PBXProject section */
@@ -486,7 +478,7 @@
 				CE351BF32B0D3873006FF948 /* Feed.swift in Sources */,
 				CEDEC5E82B06809000D83636 /* SafariViewController.swift in Sources */,
 				CE76F89F2B1262FE007ED642 /* Sync.swift in Sources */,
-				CEDEC5CD2B0650F700D83636 /* FeedApp.swift in Sources */,
+				CEDEC5CD2B0650F700D83636 /* FeedRadarApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -496,7 +488,7 @@
 		CE23A0C92B3B8BC200DC6B76 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
-			target = CEDEC5C82B0650F700D83636 /* Feed */;
+			target = CEDEC5C82B0650F700D83636 /* FeedRadar */;
 			targetProxy = CE23A0C82B3B8BC200DC6B76 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -521,7 +513,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Feed.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Feed";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FeedRadar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FeedRadar";
 			};
 			name = Debug;
 		};
@@ -544,7 +536,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Feed.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Feed";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FeedRadar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FeedRadar";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -583,6 +575,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -644,6 +637,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -668,17 +662,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Feed/Support/Feed.entitlements;
+				CODE_SIGN_ENTITLEMENTS = App/Support/Entitlements.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 4RW36ENH8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Feed/Support/Info.plist;
+				INFOPLIST_FILE = App/Support/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Feed Radar";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -715,17 +710,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Feed/Support/Feed.entitlements;
+				CODE_SIGN_ENTITLEMENTS = App/Support/Entitlements.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 4RW36ENH8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Feed/Support/Info.plist;
+				INFOPLIST_FILE = App/Support/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Feed Radar";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -760,7 +756,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CE23A0CC2B3B8BC200DC6B76 /* Build configuration list for PBXNativeTarget "FeedTests" */ = {
+		CE23A0CC2B3B8BC200DC6B76 /* Build configuration list for PBXNativeTarget "FeedRadarTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CE23A0CA2B3B8BC200DC6B76 /* Debug */,
@@ -769,7 +765,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CEDEC5C42B0650F700D83636 /* Build configuration list for PBXProject "Feed" */ = {
+		CEDEC5C42B0650F700D83636 /* Build configuration list for PBXProject "FeedRadar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEDEC5D82B0650F800D83636 /* Debug */,
@@ -778,7 +774,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CEDEC5DA2B0650F800D83636 /* Build configuration list for PBXNativeTarget "Feed" */ = {
+		CEDEC5DA2B0650F800D83636 /* Build configuration list for PBXNativeTarget "FeedRadar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEDEC5DB2B0650F800D83636 /* Debug */,

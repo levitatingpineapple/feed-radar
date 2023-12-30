@@ -1,5 +1,5 @@
 import XCTest
-@testable import Feed
+@testable import FeedRadar
 
 final class FeedTests: XCTestCase {
 	private let store = try! Store(testName: "A")
