@@ -16,7 +16,7 @@ jobs:
         run: git submodule init && git submodule update
       - name: Select Xcode 15.1
         run: sudo xcode-select -s /Applications/Xcode_15.1.app/Contents/Developer
-      - name: Create Documuentation Archive
+      - name: Create Documentation Archive
         run: >
           xcrun xcodebuild docbuild \
             -scheme FeedRadar \
@@ -26,8 +26,8 @@ jobs:
         run: >
           xcrun docc process-archive transform-for-static-hosting \
             .derivedData/Build/Products/Debug-iphonesimulator/FeedRadar.doccarchive \
-            --output-path "docs/feed-radar" \
-            --hosting-base-path "feed-radar"
+            --output-path .docs \
+            --hosting-base-path feed-radar
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
