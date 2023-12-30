@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CE0931A22B1FEDC3008FD706 /* ContentExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0931A12B1FEDC3008FD706 /* ContentExtractor.swift */; };
-		CE13C0EA2B1665C900058F60 /* Attachments.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13C0E92B1665C900058F60 /* Attachments.swift */; };
+		CE13C0EA2B1665C900058F60 /* AttachmentsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13C0E92B1665C900058F60 /* AttachmentsFetcher.swift */; };
 		CE18F38A2B094EB700FE509C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE18F3892B094EB700FE509C /* Extensions.swift */; };
 		CE18F38C2B09800C00FE509C /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE18F38B2B09800C00FE509C /* FeedView.swift */; };
 		CE1D89F02B232F2C00CC2CFF /* LoadingOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1D89EF2B232F2C00CC2CFF /* LoadingOverlayView.swift */; };
@@ -68,7 +68,7 @@
 
 /* Begin PBXFileReference section */
 		CE0931A12B1FEDC3008FD706 /* ContentExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExtractor.swift; sourceTree = "<group>"; };
-		CE13C0E92B1665C900058F60 /* Attachments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attachments.swift; sourceTree = "<group>"; };
+		CE13C0E92B1665C900058F60 /* AttachmentsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsFetcher.swift; sourceTree = "<group>"; };
 		CE18F3892B094EB700FE509C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		CE18F38B2B09800C00FE509C /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		CE1D89EF2B232F2C00CC2CFF /* LoadingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlayView.swift; sourceTree = "<group>"; };
@@ -248,7 +248,7 @@
 			isa = PBXGroup;
 			children = (
 				CE7618132B1E5BDC00C80C25 /* FeedFetcher.swift */,
-				CE13C0E92B1665C900058F60 /* Attachments.swift */,
+				CE13C0E92B1665C900058F60 /* AttachmentsFetcher.swift */,
 				CE0931A12B1FEDC3008FD706 /* ContentExtractor.swift */,
 			);
 			path = Fetch;
@@ -453,7 +453,7 @@
 				CE0931A22B1FEDC3008FD706 /* ContentExtractor.swift in Sources */,
 				CE351BF52B0D3880006FF948 /* Item.swift in Sources */,
 				CE351BE42B0D003D006FF948 /* DownloadView.swift in Sources */,
-				CE13C0EA2B1665C900058F60 /* Attachments.swift in Sources */,
+				CE13C0EA2B1665C900058F60 /* AttachmentsFetcher.swift in Sources */,
 				CEED7B8A2B0B9AB2004B29C6 /* Store.swift in Sources */,
 				CE18F38A2B094EB700FE509C /* Extensions.swift in Sources */,
 				CEFEC7C62B0AF42200FF8728 /* AttachmentsView.swift in Sources */,
@@ -690,11 +690,11 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.levitatingpineapple.feed;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.levitatingpineapple.feedradar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Feed;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = FeedRadar;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -738,11 +738,11 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.levitatingpineapple.feed;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.levitatingpineapple.feedradar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Feed;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = FeedRadar;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

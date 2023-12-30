@@ -13,6 +13,11 @@ extension Store {
 		}) ?? Array<Feed>()
 	}
 	
+	
+	/// Adds feed and fetches it's items
+	/// - Parameters:
+	///   - feed: Feed to add
+	///   - userInitiated: only syncs is initiated by user to prevent feedback loops
 	func add(feed: Feed, userInitiated: Bool = true) async {
 		if await (
 			try? queue.write {
@@ -29,6 +34,9 @@ extension Store {
 		}
 	}
 	
+	/// - Parameters:
+	///   - feed: Feed to remove
+	///   - userInitiated: only syncs is initiated by user to prevent feedback loops
 	func delete(feed: Feed, userInitiated: Bool = true) {
 		try? queue.write { let _ = try feed.delete($0) }
 		if userInitiated {
@@ -61,12 +69,15 @@ extension Store {
 		}
 	}
 	
+	/// Fetches all feeds if last fetch was more than `elapsed` seconds ago.
+	/// Used for triggering fetch after the app enters foreground
 	func fetch(after elapsed: TimeInterval) {
 		if Date.now.timeIntervalSince1970 - (lastFullFetch ?? .zero) > elapsed {
 			Task { await fetch() }
 		}
 	}
 	
+	/// Fetches feed and updates the database. If no feed is provided - fetches all feeds
 	func fetch(feed: Feed? = nil) async {
 		if feed == nil { lastFullFetch = Date.now.timeIntervalSince1970 }
 		await FeedFetcher.shared.fetch(

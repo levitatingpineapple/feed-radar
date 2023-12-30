@@ -35,7 +35,7 @@ final actor Sync {
 	
 	private func start() {
 		let configuration = CKSyncEngine.Configuration(
-			database: CKContainer(identifier: .cloudKitContainerIdentifier).privateCloudDatabase,
+			database: CKContainer.default().privateCloudDatabase,
 			stateSerialization: stateSerialization,
 			delegate: self
 		)

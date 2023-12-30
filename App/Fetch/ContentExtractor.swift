@@ -1,9 +1,13 @@
 import WebKit
 
+/// Provides a way to extract the content of a web page
+/// using Mozilla's Readability.js project
 actor ContentExtractor {
+	/// Global instance
 	static let shared = ContentExtractor()
 	private let readability = Readability()
 	
+	/// Attampts to extract content form item's url and persistes it
 	func extract(item: Item, into store: Store) async throws {
 		if let url = item.url {
 			if var fetchedItem = store.item(id: item.id),

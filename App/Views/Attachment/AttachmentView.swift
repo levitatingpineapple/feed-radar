@@ -9,7 +9,7 @@ struct AttachmentView<Selector: View>: View {
 	@ViewBuilder var selector: () -> Selector
 	
 	var url: URL {
-		if case let .completed(url) = Attachments.shared.tasks[attachment.url] {
+		if case let .completed(url) = AttachmentsFetcher.shared.tasks[attachment.url] {
 			url
 		} else {
 			attachment.url
@@ -58,10 +58,10 @@ struct AttachmentView<Selector: View>: View {
 		}
 		.background(Color(.secondarySystemBackground))
 		.cornerRadius(16)
-		.onAppear { Attachments.shared.load(local: attachment) }
+		.onAppear { AttachmentsFetcher.shared.load(local: attachment) }
 		.onChange(of: attachment) {
 			aspectRatio = 16 / 9
-			Attachments.shared.load(local: attachment)
+			AttachmentsFetcher.shared.load(local: attachment)
 		}
 	}
 	

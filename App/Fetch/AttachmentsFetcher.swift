@@ -1,7 +1,12 @@
 import SwiftUI
 
-class Attachments: ObservableObject {
-	static let shared = Attachments()
+/// Manages downloading attachments
+class AttachmentsFetcher: ObservableObject {
+	
+	/// Global instance
+	static let shared = AttachmentsFetcher()
+	
+	/// Dictionary of attachment download states
 	@Published var tasks = Dictionary<URL, Task>()
 	
 	/// Downloads an attachment to user's documents directory.
@@ -35,6 +40,7 @@ class Attachments: ObservableObject {
 		dataTask.resume()
 	}
 	
+	/// Checks if a local file already exists and adds a completed task to ``tasks``
 	func load(local attachment: Attachment) {
 		if FileManager.default.fileExists(atPath: attachment.localUrl.path)
 		   && tasks[attachment.url] == nil {
@@ -42,6 +48,7 @@ class Attachments: ObservableObject {
 		}
 	}
 	
+	/// Removes local file and corresponding task
 	func remove(local attachment: Attachment) {
 		tasks.removeValue(forKey: attachment.url)
 		try? FileManager.default
@@ -49,10 +56,16 @@ class Attachments: ObservableObject {
 	}
 }
 
-extension Attachments {
+extension AttachmentsFetcher {
+	/// Represents attachment's download state
 	enum Task: Equatable {
+		/// Attachment is being downloaded
+		/// - Parameter progress: Ranges from 0 to 1
 		case progress(Double)
+		/// Attachment is being downloaded
+		/// - Parameter url: the local url of the downloaded file
 		case completed(URL)
+		/// Attachment has failed to download
 		case error
 	}
 }

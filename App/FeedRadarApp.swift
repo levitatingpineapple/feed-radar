@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// A Key for accessing the ``Store`` from the environment.
 struct StoreKey: EnvironmentKey {
 	static let defaultValue = try! Store()
 }
@@ -10,8 +11,9 @@ extension EnvironmentValues {
 	}
 }
 
-@main
-struct AppLauncher {
+/// Entry point for the app.
+/// Selects between ``FeedRadarApp`` and ``TestApp``
+@main struct AppLauncher {
 	static func main() throws {
 		NSClassFromString("XCTestCase") == nil
 			? FeedRadarApp.main()
@@ -19,6 +21,14 @@ struct AppLauncher {
 	}
 }
 
+/// The main app
+struct FeedRadarApp: App {
+	var body: some Scene {
+		WindowGroup { NavigationView() }
+	}
+}
+
+/// An app that displays simple UI while running unit tests.
 struct TestApp: App {
 	var body: some Scene {
 		WindowGroup {
@@ -28,11 +38,5 @@ struct TestApp: App {
 				ProgressView()
 			}
 		}
-	}
-}
-
-struct FeedRadarApp: App {
-	var body: some Scene {
-		WindowGroup { NavigationView() }
 	}
 }

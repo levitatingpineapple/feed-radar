@@ -6,7 +6,7 @@ import CryptoKit
 // TODO: Add retry
 struct DownloadView: View {
 	let attachment: Attachment
-	@ObservedObject var attachments: Attachments = .shared
+	@ObservedObject var attachments: AttachmentsFetcher = .shared
 	@State private var quickLook: URL?
 
 	var body: some View {

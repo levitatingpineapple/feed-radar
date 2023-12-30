@@ -1,16 +1,24 @@
 import Combine
 import SwiftUI
 
-/// Scene's navigation model.
+/// Scene's navigation model
 ///
 /// Handles navigation state for a given scene.
 /// The navigation state is persisted in user defaults.
 final class Navigation: ObservableObject {
+	
+	/// Filters items displayed in ``ItemsView``
+	/// Various filters can be selected from the sidebar
+	/// and further tweaked from ``FilterSettingsView``
 	@Published var filter: Filter?
+	
+	/// Determines content of the detail view
 	@Published var itemId: Item.ID?
+	
 	private var bag = Set<AnyCancellable>()
 	private var store: Store
 	
+	/// - Parameter store: Used for persisting read items
 	init(store: Store) {
 		self.store = store
 		

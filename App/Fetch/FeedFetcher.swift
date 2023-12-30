@@ -2,12 +2,7 @@ import Foundation
 import os.log
 import Combine
 
-
 /// Handles feed fetching state and order.
-///
-/// # UI Optimization
-/// [Navigation](Navigation.swift#L8)
-/// ### Another
 class FeedFetcher {
 	
 	/// Global instance

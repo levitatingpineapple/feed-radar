@@ -4,21 +4,24 @@ import UniformTypeIdentifiers
 import os.log
 
 extension Logger {
-	static let sync = Logger(subsystem: .loggingSubsystem, category: "☁️ Sync")
-	static let store = Logger(subsystem: .loggingSubsystem, category: "💽 Store")
+	static let sync = Logger(
+		subsystem: Bundle.main.bundleIdentifier!,
+		category: "Sync"
+	)
+	static let store = Logger(
+		subsystem: Bundle.main.bundleIdentifier!,
+		category: "Store"
+	)
 }
 
 extension String {
-	static let cloudKitContainerIdentifier = "iCloud.levitatingpineapple.todo"
 	static let cloudKitStateSerializationKey = "cloudKitStateSerialization"
-	static let loggingSubsystem: String = "com.levitatingpineapple.rss"
 	static let style: String = try! String(
 		contentsOf: Bundle.main.url(
 			forResource: "style",
 			withExtension: "css"
 		)!
 	)
-	
 	static let filterKey = "filter"
 	static let contentScaleKey = "contentScale"
 	static let isReadFilteredKey = "isReadFiltered"

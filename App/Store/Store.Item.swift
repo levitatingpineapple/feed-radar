@@ -3,6 +3,7 @@ import os.log
 import GRDB
 
 extension Store {
+	/// Items that user has interacted with and need to be synced.
 	var touchedItems: Array<Item> {
 		(try? queue.write {
 			try? Item
