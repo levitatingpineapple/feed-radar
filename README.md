@@ -1,5 +1,6 @@
 ![License](https://img.shields.io/github/license/levitatingpineapple/feed)
-![Tests](https://img.shields.io/github/actions/workflow/status/levitatingpineapple/feed/unit-tests.yml?label=tests)
+![Tests](https://img.shields.io/github/actions/workflow/status/levitatingpineapple/feed/tests.yml?label=tests)
+![Documentation](https://img.shields.io/github/actions/workflow/status/levitatingpineapple/feed/docc.yml?label=docc)
 ![Version](https://img.shields.io/github/v/tag/levitatingpineapple/feed?label=version)
 
 <div align="center">
