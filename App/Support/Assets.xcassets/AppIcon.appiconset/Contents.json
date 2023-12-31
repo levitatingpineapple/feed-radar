@@ -13,7 +13,7 @@
       "size" : "16x16"
     },
     {
-      "filename" : "macOS-32 1.png",
+      "filename" : "macOS-16@2x.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
@@ -25,7 +25,7 @@
       "size" : "32x32"
     },
     {
-      "filename" : "macOS-64.png",
+      "filename" : "macOS-32@2x.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
@@ -37,7 +37,7 @@
       "size" : "128x128"
     },
     {
-      "filename" : "macOS-256 1.png",
+      "filename" : "macOS-128@2x.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"
@@ -49,7 +49,7 @@
       "size" : "256x256"
     },
     {
-      "filename" : "macOS-512 1.png",
+      "filename" : "macOS-256@2x.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
@@ -61,7 +61,7 @@
       "size" : "512x512"
     },
     {
-      "filename" : "macOS-1024.png",
+      "filename" : "macOS-512@2x.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
