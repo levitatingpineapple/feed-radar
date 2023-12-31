@@ -1,5 +1,9 @@
 # Syncing
 
+@Metadata {
+	@PageImage(purpose: card, source: "syncCard")
+}
+
 How app syncs between devices
 
 ## Overview
