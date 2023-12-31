@@ -12,8 +12,10 @@ A modern Feed reader for Apple's plaforms with good media support.
 
 ## Topics
 
-### Articles
+### Basics
 
-- <doc:FetchingFeeds>
-- <doc:StoringFeeds>
-- <doc:Syncing>
+@Links(visualStyle: detailedGrid) {
+	- <doc:FetchingFeeds>
+	- <doc:StoringFeeds>
+	- <doc:Syncing>
+}
