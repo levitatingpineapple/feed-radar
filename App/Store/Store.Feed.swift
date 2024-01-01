@@ -52,19 +52,25 @@ extension Store {
 		)
 	}
 	
-	func markAllAsRead(feed: Feed) {
+	/// Marks all filtered unread items as read and ques them for sync
+	func markAllAsRead(filter: Filter) {
+		let request = filter.unread.items
+		
+		// Fetch items before updating
+		let items = (
+			try? queue.write {
+				try request.fetchAll($0)
+			}
+		) ?? Array<Item>()
 		try? queue.write {
-			var unread: QueryInterfaceRequest<Item> {
-				Item
-					.filter(Column(Item.Column.source.rawValue) == feed.source)
-					.filter(Item.Column.isRead.column == false)
-			}
-			if let items = try? unread.fetchAll($0) {
-				try unread.updateAll($0, [Item.Column.isRead.column.set(to: true)])
-				Task {
-					for item in items { await sync?.updated(item) }
-				}
-			}
+			 let updatedCount = try request.updateAll(
+				$0,
+				[Item.Column.isRead.column.set(to: true)]
+			 )
+			Logger.store.info("Marked \(updatedCount) items as read")
+		}
+		Task {
+			for item in items { await self.sync?.updated(item) }
 		}
 	}
 	

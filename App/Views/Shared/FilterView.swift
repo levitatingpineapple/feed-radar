@@ -81,7 +81,7 @@ struct FilterView: View {
 			Text(filter.title).lineLimit(1).layoutPriority(-1)
 			if !isCompact { Spacer() }
 			if filter.feed != nil || filter.isRead == false {
-				countView(filter: filter.unread(), color: .accentColor.opacity(0.8))
+				countView(filter: filter.unread, color: .accentColor.opacity(0.8))
 			} else if filter.isStarred == true {
 				countView(filter: filter, color: .orange.opacity(0.6))
 			}
@@ -96,10 +96,10 @@ struct FilterView: View {
 					Button {
 						UIPasteboard.general.url = feed.source
 					} label: { Label("Copy Link", systemImage: "doc.on.doc") }
-					Button {
-						store.markAllAsRead(feed: feed)
-					} label: { Label("Mark all as read", systemImage: "circle") }
 				}
+				Button {
+					store.markAllAsRead(filter: filter)
+				} label: { Label("Mark all as read", systemImage: "circle") }
 			}
 		)
 	}

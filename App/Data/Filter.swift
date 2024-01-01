@@ -32,11 +32,11 @@ struct Filter: Hashable, Codable {
 	
 	var items: QueryInterfaceRequest<Item> {
 		filters.reduce(
-			into: Item.select([Item.Column.id.column])
+			into: Item.all()
 		) { $0 = $0.filter($1) }
 	}
 	
-	func unread() -> Filter {
+	var unread: Filter {
 		var filter = self
 		filter.isRead = false
 		return filter
