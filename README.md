@@ -9,14 +9,15 @@
 
 # Feed Radar
 
+![app](.readme/app.webp)
+
 A modern Feed reader for Apple's platforms with good media support.
 
 ## Join Public Beta!
 
-<img align="right" src="./App/Documentation.docc/Resources/testFlight.png"/>
+<img align="right" src=".readme/testFlight.png"/>
 
-Scan the QR code or visit [**TestFlight**](https://testflight.apple.com/join/kRcbarg4) to try out the app.
-
+Scan the QR code or visit [**TestFlight**](https://testflight.apple.com/join/kRcbarg4) to try out the app.\
 Supported platforms:
 - `iOS 17.0+`
 - `iPadOS 17.0+`
@@ -26,7 +27,7 @@ Supported platforms:
 
 ## Documentation
 
-To learn more check out the generated [**documentation**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar)\
+To learn more check out the generated [**Documentation**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar)\
 A high level overview is available in following articles:
 
 - [**Fetching Feeds**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar/fetchingfeeds)\
