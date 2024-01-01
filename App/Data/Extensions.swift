@@ -18,7 +18,7 @@ extension String {
 	static let cloudKitStateSerializationKey = "cloudKitStateSerialization"
 	static let style: String = try! String(
 		contentsOf: Bundle.main.url(
-			forResource: "style",
+			forResource: "Style",
 			withExtension: "css"
 		)!
 	)

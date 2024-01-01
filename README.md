@@ -11,40 +11,27 @@
 
 A modern Feed reader for Apple's platforms with good media support.
 
-## TestFlight
+## Join Public Beta!
 
-Public beta available [here](https://testflight.apple.com/join/kRcbarg4)
-<div align="center">
-	<img style="border-radius: 12px" src="./App/Documentation.docc/Resources/testFlight.png"/>
-</div>	
-## Installation
+<img align="right" src="./App/Documentation.docc/Resources/testFlight.png"/>
 
-### Clone
+Scan the QR code or visit [**TestFlight**](https://testflight.apple.com/join/kRcbarg4) to try out the app.
 
-Clone the repository and initalise it's submodules:
+Supported platforms:
+- `iOS 17.0+`
+- `iPadOS 17.0+`
+- `macOS 14.0+` [^1]
 
-```bash
-git clone git@github.com:levitatingpineapple/feed-radar.git
-git submodule init
-git submodule update
-```
-
-### Manual iCloud Setup
-
-1. Add a container to [iCloud Containers](https://developer.apple.com/account/resources/identifiers/list/cloudContainer) formatted `"iCloud." + appBundleId` for example: `iCloud.com.mydomain.feedradar` For testing consider using an existing container since once created **CONTAINERS CAN NOT BE DELETED**
-2. Add an identifier `com.mydomain.feedradar` to [App IDs](https://developer.apple.com/account/resources/identifiers/list) with following capabilities:
-	- **iCloud** (Include CloudKit support)
-	- **Push notifications**
-3. After identifier has beed created, select it from the list and add the created container to the **iCloud** capability.
-4. Generate a Provisioning Profile, download it and import into Xcode.
-
-Now the project should build.
+[^1]: Runs in (Designed for iPad) mode - requires an ARM Macbook
 
 ## Documentation
 
-To learn more check out the [**compiled documentation**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar)\
+To learn more check out the generated [**documentation**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar)\
 A high level overview is available in following articles:
 
-- [Fetch Feeds]()
-- [Store Feeds]()
-- [Sync]()
+- [**Fetching Feeds**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar/fetchingfeeds)\
+How feeds are fetched and mapped
+- [**Storing Feeds**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar/storingfeeds)\
+How feeds are persisted in database
+- [**Syncing**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar/syncing)\
+How the app syncs between multiple devices

@@ -1,9 +1,17 @@
 # Fetching Feeds
 
-@Metadata {
-	@PageImage(purpose: card, source: "fetchCard")
-}
-
 How feeds are fetched and mapped
 
-### This is a section header
+@Metadata {
+	@PageImage(purpose: icon, source: "fetchIcon")
+	@PageImage(purpose: card, source: "fetchCard")
+	@PageColor(green)
+}
+
+## Overview
+
+Some overview here
+
+### Section header
+
+Section

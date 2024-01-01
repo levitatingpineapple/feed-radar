@@ -1,15 +1,17 @@
 # Storing Feeds
 
-@Metadata {
-	@PageImage(purpose: card, source: "storeCard")
-}
+How feeds are persisted in database
 
-How feeds are stored in database
+@Metadata {
+	@PageImage(purpose: icon, source: "storeIcon")
+	@PageImage(purpose: card, source: "storeCard")
+	@PageColor(blue)
+}
 
 ## Overview
 
 Some overview here
 
-### Section header
+### Database Schema
 
-Section
+![Schema](schema)

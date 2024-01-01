@@ -13,7 +13,6 @@ extension Store {
 		}) ?? Array<Feed>()
 	}
 	
-	
 	/// Adds feed and fetches it's items
 	/// - Parameters:
 	///   - feed: Feed to add
