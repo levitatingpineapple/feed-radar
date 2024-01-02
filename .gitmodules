@@ -1,4 +1,3 @@
-[submodule "Readability"]
-	path = Readability
-	url = https://github.com/mozilla/readability.git
-	branch = main
+[submodule "Submodules/Readability"]
+	path = Submodules/Readability
+	url = git@github.com:mozilla/readability.git
