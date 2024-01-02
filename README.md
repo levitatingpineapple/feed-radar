@@ -29,9 +29,9 @@ Supported platforms:
 
 ### Multiple Attachments
 
-Previews for Images, Video and Audio.\
-Download attachments for offline use.\
-Integeration with **QuickLook** and **ShareSheet**
+Stream Video and Audio. Preview Images.\
+Save for offline use.\
+**QuickLook** and **ShareSheet** integration.
 
 <br><br><br><br><br><br><br>
 
@@ -39,7 +39,7 @@ Integeration with **QuickLook** and **ShareSheet**
 
 ### Parallel Fetch
 
-Simultaneously fetching from multiple sources\
+Simultaneously fetching multiple feeds\
 makes for a fast refresh even with many feeds.
 
 <br><br><br><br><br><br><br><br>
@@ -49,9 +49,10 @@ makes for a fast refresh even with many feeds.
 ### Article Extraction
 
 Some feeds does not include full content.\
-Feed Radar can extract articles without relying on any third party services
+Feed Radar can extract articles\
+without relying on any third party services
 
-<br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br>
 
 ## Documentation
 
@@ -75,3 +76,13 @@ Handles the complex world of feed decoding
 The library - used in [Firefox Reader View](https://support.mozilla.org/en-US/kb/firefox-reader-view-clutter-free-web-pages) enables article "extraction
 - [GRDB](https://github.com/groue/GRDB.swift)\
 A robust SQLite toolkit
+
+## Roadmap
+
+⚠️ The project is still in a very early stage.
+Some of the core functionality is yet to be added, such as:
+
+- Finding feed url from a website
+- Grouping feeds in folders
+- [Conditional GET](https://developer.mozilla.org/en-US/docs/Web/HTTP/Conditional_requests)
+- Open URL
