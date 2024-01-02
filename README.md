@@ -29,8 +29,8 @@ Supported platforms:
 
 ### Multiple Attachments
 
-Media previews for Images, Video and Audio.\
-Attachments can be downloaded for offline use.\
+Previews for Images, Video and Audio.\
+Download attachments for offline use.\
 Integeration with **QuickLook** and **ShareSheet**
 
 <br><br><br><br><br><br><br>
