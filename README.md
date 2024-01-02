@@ -3,23 +3,15 @@
 ![Documentation](https://img.shields.io/github/actions/workflow/status/levitatingpineapple/feed/docc.yml?label=docc)
 ![Version](https://img.shields.io/github/v/tag/levitatingpineapple/feed?label=version)
 
-<div align="center">
-	<img src="./App/Support/Assets.xcassets/AppIcon.appiconset/macOS-256.png" />
-</div>
 
 # Feed Radar
+<div align=center>
+<img src="./App/Support/Assets.xcassets/AppIcon.appiconset/macOS-256.png" />
+</div>
 
 A modern Feed reader for Apple's platforms with good media support.
 
 ![app](.readme/app.webp)
-
-## Features
-
-| Preview                                                                          | Description                                                                                                           |
-|:-------------------------------------------------------------------------------- |:--------------------------------------------------------------------------------------------------------------------- |
-| **Multiple&nbsp;Attachments**<br><br><img width="160" src=".readme/media.gif" /> | Media previews for Images, Video and Audio with the option to download files for offline use.                                                                                                                      |
-| **Parallel Fetch**<br><br><img width="160" src=".readme/fetch.gif" />            | Simultaneously fetching multiple feeds makes for a fast refresh even with many sources.                               |
-| **Article Extraction**<br><br><img width="160" src=".readme/extract.gif" />      | Some feeds does not include full content. Feed Radar can extract articles without relying on any third party services |
 
 ## Join Public Beta!
 
@@ -31,7 +23,37 @@ Supported platforms:
 - `iPadOS 17.0+`
 - `macOS 14.0+` [^1]
 
-[^1]: Runs in (Designed for iPad) mode - requires an ARM Macbook
+[^1]: Runs in *Designed for iPad* mode. An ARM MacBook required.
+
+## Features
+
+<img align="left" width="160" src=".readme/media.gif"/>
+
+### Multiple Attachments
+
+Media previews for Images, Video and Audio.\
+Attachments can be downloaded for offline use.\
+Integeration with system features like **QuickLook** and **ShareSheet**
+
+<br><br><br><br><br><br><br>
+
+<img align="right" width="160" src=".readme/fetch.gif"/>
+
+### Parallel Fetch
+
+Simultaneously fetching from multiple sources\
+makes for a fast refresh even with many feeds.
+
+<br><br><br><br><br><br><br><br>
+
+<img align="left" width="160" src=".readme/extract.gif"/>
+
+### Article Extraction
+
+Some feeds does not include full content.\
+Feed Radar can extract articles without relying on any third party services
+
+<br><br><br><br><br><br><br><br>
 
 ## Documentation
 
@@ -44,3 +66,14 @@ How feeds are fetched and mapped
 How feeds are persisted in database
 - [**Syncing**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar/syncing)\
 How the app syncs between multiple devices
+
+## Dependencies
+
+This project would not be possible without:
+
+- [FeedKit](https://github.com/nmdias/FeedKit)\
+Handles the complex world of feed decoding
+- [Readablity](https://github.com/mozilla/readability)\
+The library - used in [Firefox Reader View](https://support.mozilla.org/en-US/kb/firefox-reader-view-clutter-free-web-pages) enables article "extraction
+- [GRDB](https://github.com/groue/GRDB.swift)\
+A robust SQLite toolkit
