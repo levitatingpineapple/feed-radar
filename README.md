@@ -13,6 +13,14 @@
 
 A modern Feed reader for Apple's platforms with good media support.
 
+## Features
+
+|                                   Parallel Fetch                                   |                                                  Article Extraction                                                   |
+|:----------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------:|
+|                    <img width="160" src=".readme/fetch.gif" />                     |                                     <img width="160" src=".readme/extract.gif" />                                     | 
+| Parallelised fetching of feeds makes<br>for a fast refresh even with many sources. | For feeds that does not include full content<br>articles can be extracted without relying on a third party service |
+
+
 ## Join Public Beta!
 
 <img align="right" src=".readme/testFlight.png"/>
