@@ -3,8 +3,6 @@
 ![Documentation](https://img.shields.io/github/actions/workflow/status/levitatingpineapple/feed/docc.yml?label=docc)
 ![Version](https://img.shields.io/github/v/tag/levitatingpineapple/feed?label=version)
 
-
-# Feed Radar
 <div align=center>
 <img src=".readme/banner.png" />
 </div>
