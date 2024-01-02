@@ -6,7 +6,7 @@
 
 # Feed Radar
 <div align=center>
-<img src="./App/Support/Assets.xcassets/AppIcon.appiconset/macOS-256.png" />
+<img src=".readme/banner.png" />
 </div>
 
 A modern Feed reader for Apple's platforms with good media support.
@@ -33,7 +33,7 @@ Supported platforms:
 
 Media previews for Images, Video and Audio.\
 Attachments can be downloaded for offline use.\
-Integeration with system features like **QuickLook** and **ShareSheet**
+Integeration with **QuickLook** and **ShareSheet**
 
 <br><br><br><br><br><br><br>
 
