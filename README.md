@@ -9,17 +9,17 @@
 
 # Feed Radar
 
-![app](.readme/app.webp)
-
 A modern Feed reader for Apple's platforms with good media support.
+
+![app](.readme/app.webp)
 
 ## Features
 
-|                                   Parallel Fetch                                   |                                                  Article Extraction                                                   |
-|:----------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------:|
-|                    <img width="160" src=".readme/fetch.gif" />                     |                                     <img width="160" src=".readme/extract.gif" />                                     | 
-| Parallelised fetching of feeds makes<br>for a fast refresh even with many sources. | For feeds that does not include full content<br>articles can be extracted without relying on a third party service |
-
+| Preview                                                                          | Description                                                                                                           |
+|:-------------------------------------------------------------------------------- |:--------------------------------------------------------------------------------------------------------------------- |
+| **Multiple&nbsp;Attachments**<br><br><img width="160" src=".readme/media.gif" /> | Media previews for Images, Video and Audio with the option to download files for offline use.                                                                                                                      |
+| **Parallel Fetch**<br><br><img width="160" src=".readme/fetch.gif" />            | Simultaneously fetching multiple feeds makes for a fast refresh even with many sources.                               |
+| **Article Extraction**<br><br><img width="160" src=".readme/extract.gif" />      | Some feeds does not include full content. Feed Radar can extract articles without relying on any third party services |
 
 ## Join Public Beta!
 
