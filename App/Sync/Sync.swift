@@ -1,18 +1,31 @@
 import CloudKit
 import os.log
 
+
+/// Sync interface. Currently only CloudKit sync is implemented.
 protocol SyncDelegate: Actor {
+	
+	/// User has added a new feed
 	func added(_ feed: Feed)
+	
+	/// User has deleted a feed
 	func deleted(_ feed: Feed)
+	
+	/// A state of an item has been changed
 	func updated(_ item: Item)
+	
+	/// If received changes does not yet have a corresponging item they become orphaned.\
+	/// Store will call this function after fetching a feed, to apply the changes.
 	func processOrphanedRecords(for feed: Feed)
 }
 
+/// A class that handles syncing using CloudKit
+/// Implements ``SyncDelegate``
 final actor Sync {
 	fileprivate let store: Store
 	fileprivate var engine: CKSyncEngine!
 	fileprivate var orphanedRecords = Set<CKRecord>()
-	var stateSerialization: CKSyncEngine.State.Serialization? {
+	fileprivate var stateSerialization: CKSyncEngine.State.Serialization? {
 		get {
 			if let data = UserDefaults.standard.data(forKey: .cloudKitStateSerializationKey),
 			   let result = try? JSONDecoder().decode(
@@ -28,6 +41,8 @@ final actor Sync {
 		}
 	}
 	
+	/// Creates an instance of ``Sync``
+	/// - Parameter store: For storing incomming changes
 	init(store: Store) {
 		self.store = store
 		Task { await start() }

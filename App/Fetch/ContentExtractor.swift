@@ -3,6 +3,7 @@ import WebKit
 /// Provides a way to extract the content of a web page
 /// using Mozilla's Readability.js project
 actor ContentExtractor {
+	
 	/// Global instance
 	static let shared = ContentExtractor()
 	private let readability = Readability()

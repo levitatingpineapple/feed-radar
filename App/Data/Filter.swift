@@ -1,7 +1,6 @@
 import Foundation
 import GRDB
 
-
 struct Filter: Hashable, Codable {
 	var feed: Feed? = nil
 	var isRead: Bool? = nil

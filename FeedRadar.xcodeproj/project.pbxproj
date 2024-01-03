@@ -214,6 +214,16 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		CE9BC1732B457D070073735D /* Stored */ = {
+			isa = PBXGroup;
+			children = (
+				CE351BF22B0D3873006FF948 /* Feed.swift */,
+				CE351BF42B0D3880006FF948 /* Item.swift */,
+				CE351BF62B0D388D006FF948 /* Attachment.swift */,
+			);
+			path = Stored;
+			sourceTree = "<group>";
+		};
 		CEA06C132B0FDF2900B3C516 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -301,10 +311,8 @@
 		CEED7B882B0B9AA0004B29C6 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				CE351BF22B0D3873006FF948 /* Feed.swift */,
-				CE351BF42B0D3880006FF948 /* Item.swift */,
+				CE9BC1732B457D070073735D /* Stored */,
 				CEA270A52B11788B00D220F0 /* Filter.swift */,
-				CE351BF62B0D388D006FF948 /* Attachment.swift */,
 				CEB155B42B1A419400AB785C /* Html.swift */,
 				CE18F3892B094EB700FE509C /* Extensions.swift */,
 				CE351BF12B0D26D2006FF948 /* Mapped */,
