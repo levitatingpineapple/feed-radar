@@ -85,4 +85,3 @@ Some of the core functionality is yet to be added, such as:
 - Finding feed url from a website
 - Grouping feeds in folders
 - [Conditional GET](https://developer.mozilla.org/en-US/docs/Web/HTTP/Conditional_requests)
-- Open URL
