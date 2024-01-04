@@ -30,11 +30,12 @@ struct Filter: Hashable, Codable {
 	}
 	
 	var items: QueryInterfaceRequest<Item> {
-		filters.reduce(
-			into: Item.all()
-		) { $0 = $0.filter($1) }
+		filters.reduce(into: Item.all()) {
+			$0 = $0.filter($1)
+		}
 	}
 	
+	/// A filter with additional unread filter applied
 	var unread: Filter {
 		var filter = self
 		filter.isRead = false

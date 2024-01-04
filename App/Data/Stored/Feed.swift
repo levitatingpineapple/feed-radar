@@ -3,7 +3,7 @@ import Combine
 import GRDB
 import GRDBQuery
 
-/// A storable type represent any feed
+/// A storable type that can represent any feed
 struct Feed: Storable {
 	/// Source URL of the feed which uniquely identifies it
 	let source: URL
@@ -31,7 +31,7 @@ extension Feed {
 }
 
 extension Feed {
-	struct Request: Queryable {
+	struct RequestAll: Queryable {
 		static var defaultValue = Array<Feed>()
 		
 		func publisher(in store: Store) -> AnyPublisher<Array<Feed>, Error> {
@@ -50,11 +50,9 @@ extension Feed {
 		let source: URL
 		
 		func publisher(in store: Store) -> AnyPublisher<Feed?, Error> {
-			ValueObservation.tracking {
-				try Feed
-					.filter(Column.source.column == source)
-					.fetchOne($0)
-			}
+			ValueObservation.tracking (
+				Feed.filter(Column.source.column == source).fetchOne
+			)
 			.publisher(in: store.queue, scheduling: .immediate)
 			.eraseToAnyPublisher()
 		}

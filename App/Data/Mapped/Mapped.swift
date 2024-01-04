@@ -2,6 +2,7 @@ import Foundation
 import FeedKit
 import UniformTypeIdentifiers
 
+/// A type that mapps various decoded feed types into one
 struct Mapped {
 	let feed: Feed
 	let items: Array<Item>

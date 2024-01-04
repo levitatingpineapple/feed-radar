@@ -103,7 +103,10 @@ extension Store {
 							if let iconUrl = mapped.feed.icon,
 							   let iconData = try? Data(contentsOf: iconUrl),
 							   let icon = iconData.scaledPng {
-								UserDefaults.standard.setValue(icon, forKey: .iconKey(source: mapped.feed.source))
+								UserDefaults.standard.setValue(
+									icon,
+									forKey: .iconKey(source: mapped.feed.source)
+								)
 							}
 						}
 					}
@@ -126,7 +129,6 @@ extension Store {
 					// 4. Process orphaned sync records
 					Task { await self.sync?.processOrphanedRecords(for: mapped.feed) }
 				}
-				print("🍊")
 			case let .failure(error):
 				Logger.store.error("Parses Error \(error)")
 			}

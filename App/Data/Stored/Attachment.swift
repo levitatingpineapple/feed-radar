@@ -13,7 +13,7 @@ struct Attachment: Storable {
 	let url: URL
 	/// MIME type of the attachment
 	let mime: String?
-	/// Title that is displayed above the preview
+	/// Title which is displayed above the preview
 	let title: String?
 	
 	/// Attachment's uniform type identifier is used to choosing how to preview it.
@@ -51,11 +51,11 @@ extension Attachment {
 		
 		func publisher(in store: Store) -> AnyPublisher<Array<Attachment>, Error> {
 			ValueObservation
-				.tracking {
-					try Attachment
+				.tracking(
+					Attachment
 						.filter(Column.itemId.column == itemId)
-						.fetchAll($0)
-				}
+						.fetchAll
+				)
 				.publisher(in: store.queue, scheduling: .immediate)
 				.eraseToAnyPublisher()
 		}

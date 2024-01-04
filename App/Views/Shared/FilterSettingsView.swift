@@ -2,11 +2,10 @@ import SwiftUI
 import GRDBQuery
 
 struct FilterSettingsView: View {
-	@Query(Feed.Request(), in: \.store) private var feeds: Array<Feed>
+	@Query(Feed.RequestAll(), in: \.store) private var feeds: Array<Feed>
 	@Environment(\.store) var store: Store
 	@Environment(\.dismiss) var dismiss
 	@EnvironmentObject var navigation: Navigation
-	
 	
 	var body: some View {
 		VStack(alignment: .leading, spacing: .zero) {

@@ -18,25 +18,15 @@ final class Store {
 	
 	/// - Parameter testName: Name, used in unit tests to create in memory database without sync
 	init(testName: String? = nil) throws {
-		var configuration = Configuration()
-		configuration.publicStatementArguments = true
-		configuration.prepareDatabase {
-			$0.trace {
-				if $0.description.hasPrefix("PRAGMA") ||
-				   $0.description.hasPrefix("BEGIN") ||
-				   $0.description.hasPrefix("COMMIT") {
-					return
-				}
-				Logger.store.trace("\($0.description)")
-			}
-		}
 		if let testName {
+			var configuration = Configuration()
+			configuration.publicStatementArguments = true
+			configuration.prepareDatabase {
+				$0.trace { Logger.store.trace("\($0.description)") }
+			}
 			queue = try DatabaseQueue(named: testName, configuration: configuration)
 		} else {
-			queue = try DatabaseQueue(
-				path: URL.documents.appendingPathComponent("feeds.db").path,
-				configuration: configuration
-			)
+			queue = try DatabaseQueue(path: URL.documents.appendingPathComponent("feeds.db").path)
 			sync = Sync(store: self)
 		}
 		try databaseMigrator.migrate(queue)

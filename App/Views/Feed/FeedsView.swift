@@ -2,7 +2,7 @@ import SwiftUI
 import GRDBQuery
 
 struct FeedsView: View {
-	@Query(Feed.Request(), in: \.store) private var feeds: Array<Feed>
+	@Query(Feed.RequestAll(), in: \.store) private var feeds: Array<Feed>
 	@Environment(\.store) var store: Store
 	@EnvironmentObject var navigation: Navigation
 	@State private var isImportPresented = false

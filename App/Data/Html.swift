@@ -1,5 +1,11 @@
 import SwiftUI
 
+/// Html provices a wrapper for ``Item``'s content
+///
+/// The CSS style is provided from the bundle
+/// and the theme colours are evaluated using the environment
+/// This enables toggling between dark and light modes
+/// as well as handle elevated background color in split-screen and slideover modes.
 struct Html {
 	let scale: Double
 	let style: String
