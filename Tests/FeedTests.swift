@@ -1,7 +1,11 @@
 import XCTest
 @testable import FeedRadar
 
+import AVKit
+
 final class FeedTests: XCTestCase {
+	
+	// MARK: Test Store
 	private let store = try! Store(testName: "A")
 	
 	private var source: URL {
@@ -14,7 +18,7 @@ final class FeedTests: XCTestCase {
 	
 	override func setUp() async throws {
 		await store.add(feed: Feed(source: source))
-		// TODO: Async fetch is returning before everything has been fetched.
+		// TODO: Check why async fetch is returning before everything has been fetched.
 		try await Task.sleep(nanoseconds: 100_000_000)
 	}
 	
@@ -55,11 +59,27 @@ final class FeedTests: XCTestCase {
 			store.delete(feed: feed)
 			XCTAssert(store.feeds.count == .zero)
 			// Deleting feed should also delete it's items and attachments
-			// Since they are refrenced using foreign keys
+			// as they are refrenced using foreign keys
 			XCTAssert(try store.queue.write { try Item.fetchCount($0) } == .zero)
 			XCTAssert(try store.queue.write { try Attachment.fetchCount($0) } == .zero)
 		} else {
 			XCTFail("Missing Feed")
 		}
+	}
+	
+	// MARK: Test Media
+	
+	var asset: AVAsset {
+		AVAsset(url: Bundle(for: type(of: self)).url(forResource: "podcast", withExtension: "mp3")!)
+	}
+	
+	func testMetadata() async throws {
+		let metadata = try await asset.metadata()
+		XCTAssert(metadata?.count == 14)
+	}
+	
+	func testAssetArtwork() async throws {
+		let artwork = try await asset.artwork()
+		XCTAssert(artwork?.size == CGSize(width: 1500, height: 1500))
 	}
 }

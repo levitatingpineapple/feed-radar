@@ -40,6 +40,7 @@
 		CEB155B52B1A419400AB785C /* Html.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB155B42B1A419400AB785C /* Html.swift */; };
 		CEB836372B20078C00480E39 /* Store.Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB836362B20078C00480E39 /* Store.Feed.swift */; };
 		CEB836392B20086A00480E39 /* Store.Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB836382B20086A00480E39 /* Store.Item.swift */; };
+		CEC3F79F2B46E6DA00DFD49D /* podcast.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CEC3F79E2B46E6DA00DFD49D /* podcast.mp3 */; };
 		CED4617C2B3DA56C00AA8B96 /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4617B2B3DA56C00AA8B96 /* Navigation.swift */; };
 		CEDEC5CD2B0650F700D83636 /* FeedRadarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5CC2B0650F700D83636 /* FeedRadarApp.swift */; };
 		CEDEC5D32B0650F800D83636 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDEC5D22B0650F800D83636 /* Assets.xcassets */; };
@@ -104,6 +105,7 @@
 		CEB155B42B1A419400AB785C /* Html.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Html.swift; sourceTree = "<group>"; };
 		CEB836362B20078C00480E39 /* Store.Feed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.Feed.swift; sourceTree = "<group>"; };
 		CEB836382B20086A00480E39 /* Store.Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.Item.swift; sourceTree = "<group>"; };
+		CEC3F79E2B46E6DA00DFD49D /* podcast.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = podcast.mp3; sourceTree = "<group>"; };
 		CED4617B2B3DA56C00AA8B96 /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
 		CEDEC5C92B0650F700D83636 /* FeedRadar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeedRadar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDEC5CC2B0650F700D83636 /* FeedRadarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedRadarApp.swift; sourceTree = "<group>"; };
@@ -272,6 +274,7 @@
 		CED4617D2B3DCD0800AA8B96 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				CEC3F79E2B46E6DA00DFD49D /* podcast.mp3 */,
 				CE23A0CD2B3BAE2800DC6B76 /* feed.json */,
 			);
 			path = Fixtures;
@@ -283,7 +286,6 @@
 				CEDEC5CB2B0650F700D83636 /* App */,
 				CE23A0C52B3B8BC200DC6B76 /* Tests */,
 				CEDEC5CA2B0650F700D83636 /* Products */,
-				CEC3F7992B46295700DFD49D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -427,6 +429,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE23A0CE2B3BAF4400DC6B76 /* feed.json in Resources */,
+				CEC3F79F2B46E6DA00DFD49D /* podcast.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
