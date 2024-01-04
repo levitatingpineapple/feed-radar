@@ -32,11 +32,11 @@ extension Mapped {
 					   let attachments = jsonItem.attachments {
 						attachments.compactMap { attachment in
 							if let url = attachment.url?.url,
-							   let type = attachment.mimeType?.type {
+							   let type = attachment.mimeType {
 								Attachment(
-									id: (source.absoluteString + itemId).stableHash,
+									itemId: (source.absoluteString + itemId).stableHash,
 									url: url,
-									type: type,
+									mime: type,
 									title: attachment.title
 								)
 							} else { nil }

@@ -14,37 +14,52 @@ final class FeedTests: XCTestCase {
 	
 	override func setUp() async throws {
 		await store.add(feed: Feed(source: source))
+		// TODO: Async fetch is returning before everything has been fetched.
+		try await Task.sleep(nanoseconds: 100_000_000)
 	}
 	
 	func testFeeds() {
-		assert(store.feeds.count == 1)
+		XCTAssert(store.feeds.count == 1)
 	}
 	
 	func testToggleRead() {
 		let isRead = item.isRead
 		store.toggleRead(for: item)
-		assert(item.isRead == !isRead)
+		XCTAssert(item.isRead == !isRead)
 	}
 	
 	func testToggleStarred() {
 		let isStarred = item.isStarred
 		store.toggleStarred(for: item)
-		assert(item.isStarred == !isStarred)
+		XCTAssert(item.isStarred == !isStarred)
 	}
 	
 	func testMarkAsRead() {
-		store.markAsRead(id: item.id)
-		assert(item.isRead)
-		store.markAsRead(id: item.id)
-		assert(item.isRead)
+		store.markAsRead(itemId: item.id)
+		XCTAssert(item.isRead)
+		store.markAsRead(itemId: item.id)
+		XCTAssert(item.isRead)
 	}
 	
 	func testTouchedItems() {
 		store.toggleRead(for: item)
-		assert(store.touchedItems.contains(item))
+		XCTAssert(store.touchedItems.contains(item))
 	}
 	
-	func testAttachments() {
-		assert(store.attachments(id: item.id)?.count == 2)
+	func testAttachmentsCount() {
+		XCTAssert(store.attachments(itemId: item.id)?.count == 2)
+	}
+	
+	func testDeleteFeed() throws {
+		if let feed = store.feeds.first {
+			store.delete(feed: feed)
+			XCTAssert(store.feeds.count == .zero)
+			// Deleting feed should also delete it's items and attachments
+			// Since they are refrenced using foreign keys
+			XCTAssert(try store.queue.write { try Item.fetchCount($0) } == .zero)
+			XCTAssert(try store.queue.write { try Attachment.fetchCount($0) } == .zero)
+		} else {
+			XCTFail("Missing Feed")
+		}
 	}
 }

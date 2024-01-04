@@ -43,16 +43,16 @@ extension Store {
 		Task { await sync?.updated(item) }
 	}
 	
-	func markAsRead(id: Item.ID) {
-		if let item = self.item(id: id), item.isRead == false {
+	func markAsRead(itemId: Item.ID) {
+		if let item = self.item(id: itemId), item.isRead == false {
 			self.toggleRead(for: item)
 		}
 	}
 	
-	func attachments(id: Item.ID) -> Array<Attachment>? {
+	func attachments(itemId: Item.ID) -> Array<Attachment>? {
 		try? queue.write {
 			try Attachment
-				.filter(Attachment.Column.id.column == id)
+				.filter(Attachment.Column.itemId.column == itemId)
 				.fetchAll($0)
 		}
 	}

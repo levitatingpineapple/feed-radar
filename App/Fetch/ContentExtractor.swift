@@ -8,7 +8,7 @@ actor ContentExtractor {
 	static let shared = ContentExtractor()
 	private let readability = Readability()
 	
-	/// Attampts to extract content form item's url and persistes it
+	/// Attampts to extract content form item's url and stores it
 	func extract(item: Item, into store: Store) async throws {
 		if let url = item.url {
 			if var fetchedItem = store.item(id: item.id),

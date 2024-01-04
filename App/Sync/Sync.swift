@@ -15,7 +15,7 @@ protocol SyncDelegate: Actor {
 	func updated(_ item: Item)
 	
 	/// If received changes does not yet have a corresponging item they become orphaned.\
-	/// Store will call this function after fetching a feed, to apply the changes.
+	/// Store will call this function after fetching a feed, to apply retained changes.
 	func processOrphanedRecords(for feed: Feed)
 }
 

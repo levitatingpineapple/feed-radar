@@ -33,7 +33,7 @@ struct NavigationView: View {
 			if scenePhase == .active {
 				store.fetch(after: 300)
 			} else {
-				if let id = navigation.itemId { store.markAsRead(id: id) }
+				if let id = navigation.itemId { store.markAsRead(itemId: id) }
 			}
 		}
 	}

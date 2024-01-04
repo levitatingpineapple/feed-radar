@@ -3,13 +3,7 @@ import Combine
 import GRDB
 import GRDBQuery
 
-struct Item: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord {
-	enum Column: String {
-		case id, source, title, time, author, content, url,
-			 isRead, isStarred, sync, extracted
-		var column: GRDB.Column { GRDB.Column(self.rawValue) }
-	}
-	
+struct Item: Storable {
 	let id: Int64
 	let source: URL
 	let title: String
@@ -22,22 +16,13 @@ struct Item: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord
 	var isStarred: Bool = false
 	var sync: Data?
 	var extracted: String?
-	
-	static func createTable(database: Database) throws {
-		try database.create(table: "item", options: .ifNotExists) {
-			$0.column(Column.id.rawValue, .integer).primaryKey(onConflict: .replace)
-			$0.column(Column.source.rawValue, .text).notNull()
-			$0.column(Column.title.rawValue, .text).notNull()
-			$0.column(Column.time.rawValue, .double)
-			$0.column(Column.author.rawValue, .text)
-			$0.column(Column.content.rawValue, .text)
-			$0.column(Column.url.rawValue, .text)
-			$0.column(Column.isRead.rawValue, .boolean)
-			$0.column(Column.isStarred.rawValue, .boolean)
-			$0.column(Column.sync.rawValue, .blob)
-			$0.column(Column.extracted.rawValue, .text)
-			$0.foreignKey([Column.source.rawValue], references: "feed", onDelete: .cascade)
-		}
+}
+
+extension Item {
+	enum Column: String {
+		case id, source, title, time, author, content, url,
+			 isRead, isStarred, sync, extracted
+		var column: GRDB.Column { GRDB.Column(self.rawValue) }
 	}
 }
 
@@ -66,6 +51,7 @@ extension Item {
 		func publisher(in store: Store) -> AnyPublisher<Int, Error> {
 			ValueObservation.tracking { try filter.items.fetchCount($0) }
 				.publisher(in: store.queue, scheduling: .immediate)
+				.throttle(for: .seconds(1), scheduler: DispatchQueue.main, latest: true)
 				.eraseToAnyPublisher()
 		}
 	}

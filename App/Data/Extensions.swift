@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import UniformTypeIdentifiers
 import os.log
 
 extension Logger {
@@ -29,7 +28,6 @@ extension String {
 	static func iconKey(source: URL) -> String { "icon:" + source.absoluteString }
 	
 	var url: URL? { URL(string: self) }
-	var type: UTType? { UTType(mimeType: self) }
 	func strippingPrefix(_ prefix: String) -> String {
 		hasPrefix(prefix) ? String(dropFirst(prefix.count)) : self
 	}

@@ -5,6 +5,8 @@ import SwiftUI
 ///
 /// Handles navigation state for a given scene.
 /// The navigation state is persisted in user defaults.
+/// Additionally this class is responsible for marking deselected items as read
+/// and updating the badge count.
 final class Navigation: ObservableObject {
 	
 	/// Filters items displayed in ``ItemsView``
@@ -12,7 +14,7 @@ final class Navigation: ObservableObject {
 	/// and further tweaked from ``FilterSettingsView``
 	@Published var filter: Filter?
 	
-	/// Determines content of the detail view
+	/// Determines content of the ``ItemDetailView``
 	@Published var itemId: Item.ID?
 	
 	private var bag = Set<AnyCancellable>()
@@ -34,7 +36,7 @@ final class Navigation: ObservableObject {
 			.removeDuplicates()
 			.scan((Optional<Item.ID>.none, Optional<Item.ID>.none)) { ($0.1, $1) }
 			.sink { (deselected, selected) in
-				if let deselected { self.store.markAsRead(id: deselected) }
+				if let deselected { self.store.markAsRead(itemId: deselected) }
 			}
 			.store(in: &bag)
 		

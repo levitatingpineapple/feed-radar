@@ -27,9 +27,7 @@ extension Store {
 		) ?? true {
 			try? await queue.write { try feed.insert($0) }
 			await fetch(feed: feed)
-			if userInitiated {
-				await self.sync?.added(feed)
-			}
+			if userInitiated { await self.sync?.added(feed) }
 		}
 	}
 	
@@ -128,6 +126,7 @@ extension Store {
 					// 4. Process orphaned sync records
 					Task { await self.sync?.processOrphanedRecords(for: mapped.feed) }
 				}
+				print("🍊")
 			case let .failure(error):
 				Logger.store.error("Parses Error \(error)")
 			}

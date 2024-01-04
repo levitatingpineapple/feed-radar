@@ -100,7 +100,7 @@ struct ItemView: View {
 							ShareLink(item: url)
 						}
 						Button(role: .destructive ) {
-							store.attachments(id: item.id)?.forEach {
+							store.attachments(itemId: item.id)?.forEach {
 								AttachmentsFetcher.shared.remove(local: $0)
 							}
 						} label: { Label("Remove attachments", systemImage: "paperclip") }

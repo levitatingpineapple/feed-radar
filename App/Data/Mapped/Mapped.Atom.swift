@@ -13,11 +13,11 @@ extension Mapped {
 			),
 			items: atom.entries.flatMap {
 				$0.compactMap { atomEntrie in
-					atomEntrie.id.flatMap { itemId in
+					atomEntrie.id.flatMap { entrieId in
 						Item(
-							id: (source.absoluteString + itemId).stableHash,
+							id: (source.absoluteString + entrieId).stableHash,
 							source: source,
-							title: atomEntrie.title ?? itemId,
+							title: atomEntrie.title ?? entrieId,
 							time: (atomEntrie.updated ?? atomEntrie.published)?.timeIntervalSince1970,
 							author: atomEntrie.authors?
 								.compactMap { $0.name?.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -30,15 +30,15 @@ extension Mapped {
 			} ?? Array<Item>(),
 			attachments: atom.entries.flatMap {
 				$0.compactMap { atomEntrie in
-					if let itemId = atomEntrie.id,
+					if let entrieId = atomEntrie.id,
 					   let mediaContents = atomEntrie.media?.mediaContents {
 						mediaContents.compactMap { mediaContent in
 							if let url = mediaContent.attributes?.url?.url,
-							   let type = mediaContent.attributes?.type?.type {
+							   let type = mediaContent.attributes?.type {
 								Attachment(
-									id: (source.absoluteString + itemId).stableHash,
+									itemId: (source.absoluteString + entrieId).stableHash,
 									url: url,
-									type: type,
+									mime: type,
 									title: mediaContent.mediaTitle?.value
 								)
 							} else { nil }

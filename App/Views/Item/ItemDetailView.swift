@@ -70,7 +70,7 @@ struct ItemDetailView: View {
 			).string,
 			title: item.title,
 			url: (item.url ?? item.source),
-			request: Attachment.Request(id: item.id),
+			request: Attachment.Request(itemId: item.id),
 			scale: $scale
 		).ignoresSafeArea()
 	}

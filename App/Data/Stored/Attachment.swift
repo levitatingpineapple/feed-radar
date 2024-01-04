@@ -5,18 +5,23 @@ import GRDBQuery
 import CryptoKit
 import UniformTypeIdentifiers
 
-struct Attachment: Hashable {
-	enum Column: String {
-		case id, url, type, title
-		var column: GRDB.Column { GRDB.Column(self.rawValue) }
-	}
-	
-	let id: Item.ID
+/// A storable type that represents ``Item``'s attachment
+struct Attachment: Storable {
+	/// The ID of the ``Item`` this attachment belongs to
+	let itemId: Item.ID
+	/// URL where attachments contents are locaed, this uniquely identifies the attachment
 	let url: URL
-	let type: UTType
+	/// MIME type of the attachment
+	let mime: String?
+	/// Title that is displayed above the preview
 	let title: String?
 	
-	
+	/// Attachment's uniform type identifier is used to choosing how to preview it.
+	var type: UTType {
+		mime.flatMap { UTType(mimeType: $0) } ?? .item
+	}
+	/// A unique local attachment URL in app's `documents/attachments` directory\
+	/// File extension is added for QuickLook compatibility
 	var localUrl: URL {
 		URL.documents.appendingPathComponent(
 			"attachments/" +
@@ -27,47 +32,28 @@ struct Attachment: Hashable {
 		)
 	}
 	
-	static func createTable(database: Database) throws {
-		try database.create(table: "attachment", options: .ifNotExists) {
-			$0.column(Column.id.rawValue).notNull()
-			$0.column(Column.url.rawValue).notNull()
-			$0.column(Column.type.rawValue)
-			$0.column(Column.title.rawValue)
-			$0.primaryKey([Column.url.rawValue], onConflict: .replace)
-			$0.foreignKey([Column.id.rawValue], references: "item", onDelete: .cascade)
-		}
-	}
+	var id: Int { url.hashValue }
 }
 
-extension Attachment: FetchableRecord {
-	init(row: GRDB.Row) throws {
-		id = row[Column.id.rawValue]
-		url = row[Column.url.rawValue]
-		type = UTType(row[Column.type.rawValue])!
-		title = row[Column.title.rawValue]
-	}
-}
-
-extension Attachment: PersistableRecord {
-	func encode(to container: inout GRDB.PersistenceContainer) throws {
-		container[Column.id.rawValue] = id
-		container[Column.url.rawValue] = url
-		container[Column.type.rawValue] = type.identifier
-		container[Column.title.rawValue] = title
+extension Attachment {
+	enum Column: String {
+		case itemId, url, mime, title
+		var column: GRDB.Column { GRDB.Column(self.rawValue) }
 	}
 }
 
 extension Attachment {
+	/// A request to fetch all attachments of an item
 	struct Request: Queryable {
 		static var defaultValue = Array<Attachment>()
 		
-		let id: Item.ID
+		let itemId: Item.ID
 		
 		func publisher(in store: Store) -> AnyPublisher<Array<Attachment>, Error> {
 			ValueObservation
 				.tracking {
 					try Attachment
-						.filter(Column.id.column == id)
+						.filter(Column.itemId.column == itemId)
 						.fetchAll($0)
 				}
 				.publisher(in: store.queue, scheduling: .immediate)

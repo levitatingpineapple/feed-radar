@@ -3,32 +3,30 @@ import Combine
 import GRDB
 import GRDBQuery
 
-struct Feed: Hashable, Identifiable, Codable, FetchableRecord, PersistableRecord {
-	enum Column: String {
-		case source, title, icon
-		var column: GRDB.Column { GRDB.Column(self.rawValue) }
-	}
-	
+/// A storable type represent any feed
+struct Feed: Storable {
+	/// Source URL of the feed which uniquely identifies it
 	let source: URL
 	let title: String?
 	let icon: URL?
 	
-	var id: Int { source.hashValue }
-	var iconData: Data? { UserDefaults.standard.data(forKey: .iconKey(source: source)) }
+	var id: URL { source }
 	
-	static func createTable(database: Database) throws {
-		try database.create(table: "feed", options: .ifNotExists) {
-			$0.column(Column.source.rawValue, .text).notNull()
-			$0.column(Column.title.rawValue, .text)
-			$0.column(Column.icon.rawValue, .text)
-			$0.primaryKey([Column.source.rawValue], onConflict: .replace)
-		}
+	var iconData: Data? {
+		UserDefaults.standard.data(forKey: .iconKey(source: source))
 	}
 }
 
 extension Feed {
 	init(source: URL) {
 		self = Feed(source: source, title: nil, icon: nil)
+	}
+}
+
+extension Feed {
+	enum Column: String {
+		case source, title, icon
+		var column: GRDB.Column { GRDB.Column(self.rawValue) }
 	}
 }
 
