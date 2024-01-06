@@ -82,7 +82,7 @@ extension ContentViewController.ViewController: WKNavigationDelegate {
 	) {
 		if let url = navigationAction.request.url,
 		   // External url which is not an iframe opened in browser
-		   url != self.url && navigationAction.targetFrame?.isMainFrame == true {
+		   url != self.url && navigationAction.targetFrame?.isMainFrame != false {
 			decisionHandler(.cancel)
 			UIApplication.shared.open(url)
 		} else {
