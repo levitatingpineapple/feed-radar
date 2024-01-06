@@ -65,7 +65,7 @@ struct AttachmentView: View {
 		Group {
 			if attachment.type.conforms(to: .image) {
 				RemoteImageView(
-					url: attachment.url,
+					url: url,
 					type: attachment.type,
 					invalidateSize: invalidateSize
 				)

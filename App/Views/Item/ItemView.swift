@@ -1,17 +1,20 @@
 import SwiftUI
 import GRDBQuery
 
+/// Loads ``ItemView`` lazily
+///
+/// Technically this shoul not be needed, but SwiftUI seems to call
+/// `DynamicProperty.update()` for all list items instantly, not as they are dequed.
 struct LazyItemView: View {
 	let showsFeed: Bool
 	let id: Item.ID
-	
 	@State private var showsItem: Bool = false
 	
 	var body: some View {
 		if showsItem {
 			ItemView(
-				item: Query(Item.RequestSingle(id: id), in: \.store),
-				showsFeed: showsFeed
+				showsFeed: showsFeed,
+				item: Query(Item.RequestSingle(id: id), in: \.store)
 			)
 		} else {
 			Color.clear.onAppear { showsItem = true }
@@ -20,9 +23,10 @@ struct LazyItemView: View {
 }
 
 struct ItemView: View {
+	let showsFeed: Bool
+	@EnvironmentObject var navigation: Navigation
 	@Environment(\.store) var store: Store
 	@Query<Item.RequestSingle> var item: Item?
-	let showsFeed: Bool
 	
 	func tags(item: Item) -> some View {
 		ZStack(alignment: .trailing) {
@@ -32,7 +36,6 @@ struct ItemView: View {
 					Image(systemName: "star.fill").resizable().scaledToFit()
 						.frame(width: 14, height: 14)
 						.foregroundColor(.orange)
-						
 				}
 				if !item.isRead {
 					Image(systemName: "circle.fill").resizable().scaledToFit()
@@ -101,8 +104,10 @@ struct ItemView: View {
 						}
 						Button(role: .destructive ) {
 							store.attachments(itemId: item.id)?.forEach { attachment in
-//								AttachmentsFetcher.shared.remove(local: $0)
+								try? FileManager.default.removeItem(at: attachment.localUrl)
 							}
+							/// Resend navigation state, to trigger ``AttachmentView`` redraw
+							navigation.objectWillChange.send()
 						} label: { Label("Remove attachments", systemImage: "paperclip") }
 					}
 				)

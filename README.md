@@ -73,7 +73,7 @@ This project would not be possible without:
 - [FeedKit](https://github.com/nmdias/FeedKit)\
 Handles the complex world of feed decoding
 - [Readablity](https://github.com/mozilla/readability)\
-The library - used in [Firefox Reader View](https://support.mozilla.org/en-US/kb/firefox-reader-view-clutter-free-web-pages) enables article "extraction
+The library - used in [Firefox Reader View](https://support.mozilla.org/en-US/kb/firefox-reader-view-clutter-free-web-pages) enables article extraction
 - [GRDB](https://github.com/groue/GRDB.swift)\
 A robust SQLite toolkit
 

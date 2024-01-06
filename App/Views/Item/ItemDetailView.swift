@@ -1,24 +1,6 @@
 import SwiftUI
 import GRDBQuery
 
-struct ItemDeatilWrapperView: View {
-	@Query<Item.RequestSingle> var item: Item?
-	
-	init(id: Item.ID) {
-		_item = Query(
-			Binding(
-				get: { Item.RequestSingle(id: id) },
-				set: { _ in }
-			),
-			in: \.store
-		)
-	}
-	
-	var body: some View {
-		if let item { ItemDetailView(item: item) }
-	}
-}
-
 struct ItemDetailView: View {
 	enum Display: Int {
 		case content
@@ -117,5 +99,24 @@ struct SystemImageButton: View {
 			.foregroundColor(color)
 			.boxed(padded: true)
 			.onTapGesture(perform: action)
+	}
+}
+
+/// ``ItemDetailView`` wrapper that handles emtpy state
+struct ItemDeatilWrapperView: View {
+	@Query<Item.RequestSingle> var item: Item?
+	
+	init(id: Item.ID) {
+		_item = Query(
+			Binding(
+				get: { Item.RequestSingle(id: id) },
+				set: { _ in }
+			),
+			in: \.store
+		)
+	}
+	
+	var body: some View {
+		if let item { ItemDetailView(item: item) }
 	}
 }

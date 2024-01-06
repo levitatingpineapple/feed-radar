@@ -3,10 +3,10 @@ import GRDBQuery
 
 struct ItemListView: View {
 	let filter: Filter
-	@Query<Item.RequestIDs> var itemIds: Array<Item.ID>
 	@State var isFilterSettingsPresented = false
-	@Environment(\.store) var store: Store
 	@EnvironmentObject var navigation: Navigation
+	@Environment(\.store) var store: Store
+	@Query<Item.RequestIDs> var itemIds: Array<Item.ID>
 	
 	init(filter: Filter) {
 		self.filter = filter

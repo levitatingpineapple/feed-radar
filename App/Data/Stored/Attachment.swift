@@ -37,17 +37,17 @@ struct Attachment: Storable {
 		self.type = mime.flatMap { UTType(mimeType: $0) } ?? .item
 		self.localUrl = URL.documents.appendingPathComponent(
 			"attachments/" +
-			SHA256.hash(data: url.dataRepresentation)
-				.compactMap { String(format: "%02x", $0) }
-				.joined() + "/" + url.lastPathComponent,
+			String(format: "%02x/", url.absoluteString.stableHash) +
+			url.lastPathComponent,
 			conformingTo: type
 		)
 	}
 }
 
 extension Attachment {
-	enum CodingKeys: CodingKey {
+	enum CodingKeys: String, CodingKey {
 		case itemId, url, mime, title
+		var column: GRDB.Column { GRDB.Column(self.rawValue) }
 	}
 	
 	init(from decoder: Decoder) throws {
@@ -70,13 +70,6 @@ extension Attachment {
 }
 
 extension Attachment {
-	enum Column: String {
-		case itemId, url, mime, title
-		var column: GRDB.Column { GRDB.Column(self.rawValue) }
-	}
-}
-
-extension Attachment {
 	/// A request to fetch all attachments of an item
 	struct Request: Queryable {
 		static var defaultValue = Array<Attachment>()
@@ -87,7 +80,7 @@ extension Attachment {
 			ValueObservation
 				.tracking(
 					Attachment
-						.filter(Column.itemId.column == itemId)
+						.filter(CodingKeys.itemId.column == itemId)
 						.fetchAll
 				)
 				.publisher(in: store.queue, scheduling: .immediate)

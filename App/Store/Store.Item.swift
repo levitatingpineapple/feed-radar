@@ -52,7 +52,7 @@ extension Store {
 	func attachments(itemId: Item.ID) -> Array<Attachment>? {
 		try? queue.write {
 			try Attachment
-				.filter(Attachment.Column.itemId.column == itemId)
+				.filter(Attachment.CodingKeys.itemId.column == itemId)
 				.fetchAll($0)
 		}
 	}

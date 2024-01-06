@@ -24,6 +24,7 @@ final class Navigation: ObservableObject {
 	init(store: Store) {
 		self.store = store
 		
+		// Persist selected filter
 		filter = UserDefaults.standard
 			.data(forKey: .filterKey)
 			.flatMap { Filter(rawValue: $0) }
@@ -32,6 +33,7 @@ final class Navigation: ObservableObject {
 			.sink { UserDefaults.standard.setValue($0?.rawValue, forKey: .filterKey) }
 			.store(in: &bag)
 		
+		// Mark deseledted as read
 		$itemId
 			.removeDuplicates()
 			.scan((Optional<Item.ID>.none, Optional<Item.ID>.none)) { ($0.1, $1) }
@@ -40,6 +42,7 @@ final class Navigation: ObservableObject {
 			}
 			.store(in: &bag)
 		
+		// Update app icon badge
 		Item.RequestCount(filter: Filter(isRead: false))
 			.publisher(in: self.store)
 			.replaceError(with: .zero)
