@@ -64,7 +64,11 @@ struct AttachmentView: View {
 	var mediaPreview: some View {
 		Group {
 			if attachment.type.conforms(to: .image) {
-				RemoteImageView(url: attachment.url, invalidateSize: invalidateSize)
+				RemoteImageView(
+					url: attachment.url,
+					type: attachment.type,
+					invalidateSize: invalidateSize
+				)
 			} else if attachment.type.conforms(to: .audiovisualContent) {
 				VStack {
 					PlayerViewController(

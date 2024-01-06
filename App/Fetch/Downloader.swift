@@ -21,6 +21,7 @@ class Downloader: NSObject, ObservableObject {
 		downloadTask?.resume()
 	}
 	
+	/// Cancels existing download task and returns to initial state.
 	func cancel() {
 		downloadTask?.cancel()
 		self.state = .ready
