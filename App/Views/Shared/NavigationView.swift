@@ -9,10 +9,10 @@ struct NavigationView: View {
 	
 	var body: some View {
 		NavigationSplitView(columnVisibility: $navigationSplitViewVisibility) {
-			FeedsView()
+			FeedListView()
 		} content: {
 			if let filter = navigation.filter {
-				ItemsView(filter: filter)
+				ItemListView(filter: filter)
 			}
 		} detail: {
 			if let id = navigation.itemId {

@@ -8,6 +8,7 @@ class FeedFetcher {
 	/// Global instance
 	static let shared = FeedFetcher()
 	
+	// TODO: Potential crash. Dictionary access should be thread safe.
 	private var loadingSubjects = Dictionary<URL, CurrentValueSubject<Bool, Never>>()
 	
 	/// Returns a publisher that emits download status for a given feed.

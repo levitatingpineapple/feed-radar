@@ -15,15 +15,27 @@ struct Attachment: Storable {
 	let mime: String?
 	/// Title which is displayed above the preview
 	let title: String?
-	
 	/// Attachment's uniform type identifier is used to choosing how to preview it.
-	var type: UTType {
-		mime.flatMap { UTType(mimeType: $0) } ?? .item
-	}
+	var type: UTType
 	/// A unique local attachment URL in app's `documents/attachments` directory\
 	/// File extension is added for QuickLook compatibility
-	var localUrl: URL {
-		URL.documents.appendingPathComponent(
+	var localUrl: URL
+	/// Unique identifier
+	var id: Int
+	
+	init(
+		itemId: Item.ID,
+		url: URL,
+		mime: String? = nil,
+		title: String? = nil
+	) {
+		self.itemId = itemId
+		self.url = url
+		self.mime = mime
+		self.title = title
+		self.id = url.hashValue
+		self.type = mime.flatMap { UTType(mimeType: $0) } ?? .item
+		self.localUrl = URL.documents.appendingPathComponent(
 			"attachments/" +
 			SHA256.hash(data: url.dataRepresentation)
 				.compactMap { String(format: "%02x", $0) }
@@ -31,8 +43,30 @@ struct Attachment: Storable {
 			conformingTo: type
 		)
 	}
+}
+
+extension Attachment {
+	enum CodingKeys: CodingKey {
+		case itemId, url, mime, title
+	}
 	
-	var id: Int { url.hashValue }
+	init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: CodingKeys.self)
+		self = Attachment(
+			itemId: try container.decode(Item.ID.self, forKey: .itemId),
+			url: try container.decode(URL.self, forKey: .url),
+			mime: try container.decodeIfPresent(String.self, forKey: .mime),
+			title: try container.decodeIfPresent(String.self, forKey: .title)
+		)
+	}
+	
+	func encode(to encoder: Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(self.itemId, forKey: .itemId)
+		try container.encode(self.url, forKey: .url)
+		try container.encodeIfPresent(self.mime, forKey: .mime)
+		try container.encodeIfPresent(self.title, forKey: .title)
+	}
 }
 
 extension Attachment {

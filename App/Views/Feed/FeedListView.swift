@@ -1,7 +1,7 @@
 import SwiftUI
 import GRDBQuery
 
-struct FeedsView: View {
+struct FeedListView: View {
 	@Query(Feed.RequestAll(), in: \.store) private var feeds: Array<Feed>
 	@Environment(\.store) var store: Store
 	@EnvironmentObject var navigation: Navigation

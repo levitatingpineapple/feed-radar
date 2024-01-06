@@ -1,79 +1,97 @@
 import SwiftUI
+import QuickLook
 
-struct AttachmentView<Selector: View>: View {
-	let attachment: Attachment
+struct AttachmentView: View {
+	var attachment: Attachment
 	let invalidateSize: () -> Void
-	@State private var aspectRatio: Double = 16 / 9
+	@State private var quickLook: URL?
+	@State private var playerAspectRatio: Double = 16 / 9
 	@Environment(\.store) var store: Store
 	@EnvironmentObject var navigation: Navigation
-	@ViewBuilder var selector: () -> Selector
+	@StateObject private var downloader = Downloader()
 	
 	var url: URL {
-		if case let .completed(url) = AttachmentsFetcher.shared.tasks[attachment.url] {
-			url
-		} else {
+		switch downloader.state {
+		case .loading:
 			attachment.url
+		default:
+			if FileManager.default.fileExists(atPath: attachment.localUrl.path) {
+				attachment.localUrl
+			} else {
+				attachment.url
+			}
 		}
+	}
+	
+	var quickLookButton: some View {
+		Button {
+			quickLook = attachment.localUrl
+		} label: {
+			Image(systemName: "eye").resizable().scaledToFit()
+		}.quickLookPreview($quickLook)
+	}
+	
+	var progressButton: some View {
+		Group {
+			if url == attachment.url {
+				switch downloader.state {
+				case .ready:
+					Button {
+						downloader.load(from: attachment.url, localUrl: attachment.localUrl)
+					} label: {
+						Image(systemName: "arrow.down.circle").resizable().scaledToFit()
+					}
+				case let .loading(progress):
+					CircularProgressView(width: 24 / 10, progress: progress)
+						.contentShape(Rectangle())
+						.onTapGesture { downloader.cancel() }
+				case .success:
+					quickLookButton
+				case .error:
+					Button {
+						downloader.load(from: attachment.url, localUrl: attachment.localUrl)
+					} label: {
+						Image(systemName: "exclamationmark.circle").resizable().scaledToFit()
+							.foregroundColor(.red)
+					}
+				}
+			} else {
+				quickLookButton
+			}
+		}.frame(width: 24, height: 24)
+	}
+	
+	var mediaPreview: some View {
+		Group {
+			if attachment.type.conforms(to: .image) {
+				RemoteImageView(url: attachment.url, invalidateSize: invalidateSize)
+			} else if attachment.type.conforms(to: .audiovisualContent) {
+				VStack {
+					PlayerViewController(
+						url: url,
+						item: navigation.itemId.flatMap { store.item(id: $0) },
+						aspectRatio: $playerAspectRatio
+					)
+					.aspectRatio(playerAspectRatio, contentMode: .fit)
+					.onChange(of: playerAspectRatio) { invalidateSize() }
+				}
+			}
+		}.clipShape(
+			UnevenRoundedRectangle(topLeadingRadius: 17, topTrailingRadius: 17)
+		).padding(1)
 	}
 	
 	var body: some View {
 		VStack(spacing: .zero) {
-			HStack {
-				DownloadView(attachment: attachment)
-				Text(attachment.title ?? attachment.url.lastPathComponent)
-					.lineLimit(1)
-					.truncationMode(.head)
+			mediaPreview
+			HStack(alignment: .bottom) {
+				Text(attachment.title ?? attachment.url.lastPathComponent).frame(minHeight: 24)
 				Spacer()
-				selector()
+				progressButton
 			}.padding(10)
-			Group {
-				if attachment.type.conforms(to: .image) {
-					AsyncImage(url: url) {
-						switch $0 {
-						case .success(let image):
-							image
-								.resizable()
-								.aspectRatio(contentMode: .fit)
-								.onAppear { invalidateSize() }
-						default:
-							EmptyView()
-						}
-					}
-				} else if attachment.type.conforms(to: .audiovisualContent) {
-					VStack {
-						PlayerViewController(
-							url: url,
-							item: navigation.itemId.flatMap { store.item(id: $0) },
-							aspectRatio: $aspectRatio
-						)
-						.aspectRatio(aspectRatio, contentMode: .fit)
-						.onChange(of: aspectRatio) { invalidateSize() }
-					}
-					
-				}
-			}.clipShape(
-				UnevenRoundedRectangle(bottomLeadingRadius: 17, bottomTrailingRadius: 17)
-			).padding(1)
-			
 		}
 		.background(Color(.secondarySystemBackground))
 		.cornerRadius(16)
-		.onAppear { AttachmentsFetcher.shared.load(local: attachment) }
-		.onChange(of: attachment) {
-			aspectRatio = 16 / 9
-			AttachmentsFetcher.shared.load(local: attachment)
-		}
+		.onChange(of: attachment) { playerAspectRatio = 16 / 9 }
 	}
-	
-//	private func checkLocalFile() {
-//		Task {
-//			if FileManager.default.fileExists(
-//				atPath: attachment.localUrl.path
-//			) && attachments.tasks[attachment.url] == nil {
-//				DispatchQueue.main.async {
-//					attachments.tasks[attachment.url] = .completed(attachment.localUrl)
-//				}
-//			}
-//		}
-//	}
 }

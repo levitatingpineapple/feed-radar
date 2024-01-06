@@ -18,7 +18,7 @@ extension Mapped {
 						source: source,
 						title: rssItem.title ?? guid,
 						time: rssItem.pubDate?.timeIntervalSince1970,
-						author: rssItem.author ?? rss.items?.first?.dublinCore?.dcCreator,
+						author: rssItem.author ?? rssItem.dublinCore?.dcCreator,
 						content: rssItem.content?.contentEncoded ?? rssItem.description,
 						url: rssItem.link?.url
 					)
@@ -26,17 +26,34 @@ extension Mapped {
 			},
 			attachments: rss.items.flatMap {
 				$0.compactMap { rssItem in
-					if let guid = rssItem.guid?.value,
-					   let url = rssItem.enclosure?.attributes?.url?.url,
-					   let type = rssItem.enclosure?.attributes?.type {
-						Attachment(
-							itemId: (source.absoluteString + guid).stableHash,
-							url: url,
-							mime: type,
-							title: nil
-						)
-					} else { nil }
-				}
+					{
+						if let guid = rssItem.guid?.value,
+						   let url = rssItem.enclosure?.attributes?.url?.url,
+						   let type = rssItem.enclosure?.attributes?.type {
+							[Attachment(
+								itemId: (source.absoluteString + guid).stableHash,
+								url: url,
+								mime: type,
+								title: nil
+							)]
+						} else { Array<Attachment>() }
+					}() + {
+						if let guid = rssItem.guid?.value,
+						   let mediaContents = rssItem.media?.mediaContents {
+							mediaContents.compactMap { mediaContent in
+								if let url = mediaContent.attributes?.url?.url,
+								   let type = mediaContent.attributes?.type {
+									Attachment(
+										itemId: (source.absoluteString + guid).stableHash,
+										url: url,
+										mime: type,
+										title: mediaContent.mediaDescription?.value
+									)
+								} else { nil }
+							}
+						} else { Array<Attachment>() }
+					}()
+				}.flatMap { $0 }
 			} ?? Array<Attachment>()
 		)
 	}

@@ -42,7 +42,7 @@ extension Mapped {
 							} else { nil }
 						}
 					} else { nil }
-				} .flatMap { $0 }
+				}.flatMap { $0 }
 			} ?? Array<Attachment>()
 		)
 	}

@@ -28,9 +28,13 @@ extension String {
 	static func iconKey(source: URL) -> String { "icon:" + source.absoluteString }
 	
 	var url: URL? { URL(string: self) }
+	
+	/// - Returns: String without the prefix
 	func strippingPrefix(_ prefix: String) -> String {
 		hasPrefix(prefix) ? String(dropFirst(prefix.count)) : self
 	}
+	
+	/// A simple hashing hash that is not randomly seeded
 	var stableHash: Int64 {
 		Int64(
 			bitPattern: self
@@ -71,15 +75,6 @@ extension URL {
 		} else {
 			return nil
 		}
-	}
-}
-
-
-extension Int {
-	static func hashValues(_ values: (any Hashable)...) -> Int {
-		var hasher = Hasher()
-		values.forEach { hasher.combine($0) }
-		return hasher.finalize()
 	}
 }
 

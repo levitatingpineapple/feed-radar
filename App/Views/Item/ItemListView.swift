@@ -1,7 +1,7 @@
 import SwiftUI
 import GRDBQuery
 
-struct ItemsView: View {
+struct ItemListView: View {
 	let filter: Filter
 	@Query<Item.RequestIDs> var itemIds: Array<Item.ID>
 	@State var isFilterSettingsPresented = false
