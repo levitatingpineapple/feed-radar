@@ -98,7 +98,7 @@ extension Store {
 							.filter(Feed.Column.source.column == source)
 							.fetchOne($0)
 					) {
-						try? mapped.feed.insert($0)
+						try? mapped.feed.upsert($0)
 						Task {
 							if let iconUrl = mapped.feed.icon,
 							   let iconData = try? Data(contentsOf: iconUrl),

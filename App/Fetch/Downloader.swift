@@ -1,5 +1,6 @@
 import Foundation
 
+/// A simple downloader that publishes it's progress
 class Downloader: NSObject, ObservableObject {
 	@Published var state: State = .ready
 	private var downloadTask: URLSessionDownloadTask?

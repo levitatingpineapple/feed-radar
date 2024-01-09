@@ -3,15 +3,21 @@ import AVKit
 
 struct PlayerViewController: UIViewControllerRepresentable {
 	let url: URL
+	
 	/// Used to display title and feed artwork in the lock screen
 	let item: Item?
-	/// Aspect ratio is set after loading asset's video track
-	@Binding var aspectRatio: Double
+	
+	/// Created injected and observed by the parent.
+	/// Coordinator's lifecycle managed using StateObject.
+	weak var chapterCoordinator: ChapterCoordinator!
+	
+	func makeCoordinator() -> ChapterCoordinator { chapterCoordinator }
 	
 	func makeUIViewController(context: Context) -> AVPlayerViewController {
 		try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
 		let playerViewController = AVPlayerViewController()
 		playerViewController.player = AVPlayer()
+		context.coordinator.set(playerViewController)
 		return playerViewController
 	}
 	
@@ -26,9 +32,14 @@ struct PlayerViewController: UIViewControllerRepresentable {
 		context: Context
 	) {
 		if let player = playerViewController.player {
+			
+			// Clean up the player
+			player.pause()
 			player.seek(to: .zero)
 			player.replaceCurrentItem(with: nil)
-			(playerViewController.contentOverlayView?.subviews.first as? UIImageView)?.image = nil
+			playerViewController.artworkView?.image = nil
+			
+			// Create new Item and apply external lockscreen metadata
 			let playerItem = AVPlayerItem(url: url)
 			if let item {
 				let title = AVMutableMetadataItem()
@@ -43,20 +54,26 @@ struct PlayerViewController: UIViewControllerRepresentable {
 				}
 			}
 			player.replaceCurrentItem(with: playerItem)
+			
+			// Load aspect ratio from video track
 			Task { [weak player] in
 				if let tracks = try? await player?.currentItem?.asset.load(.tracks) {
 					for track in tracks {
 						let naturalSize = try await track.load(.naturalSize)
 						if naturalSize != .zero {
-							aspectRatio = naturalSize.width / naturalSize.height
+							context.coordinator.aspectRatio = naturalSize.width / naturalSize.height
 							break
 						}
 					}
 				}
 			}
 			
-			// Display Album art
+			// Load Metadata
+			// TODO: Apply artwork image, only if no video track if found
 			Task {
+				let metadataLoader = MetadataLoader()
+				context.coordinator.metadata = try? await metadataLoader.metadata(url: url)
+
 				if let overlayView = playerViewController.contentOverlayView {
 					if overlayView.subviews.isEmpty {
 						let imageView = UIImageView()
@@ -71,10 +88,10 @@ struct PlayerViewController: UIViewControllerRepresentable {
 							imageView.bottomAnchor.constraint(equalTo: overlayView.bottomAnchor)
 						])
 					}
-					if let artwork = try? await playerItem.asset.artwork() {
-						(playerViewController.contentOverlayView?.subviews.first as! UIImageView).image = artwork
+					if let artwork = chapterCoordinator?.metadata?.artwork {
+						playerViewController.artworkView?.image = artwork
 						if artwork.size.height != .zero {
-							aspectRatio = artwork.size.height / artwork.size.height
+							context.coordinator.aspectRatio = artwork.size.height / artwork.size.height
 						}
 					}
 				}
@@ -82,25 +99,18 @@ struct PlayerViewController: UIViewControllerRepresentable {
 		}
 	}
 }
-extension AVAsset {
-	
-	func metadata() async throws -> Array<AVMetadataItem>? {
-		try await withCheckedThrowingContinuation { continuation in
-			loadMetadata(for: .id3Metadata) { metadata, error in
-				if let error {
-					continuation.resume(throwing: error)
-				} else {
-					continuation.resume(returning: metadata)
-				}
-			}
-		}
+
+extension AVPlayerViewController {
+	var artworkView: UIImageView? {
+		contentOverlayView?.subviews.first as? UIImageView
 	}
-	
-	func artwork() async throws -> UIImage? {
-		try await metadata()?
-			.filter { $0.commonKey == .commonKeyArtwork }
-			.first?
-			.load(.dataValue)
-			.flatMap { UIImage(data: $0) }
+}
+
+extension CMTime {
+	init(timeInterval: TimeInterval) {
+		self = CMTime(
+			seconds: timeInterval,
+			preferredTimescale: CMTimeScale(NSEC_PER_SEC)
+		)
 	}
 }

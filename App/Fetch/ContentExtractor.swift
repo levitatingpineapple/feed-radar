@@ -1,7 +1,7 @@
 import WebKit
 
 /// Provides a way to extract the content of a web page
-/// using Mozilla's Readability.js project
+/// using Mozilla's Readability.js
 actor ContentExtractor {
 	
 	/// Global instance

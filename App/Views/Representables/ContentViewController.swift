@@ -18,7 +18,7 @@ struct ContentViewController: UIViewControllerRepresentable {
 		_ viewController: ViewController,
 		context: Context
 	) {
-		viewController.attachmentsController.rootView = AttachmentListView(
+		viewController.attachmentsController.rootView = AttachmentsView(
 			title: title,
 			request: request,
 			scale: scale
@@ -35,7 +35,7 @@ struct ContentViewController: UIViewControllerRepresentable {
 
 extension ContentViewController {
 	class ViewController: UIViewController {
-		let attachmentsController = UIHostingController<AttachmentListView?>(rootView: .none)
+		let attachmentsController = UIHostingController<AttachmentsView?>(rootView: .none)
 		let webView = WKWebView()
 		var url: URL?
 		private var observation: NSKeyValueObservation?
@@ -80,12 +80,13 @@ extension ContentViewController.ViewController: WKNavigationDelegate {
 		decidePolicyFor navigationAction: WKNavigationAction,
 		decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
 	) {
-		if let url = navigationAction.request.url,
-		   // External url which is not an iframe opened in browser
-		   url != self.url && navigationAction.targetFrame?.isMainFrame != false {
+		switch navigationAction.navigationType {
+		case .linkActivated:
 			decisionHandler(.cancel)
-			UIApplication.shared.open(url)
-		} else {
+			if let url = navigationAction.request.url {
+				UIApplication.shared.open(url)
+			}
+		default:
 			decisionHandler(.allow)
 		}
 	}

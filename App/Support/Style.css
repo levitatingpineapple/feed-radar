@@ -60,6 +60,8 @@ img,
 pre>code,
 table,
 video { border-radius: var(--large); }
+ul,
+ol { padding-left: var(--large); }
 pre>code {
 	display: block;
 	overflow-x: auto;

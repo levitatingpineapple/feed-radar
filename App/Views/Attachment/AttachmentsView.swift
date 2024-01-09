@@ -3,7 +3,7 @@ import AVKit
 import UniformTypeIdentifiers
 import GRDBQuery
 
-struct AttachmentListView: View {
+struct AttachmentsView: View {
 	let title: String
 	let scale: Double
 	let invalidateSize: () -> Void

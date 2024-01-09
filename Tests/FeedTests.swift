@@ -58,8 +58,8 @@ final class FeedTests: XCTestCase {
 		if let feed = store.feeds.first {
 			store.delete(feed: feed)
 			XCTAssert(store.feeds.count == .zero)
-			// Deleting feed should also delete it's items and attachments
-			// as they are refrenced using foreign keys
+			// Test that deleting feed also deletes it's items and attachments
+			// since they are refrenced by foreign keys
 			XCTAssert(try store.queue.write { try Item.fetchCount($0) } == .zero)
 			XCTAssert(try store.queue.write { try Attachment.fetchCount($0) } == .zero)
 		} else {
@@ -69,17 +69,14 @@ final class FeedTests: XCTestCase {
 	
 	// MARK: Test Media
 	
-	var asset: AVAsset {
-		AVAsset(url: Bundle(for: type(of: self)).url(forResource: "podcast", withExtension: "mp3")!)
-	}
-	
-	func testMetadata() async throws {
-		let metadata = try await asset.metadata()
-		XCTAssert(metadata?.count == 14)
-	}
-	
-	func testAssetArtwork() async throws {
-		let artwork = try await asset.artwork()
-		XCTAssert(artwork?.size == CGSize(width: 1500, height: 1500))
+	func testMetadataLoader() async throws {
+		let metadataLoader = MetadataLoader()
+		let metadata = try await metadataLoader.metadata(
+			url: Bundle(for: type(of: self)).url(forResource: "podcast", withExtension: "mp3")!
+		)
+		XCTAssert(metadata.artwork?.size == CGSize(width: 1500, height: 1500))
+		XCTAssert(metadata.chapters.count == 6)
+		XCTAssert(metadata.chapters[4].title == "Rambo\'s New Mac")
+		XCTAssert(metadata.chapters[4].artwork?.size == CGSize(width: 1024, height: 1024))
 	}
 }

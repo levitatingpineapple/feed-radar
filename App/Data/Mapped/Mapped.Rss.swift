@@ -9,6 +9,7 @@ extension Mapped {
 				source: source,
 				title: rss.title,
 				icon: rss.image?.url?.url
+				?? rss.iTunes?.iTunesImage?.attributes?.href?.url
 				?? (rss.link?.url ?? source).favicon
 			),
 			items: (rss.items ?? Array<RSSFeedItem>()).compactMap { rssItem in

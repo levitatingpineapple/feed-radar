@@ -5,22 +5,25 @@ struct AttachmentView: View {
 	var attachment: Attachment
 	let invalidateSize: () -> Void
 	@State private var quickLook: URL?
-	@State private var playerAspectRatio: Double = 16 / 9
 	@Environment(\.store) var store: Store
 	@EnvironmentObject var navigation: Navigation
 	@StateObject private var downloader = Downloader()
+	@StateObject private var chapterCoordinator = PlayerViewController.ChapterCoordinator()
 	
-	var url: URL {
-		switch downloader.state {
-		case .loading:
-			attachment.url
-		default:
-			if FileManager.default.fileExists(atPath: attachment.localUrl.path) {
-				attachment.localUrl
-			} else {
-				attachment.url
+	var body: some View {
+		VStack(spacing: .zero) {
+			mediaPreview
+			HStack(alignment: .bottom) {
+				Text(attachment.title ?? attachment.url.lastPathComponent)
+					.frame(minHeight: 24)
+				Spacer()
+				progressButton
 			}
+			.padding(10)
 		}
+		.background(Color(.secondarySystemBackground))
+		.cornerRadius(16)
+		.onChange(of: attachment) { chapterCoordinator.aspectRatio = nil }
 	}
 	
 	var quickLookButton: some View {
@@ -70,32 +73,33 @@ struct AttachmentView: View {
 					invalidateSize: invalidateSize
 				)
 			} else if attachment.type.conforms(to: .audiovisualContent) {
-				VStack {
+				VStack(spacing: .zero) {
 					PlayerViewController(
 						url: url,
 						item: navigation.itemId.flatMap { store.item(id: $0) },
-						aspectRatio: $playerAspectRatio
+						chapterCoordinator: chapterCoordinator
 					)
-					.aspectRatio(playerAspectRatio, contentMode: .fit)
-					.onChange(of: playerAspectRatio) { invalidateSize() }
+					.aspectRatio(chapterCoordinator.aspectRatio ?? 16 / 9, contentMode: .fit)
+					ChaptersView(chapterCoordinator: chapterCoordinator)
 				}
+				.onChange(of: chapterCoordinator.aspectRatio) { invalidateSize() }
+				.onChange(of: chapterCoordinator.metadata) { invalidateSize() }
 			}
-		}.clipShape(
-			UnevenRoundedRectangle(topLeadingRadius: 17, topTrailingRadius: 17)
-		).padding(1)
+		}
+		.clipShape(UnevenRoundedRectangle(topLeadingRadius: 15, topTrailingRadius: 15))
+		.padding(1)
 	}
 	
-	var body: some View {
-		VStack(spacing: .zero) {
-			mediaPreview
-			HStack(alignment: .bottom) {
-				Text(attachment.title ?? attachment.url.lastPathComponent).frame(minHeight: 24)
-				Spacer()
-				progressButton
-			}.padding(10)
+	var url: URL {
+		switch downloader.state {
+		case .loading:
+			attachment.url
+		default:
+			if FileManager.default.fileExists(atPath: attachment.localUrl.path) {
+				attachment.localUrl
+			} else {
+				attachment.url
+			}
 		}
-		.background(Color(.secondarySystemBackground))
-		.cornerRadius(16)
-		.onChange(of: attachment) { playerAspectRatio = 16 / 9 }
 	}
 }
