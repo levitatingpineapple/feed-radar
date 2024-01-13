@@ -1,0 +1,34 @@
+style: { fill: "transparent" }
+direction: left
+item.source -> feed.source
+attachment.id -> item.id
+
+feed: {
+	shape: sql_table
+	source: string {constraint: primary_key}
+	title: int?
+	icоn: int?
+}
+
+item: {
+	shape: sql_table
+	id: int {constraint: primary_key}
+	source: string {constraint: foreign_key}
+	title: string
+	time: int?
+	author: string?
+	content: string?
+	url: string?
+	isRead: bool?
+	isStarred: bool?
+	sync: blob?
+	extracted: string?
+}
+
+attachment: {
+	shape: sql_table
+	id: int {constraint: foreign_key}
+	url: string {constraint: primary_key}
+	type: string?
+	title: string?
+}

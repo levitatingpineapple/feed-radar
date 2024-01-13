@@ -1,0 +1,3 @@
+[submodule "Submodules/Readability"]
+	path = Submodules/Readability
+	url = https://github.com/mozilla/readability.git

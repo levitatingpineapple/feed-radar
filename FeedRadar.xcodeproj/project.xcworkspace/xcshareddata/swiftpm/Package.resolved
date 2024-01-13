@@ -1,0 +1,41 @@
+{
+  "pins" : [
+    {
+      "identity" : "feedkit",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:nmdias/FeedKit.git",
+      "state" : {
+        "revision" : "68493a33d862c33c9a9f67ec729b3b7df1b20ade",
+        "version" : "9.1.2"
+      }
+    },
+    {
+      "identity" : "grdb.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/groue/GRDB.swift.git",
+      "state" : {
+        "revision" : "eacbdf23af4228dea3bd0e5feb17c0f953829c15",
+        "version" : "6.23.0"
+      }
+    },
+    {
+      "identity" : "grdbquery",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/groue/GRDBQuery.git",
+      "state" : {
+        "revision" : "42fef11503d221229ec39201c08316b6930755b2",
+        "version" : "0.8.0"
+      }
+    },
+    {
+      "identity" : "outcastid3",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/CrunchyBagel/OutcastID3.git",
+      "state" : {
+        "revision" : "5643eed68f457e7bbdd684136d5fd5ce5c42abd9",
+        "version" : "0.7.1"
+      }
+    }
+  ],
+  "version" : 2
+}
