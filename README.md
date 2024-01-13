@@ -11,18 +11,6 @@ A modern Feed reader for Apple's platforms with good media support.
 
 ![app](.readme/app.webp)
 
-## Join Public Beta!
-
-<img align="right" src=".readme/testFlight.png"/>
-
-Scan the QR code or visit [**TestFlight**](https://testflight.apple.com/join/kRcbarg4) to try out the app.\
-Supported platforms:
-- `iOS 17.0+`
-- `iPadOS 17.0+`
-- `macOS 14.0+` [^1]
-
-[^1]: Runs in *Designed for iPad* mode. An ARM MacBook required.
-
 ## Features
 
 <img align="left" width="160" src=".readme/media.gif"/>
@@ -53,6 +41,18 @@ Feed Radar can extract articles\
 without relying on any third party services
 
 <br><br><br><br><br><br><br>
+
+## Join Public Beta!
+
+<img align="right" src=".readme/testFlight.png"/>
+
+Scan the QR code or visit [**TestFlight**](https://testflight.apple.com/join/kRcbarg4) to try out the app.\
+Supported platforms:
+- `iOS 17.0+`
+- `iPadOS 17.0+`
+- `macOS 14.0+` [^1]
+
+[^1]: Runs in *Designed for iPad* mode. An ARM MacBook required.
 
 ## Documentation
 
