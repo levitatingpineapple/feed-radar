@@ -139,6 +139,7 @@ extension Store {
 					
 					// 4. Process orphaned sync records
 					Task { await self.sync?.processOrphanedRecords(for: mapped.feed) }
+					
 				}
 			case let .failure(error):
 				Logger.store.error("Parses Error \(error)")

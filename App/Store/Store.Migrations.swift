@@ -24,8 +24,9 @@ extension Store {
 				$0.column("extracted", .text)
 			}
 			try database.create(table: "attachment") {
+				$0.column("id").primaryKey(onConflict: .replace)
 				$0.column("itemId").notNull().references("item", column: "id", onDelete: .cascade)
-				$0.column("url").primaryKey(onConflict: .replace)
+				$0.column("url")
 				$0.column("mime")
 				$0.column("title")
 			}

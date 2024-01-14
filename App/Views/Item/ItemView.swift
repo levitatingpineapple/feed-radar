@@ -103,13 +103,8 @@ struct ItemView: View {
 							ShareLink(item: url)
 						}
 						Button(role: .destructive ) {
-							store.attachments(itemId: item.id)?.forEach { attachment in
-								try? FileManager.default.removeItem(at: attachment.localUrl)
-							}
-							/// Manually navigation state, to trigger ``AttachmentView`` redraw
-							/// since it's not actively observing the folder.
-							navigation.itemId = navigation.itemId
-						} label: { Label("Remove attachments", systemImage: "paperclip") }
+							try? FileManager.default.removeItem(at: .attachments(itemId: item.id))
+						} label: { Label("Remove local attachments", systemImage: "paperclip") }
 					}
 				)
 			}

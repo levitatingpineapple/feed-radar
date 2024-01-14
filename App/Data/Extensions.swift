@@ -56,6 +56,18 @@ extension URL {
 		).first!
 	}
 	
+	static var attachments: URL {
+		URL.documents.appendingPathComponent(
+			"attachments"
+		)
+	}
+	
+	static func attachments(itemId: Item.ID) -> URL {
+		URL.attachments.appendingPathComponent(
+			String(format: "%02x", itemId)
+		)
+	}
+	
 	var favicon: URL? {
 		host(percentEncoded: true).flatMap {
 			var components = URLComponents()

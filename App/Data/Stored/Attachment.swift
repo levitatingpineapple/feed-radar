@@ -7,9 +7,11 @@ import UniformTypeIdentifiers
 
 /// A storable type that represents ``Item``'s attachment
 struct Attachment: Storable {
+	/// Unique identifier created combining attachment's ``url`` with ``Item.ID``
+	let id: Int64
 	/// The ID of the ``Item`` this attachment belongs to
 	let itemId: Item.ID
-	/// URL where attachments contents are locaed, this uniquely identifies the attachment
+	/// URL where attachments contents are located, this uniquely identifies the attachment
 	let url: URL
 	/// MIME type of the attachment
 	let mime: String?
@@ -18,10 +20,8 @@ struct Attachment: Storable {
 	/// Attachment's uniform type identifier is used to choosing how to preview it.
 	var type: UTType
 	/// A unique local attachment URL in app's `documents/attachments` directory\
-	/// File extension is added for QuickLook compatibility
+	/// A file extension is added for QuickLook compatibility
 	var localUrl: URL
-	/// Unique identifier
-	var id: Int
 	
 	init(
 		itemId: Item.ID,
@@ -29,18 +29,18 @@ struct Attachment: Storable {
 		mime: String? = nil,
 		title: String? = nil
 	) {
+		self.id = (url.absoluteString + String(itemId)).stableHash
 		self.itemId = itemId
 		self.url = url
 		self.mime = mime
 		self.title = title
-		self.id = url.hashValue
 		self.type = mime.flatMap { UTType(mimeType: $0) } ?? .item
-		self.localUrl = URL.documents.appendingPathComponent(
-			"attachments/" +
-			String(format: "%02x/", url.absoluteString.stableHash) +
-			url.lastPathComponent,
-			conformingTo: type
-		)
+		self.localUrl = URL
+			.attachments(itemId: itemId)
+			.appendingPathComponent(
+				String(format: "%02x/\(url.lastPathComponent)", id),
+				conformingTo: type
+			)
 	}
 }
 
