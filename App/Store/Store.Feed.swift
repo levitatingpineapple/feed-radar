@@ -101,7 +101,7 @@ extension Store {
 			switch FeedParser(data: data).parse() {
 			case let .success(feed):
 				try? queue.write {
-					let mapped = Mapped(feed: feed, at: source)
+					let mapped = Mapped(parsed: feed, from: source)
 					
 					// 1. If feed has changed, insert and fetch it's icon
 					if mapped.feed != (
@@ -123,19 +123,21 @@ extension Store {
 					}
 					
 					// 2. Merge fetched items with synced state (isRead, isStarred) and insert
-					for var item in mapped.items {
-						if let stored = try? Item.filter(id: item.id).fetchOne($0) {
+					for content in mapped.contents {
+						var item = content.item
+						if let stored = try? Item.filter(id: content.item.id).fetchOne($0) {
 							item.isRead = stored.isRead
 							item.isStarred = stored.isStarred
 							item.sync = stored.sync
 							item.extracted = stored.extracted
-							if stored == item { continue } // Skip unchanged items
 						}
-						try? item.insert($0)
+						try? content.item.insert($0)
+						let _ = try Attachment
+							.filter(Attachment.CodingKeys.itemId.column == item.id)
+							.deleteAll($0)
+						for attachment in content
+							.attachments { try? attachment.insert($0) }
 					}
-					
-					// 3. Insert attachements
-					for attachment in mapped.attachments { try? attachment.insert($0) }
 					
 					// 4. Process orphaned sync records
 					Task { await self.sync?.processOrphanedRecords(for: mapped.feed) }

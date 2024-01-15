@@ -31,5 +31,19 @@ final class Store {
 			sync = Sync(store: self)
 		}
 		try databaseMigrator.migrate(queue)
+		addDemoFeed()
+	}
+	
+	func addDemoFeed() {
+		let key = "demoFeedAdded"
+		if !UserDefaults.standard.bool(forKey: key) {
+			Task {
+				await add(
+					feed: Feed(source: URL(string: "https://levitatingpineapple.com/demo/feed.json")!),
+					userInitiated: false
+				)
+				UserDefaults.standard.setValue(true, forKey: key)
+			}
+		}
 	}
 }

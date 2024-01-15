@@ -77,8 +77,7 @@ extension DateComponentsFormatter {
 extension Array where Element == Metadata.Chapter {
 	init?(description: String, duration: Double) {
 		self = Array<Metadata.Chapter>()
-		
-		var matches = description
+		let matches = description
 			.split(separator: "<br>", maxSplits: 200)
 			.map { Metadata.Chapter.Match(substring: $0) }
 		for (match, nextMatch) in zip(matches, matches.dropFirst() + [nil]) {

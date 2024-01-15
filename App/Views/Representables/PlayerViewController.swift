@@ -12,6 +12,7 @@ struct PlayerViewController: UIViewControllerRepresentable {
 		controller.allowsPictureInPicturePlayback = true
 		if let overlayView = controller.contentOverlayView {
 			overlayView.addSubview(controller.artworkView)
+			controller.artworkView.contentMode = .scaleAspectFit
 			controller.artworkView.translatesAutoresizingMaskIntoConstraints = false
 			NSLayoutConstraint.activate([
 				controller.artworkView.leadingAnchor.constraint(equalTo: overlayView.leadingAnchor),
@@ -24,8 +25,10 @@ struct PlayerViewController: UIViewControllerRepresentable {
 	}
 
 	func updateUIViewController(_ controller: AVPlayerViewController, context: Context) {
-		controller.player = player
-		controller.artworkView.image = artwork
+		DispatchQueue.main.async {
+			controller.player = player
+			controller.artworkView.image = artwork
+		}
 	}
 }
 

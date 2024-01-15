@@ -19,7 +19,9 @@ struct FeedImportView: View {
 				VStack(spacing: 16) {
 					Text("Add Feeds").font(.largeTitle).frame(alignment: .leading)
 					Text("Paste some text that indludes links to feeds. The links must start with ") +
-					Text("http ").foregroundStyle(Color.accentColor).bold() +
+					Text("http:// ").foregroundStyle(Color.accentColor).bold() +
+					Text("or ") +
+					Text("https:// ").foregroundStyle(Color.accentColor).bold() +
 					Text("and be direct links to a feed, as the app does not yet support feed finding")
 					TextEditor(text: $input).cornerRadius(4).border(Color.accentColor)
 					Spacer()

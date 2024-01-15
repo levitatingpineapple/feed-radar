@@ -86,6 +86,8 @@ extension PlayerView {
 				forInterval: CMTime(timeInterval: 1),
 				queue: nil
 			) { [weak self] cmTime in self?.update(time: cmTime.seconds) }
+			
+			// TODO: Theses tasks are creating a leak in `Player.Model`. They can also cause player to fail to load...
 			Task { [weak self] in self?.metadata = try? await MetadataLoader().metadata(url: url) }
 			Task { [weak self] in self?.playerAspectRatio = try? await self?.player.aspectRatio() }
 			Task { [weak self] in

@@ -17,14 +17,12 @@ struct ContentViewController: UIViewControllerRepresentable {
 		_ viewController: ViewController,
 		context: Context
 	) {
-		if viewController.url != item.url {
-			viewController.url = item.url
-			viewController.attachmentsController.rootView = AttachmentsView(
-				item: item,
-				scale: scale
-			) { [weak viewController] in
-				viewController?.attachmentsController.view.invalidateIntrinsicContentSize()
-			}
+		viewController.url = item.url
+		viewController.attachmentsController.rootView = AttachmentsView(
+			item: item,
+			scale: scale
+		) { [weak viewController] in
+			viewController?.attachmentsController.view.invalidateIntrinsicContentSize()
 		}
 		viewController.webView.loadHTMLString(
 			Html(
@@ -52,21 +50,27 @@ struct ContentViewController: UIViewControllerRepresentable {
 extension ContentViewController {
 	class ViewController: UIViewController {
 		let attachmentsController = UIHostingController<AttachmentsView?>(rootView: .none)
-		let webView = WKWebView()
 		var url: URL?
 		private var observation: NSKeyValueObservation?
 		
-		deinit { observation = nil }
+		var webView: WKWebView { view as! WKWebView }
+		
+		deinit {
+			attachmentsController.rootView = .none
+			attachmentsController.removeFromParent()
+			observation = nil
+		}
 		
 		required init?(coder: NSCoder) { fatalError() }
 		
 		init() {
 			super.init(nibName: nil, bundle: nil)
 			super.viewDidLoad()
-			view = webView
+			view = WKWebView()
 			webView.navigationDelegate = self
 			webView.isOpaque = false
 			webView.backgroundColor = .clear
+			view = webView
 			addChild(attachmentsController)
 			attachmentsController.view.backgroundColor = .clear
 			webView.scrollView.addSubview(attachmentsController.view)
@@ -77,12 +81,12 @@ extension ContentViewController {
 			
 			// Updates content inset based height of the attachments, as they load.
 			observation = attachmentsController.view.observe(\.bounds, options: [.new]) { [weak self] (view, change) in
-				if let self,
+				if let webView = self?.webView,
 				   let webContentHeight = change.newValue?.height,
-				   webContentHeight != self.webView.scrollView.contentInset.top {
-					self.webView.scrollView.contentInset.top = webContentHeight
-					self.webView.scrollView.setContentOffset(
-						CGPoint(x: .zero, y: -(self.webView.safeAreaInsets.top + webContentHeight)),
+				   webContentHeight != webView.scrollView.contentInset.top {
+					webView.scrollView.contentInset.top = webContentHeight
+					webView.scrollView.setContentOffset(
+						CGPoint(x: .zero, y: -(webView.safeAreaInsets.top + webContentHeight)),
 						animated: false
 					)
 				}

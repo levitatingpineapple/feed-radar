@@ -2,6 +2,7 @@ import SwiftUI
 import WebKit
 import SafariServices
 
+/// Embeds `SFSafariViewController` with a fallback to basig `WKWebView` when app runs on mac
 struct SafariViewController: UIViewControllerRepresentable {
 	let url: URL
 	
