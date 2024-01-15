@@ -125,13 +125,15 @@ extension Store {
 					// 2. Merge fetched items with synced state (isRead, isStarred) and insert
 					for content in mapped.contents {
 						var item = content.item
+						var itemChanged = true
 						if let stored = try? Item.filter(id: content.item.id).fetchOne($0) {
 							item.isRead = stored.isRead
 							item.isStarred = stored.isStarred
 							item.sync = stored.sync
 							item.extracted = stored.extracted
+							itemChanged = item != stored
 						}
-						try? content.item.insert($0)
+						if itemChanged { try? item.insert($0) }
 						let _ = try Attachment
 							.filter(Attachment.CodingKeys.itemId.column == item.id)
 							.deleteAll($0)
