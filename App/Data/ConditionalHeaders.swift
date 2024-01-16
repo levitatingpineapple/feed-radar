@@ -18,21 +18,21 @@ struct ConditionalHeaders: Codable {
 	/// Extracts ``ConditionalHeaders`` from a `URLResponse`
 	/// - Parameter response: Response must be `HTTPURLResponse`
 	init?(response: URLResponse, source: URL) {
-		if let httpReponse = response as? HTTPURLResponse {
+		if let httpResponse = response as? HTTPURLResponse {
 			self.source = source
-			lastModified = httpReponse.value(forHTTPHeaderField: "last-modified")
-			etag = httpReponse.value(forHTTPHeaderField: "etag")
+			lastModified = httpResponse.value(forHTTPHeaderField: "last-modified")
+			etag = httpResponse.value(forHTTPHeaderField: "etag")
 			if etag == nil && lastModified == nil { return nil } 
 		} else {
 			return nil
 		}
 	}
 	
-	/// Request, decorated with headers for conditionaly fetching feeds
+	/// Request, decorated with headers for conditionally fetching feeds
 	///
-	/// Only one of two headers is used with ``lastModified``
+	/// Only one of two headers is used with `lastModified`
 	/// being the preferred one, 
-	/// as various servers require different formatting for the ``etag``
+	/// as various servers require different formatting for the `etag`
 	/// like removing the `W/` (weak etag) prefix or surrounding quotes.
 	var request: URLRequest {
 		var request = URLRequest(

@@ -7,7 +7,7 @@ import UniformTypeIdentifiers
 
 /// A storable type that represents ``Item``'s attachment
 struct Attachment: Storable {
-	/// Unique identifier created combining attachment's ``url`` with ``Item.ID``
+	/// Unique identifier created combining attachment's ``url`` with `Item.ID`
 	let id: Int64
 	/// The ID of the ``Item`` this attachment belongs to
 	let itemId: Item.ID

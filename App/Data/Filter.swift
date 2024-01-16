@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-/// Filters ``Item`` list. Used by ``Item.RequestIDs`` and ``Item.RequestCount``
+/// Filters ``Item`` list. Used by `Item.RequestIDs` and `Item.RequestCount`
 struct Filter: Hashable, Codable {
 	var feed: Feed? = nil
 	var isRead: Bool? = nil

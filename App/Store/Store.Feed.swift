@@ -31,7 +31,7 @@ extension Store {
 		}
 	}
 	
-	/// Removes feed from database, deletes it's attachments and prefrences
+	/// Removes feed from database, deletes it's attachments and preferences
 	/// - Parameters:
 	///   - feed: Feed to remove
 	///   - userInitiated: Only syncs is initiated by user to prevent feedback loops

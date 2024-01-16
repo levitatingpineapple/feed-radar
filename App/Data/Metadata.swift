@@ -93,7 +93,7 @@ extension Array where Element == Metadata.Chapter {
 						append(Metadata.Chapter(match: match, endTime: nextMatch.startTime))
 					}
 				} else if !isEmpty {
-					// Last chaper
+					// Last chapter
 					if duration >= match.startTime {
 						append(Metadata.Chapter(match: match, endTime: duration))
 						return

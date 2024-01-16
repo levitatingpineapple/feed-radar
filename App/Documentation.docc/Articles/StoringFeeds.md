@@ -10,8 +10,26 @@ How feeds are persisted in database
 
 ## Overview
 
-Some overview here
+- All database write operations are handled by ``Store`` class.
+- Each feed is ``Mapped`` into three types ``Feed``, ``Item`` and ``Attachment``\
+that conform to ``Storable`` protocol.
+- Every subsequent type has one-to-many relationship with the previous one.
+- The database serves as *source-of-truth* and drives the UI using `GRDB.ValueObservation`
 
-### Database Schema
+### Schema
+
+All foreign key references are set to cascade on delete.
 
 ![Schema](schema)
+
+## Topics
+
+### Essentials
+
+- <doc:FetchingFeeds>
+- <doc:Syncing>
+
+### Integration
+
+- ``Store``
+- ``Storable``

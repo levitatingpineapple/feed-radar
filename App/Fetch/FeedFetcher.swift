@@ -19,7 +19,7 @@ actor FeedFetcher {
 		}
 	}
 	
-	/// Concurently and consequetively fetches feeds. 
+	/// Concurrently and consecutively fetches feeds.
 	/// Runs a partial completion after each worker finishes.
 	///
 	/// - Parameters:

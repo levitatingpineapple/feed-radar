@@ -10,7 +10,7 @@ import SwiftUI
 @Observable
 final class Navigation {
 	
-	/// Filters items displayed in ``ItemsView``
+	/// Filters items displayed in ``ItemListView``
 	/// Various filters can be selected from the sidebar
 	/// and further tweaked from ``FilterSettingsView``
 	var filter: Filter?

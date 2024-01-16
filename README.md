@@ -1,13 +1,13 @@
-![License](https://img.shields.io/github/license/levitatingpineapple/feed)
-![Tests](https://img.shields.io/github/actions/workflow/status/levitatingpineapple/feed/tests.yml?label=tests)
-![Documentation](https://img.shields.io/github/actions/workflow/status/levitatingpineapple/feed/docc.yml?label=docc)
-![Version](https://img.shields.io/github/v/tag/levitatingpineapple/feed?label=version)
+![License](https://img.shields.io/github/license/levitatingpineapple/feed-radar)
+![Tests](https://img.shields.io/github/actions/workflow/status/levitatingpineapple/feed-radar/tests.yml?label=tests)
+![Documentation](https://img.shields.io/github/actions/workflow/status/levitatingpineapple/feed-radar/docc.yml?label=docc)
+![Version](https://img.shields.io/github/v/tag/levitatingpineapple/feed-radar?label=version)
 
 <div align=center>
 <img src=".readme/banner.png" />
 </div>
 
-A modern Feed reader for Apple's platforms with good media support.
+A modern Feed reader for Apple's platforms with rich media support.
 
 ![app](.readme/app.webp)
 
@@ -15,11 +15,12 @@ A modern Feed reader for Apple's platforms with good media support.
 
 <img align="left" width="160" src=".readme/media.gif"/>
 
-### Multiple Attachments
+### Media Attachments
 
-Stream Video and Audio. Preview Images.\
+Stream video, audio or view images.\
 Save for offline use.\
-**QuickLook** and **ShareSheet** integration.
+**QuickLook** and **ShareSheet** integration.\
+**ID3** Chapters with chapter art.
 
 <br><br><br><br><br><br><br>
 
@@ -28,7 +29,8 @@ Save for offline use.\
 ### Parallel Fetch
 
 Simultaneously fetching multiple feeds\
-makes for a fast refresh even with many feeds.
+combined with [conditional requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Conditional_requests)\
+makes for a fast refresh even with many sources added.
 
 <br><br><br><br><br><br><br><br>
 
@@ -76,6 +78,8 @@ Handles the complex world of feed decoding
 The library - used in [Firefox Reader View](https://support.mozilla.org/en-US/kb/firefox-reader-view-clutter-free-web-pages) enables article extraction
 - [GRDB](https://github.com/groue/GRDB.swift)\
 A robust SQLite toolkit
+- [OutcastID3](https://github.com/CrunchyBagel/OutcastID3)\
+ID3 Metadata Parser
 
 ## Roadmap
 
@@ -84,4 +88,3 @@ Some of the core functionality is yet to be added, such as:
 
 - Finding feed url from a website
 - Grouping feeds in folders
-- [Conditional GET](https://developer.mozilla.org/en-US/docs/Web/HTTP/Conditional_requests)

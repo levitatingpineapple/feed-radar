@@ -1,2 +1,8 @@
-#  <#Title#>
-
+style: { fill: "transparent" }
+shape: sequence_diagram
+App -> Server: Sends an unconditional request
+App <- Server: Responds, possibly including\nthe last time contents where\nupdated and/or entity tag
+App.Persists last update\ntime and entity tag locally
+App -> Server: Sends an request\nincluding persisted headers
+Server.Checks if content is newer than\nlast-modified and/or entity tag is not matching
+App <- Server: Responds conditionally with either\n 304 (not modified) or 200 (Success)

@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-/// Batches writes to the database threrefore reducing UI updates.
+/// Batches writes to the database therefore reducing UI updates.
 /// Useful, if device has many updates to apply
 class ItemUpdateBatcher {
 	private let subject = PassthroughSubject<Item, Never>()

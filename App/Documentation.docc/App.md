@@ -1,12 +1,12 @@
 # ``FeedRadar``
 
-A modern Feed reader for Apple's plaforms with good media support.
+A modern Feed reader for Apple's platforms with good media support.
 
 @Metadata {
 	@PageImage(purpose: icon, source: "appIcon")
 }
 
-### Fetaured
+### Featured
 
 @Links(visualStyle: compactGrid) {
 	- <doc:FetchingFeeds>

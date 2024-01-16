@@ -1,7 +1,7 @@
 style: { fill: "transparent" }
 direction: left
 item.source -> feed.source
-attachment.id -> item.id
+attachment.itemId -> item.id
 
 feed: {
 	shape: sql_table
@@ -12,8 +12,8 @@ feed: {
 
 item: {
 	shape: sql_table
-	id: int {constraint: primary_key}
 	source: string {constraint: foreign_key}
+	id: int {constraint: primary_key}
 	title: string
 	time: int?
 	author: string?
@@ -27,8 +27,9 @@ item: {
 
 attachment: {
 	shape: sql_table
-	id: int {constraint: foreign_key}
-	url: string {constraint: primary_key}
+	itemId: int {constraint: foreign_key}
+	id: int {constraint: primary_key}
+	url: string
 	type: string?
 	title: string?
 }
