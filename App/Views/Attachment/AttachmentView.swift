@@ -13,7 +13,7 @@ struct AttachmentView: View {
 		VStack(spacing: .zero) {
 			mediaPreview
 			HStack(alignment: .bottom) {
-				Text(attachment.title ?? attachment.url.lastPathComponent)
+				Text(attachment.title ?? attachment.localUrl.lastPathComponent)
 					.frame(minHeight: 24)
 				Spacer()
 				progressButton

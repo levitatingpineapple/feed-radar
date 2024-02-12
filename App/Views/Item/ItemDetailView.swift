@@ -47,9 +47,7 @@ struct ItemDetailView: View {
 		VStack(spacing: .zero) {
 			switch display {
 			case .content:
-				if let content = item.content {
-					contentView(content)
-				}
+				contentView(item.content ?? String())
 			case .extractedContent:
 				if let extracted = item.extracted {
 					contentView(extracted)
@@ -90,8 +88,8 @@ struct SystemImageButton: View {
 	}
 }
 
-/// ``ItemDetailView`` wrapper that handles emtpy state
-struct ItemDeatilWrapperView: View {
+/// ``ItemDetailView`` wrapper that handles empty state
+struct ItemDetailWrapperView: View {
 	@Query<Item.RequestSingle> var item: Item?
 	
 	init(id: Item.ID) {

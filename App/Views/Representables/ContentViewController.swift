@@ -17,7 +17,6 @@ struct ContentViewController: UIViewControllerRepresentable {
 		_ viewController: ViewController,
 		context: Context
 	) {
-		viewController.url = item.url
 		viewController.attachmentsController.rootView = AttachmentsView(
 			item: item,
 			scale: scale
@@ -50,7 +49,6 @@ struct ContentViewController: UIViewControllerRepresentable {
 extension ContentViewController {
 	class ViewController: UIViewController {
 		let attachmentsController = UIHostingController<AttachmentsView?>(rootView: .none)
-		var url: URL?
 		private var observation: NSKeyValueObservation?
 		
 		var webView: WKWebView { view as! WKWebView }

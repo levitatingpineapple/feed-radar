@@ -9,7 +9,7 @@ actor FeedFetcher {
 	/// Returns a publisher that emits download status for a given feed.
 	///
 	/// - Parameter source: Source URL of the feed
-	/// - Returns: Dwnload state publisher
+	/// - Returns: Download's state publisher
 	func isLoading(source: URL) -> CurrentValueSubject<Bool, Never> {
 		if let publisher = loadingSubjects[source] {
 			return publisher

@@ -16,7 +16,7 @@ struct NavigationView: View {
 			}
 		} detail: {
 			if let id = navigation.itemId {
-				ItemDeatilWrapperView(id: id)
+				ItemDetailWrapperView(id: id)
 			}
 		}
 		.task {
