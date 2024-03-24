@@ -7,9 +7,17 @@
 <img src=".readme/banner.png" />
 </div>
 
-A modern Feed reader for Apple's platforms with rich media support.
+A modern Feed reader for Apple's platforms with pretty good media support.
 
 ![app](.readme/app.webp)
+
+## Why?
+
+With most recommendation algorithms evolving into [engagement maximizers](https://medium.com/understanding-recommenders/whats-right-and-what-s-wrong-with-optimizing-for-engagement-5abaac021851) and spam generation becoming both cheaper and more effective, compiling feeds locally has once again become an enticing solution for ensuring high quality information.
+
+However, the media format is always changing. It's not just blogs and news articles anymore. While feed protocols do have enough flexibility to support rich media formats, the same can't be said about the software which implements them.
+
+The goal of this project it to provide comparable user experience to that of centralized feeds by leveraging already existing features of open standards.
 
 ## Features
 
@@ -38,7 +46,7 @@ makes for a fast refresh even with many sources added.
 
 ### Article Extraction
 
-Some feeds does not include full content.\
+Some feeds do not include full content.\
 Feed Radar can extract articles\
 without relying on any third party services
 
@@ -85,8 +93,8 @@ ID3 Metadata Parser
 
 ## Roadmap
 
-⚠️ The project is still in a very early stage.
+⚠️ The project is still in a very early stage. Expect bugs.
 Some of the core functionality is yet to be added, such as:
 
-- Finding feed url from a website
+- Finding feed's URL from a website
 - Grouping feeds in folders
