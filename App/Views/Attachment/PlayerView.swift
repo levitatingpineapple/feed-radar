@@ -3,7 +3,7 @@ import AVKit
 
 struct PlayerView: View {
 	let invalidateSize: () -> Void
-	@State var model: Model
+	let model: Model
 	
 	var body: some View {
 		VStack(spacing: .zero) {
@@ -65,7 +65,7 @@ extension PlayerView {
 		private var playerAspectRatio: Double?
 		/// Observes player position and updates ``currentTime`` and ``currentChapter``
 		private var timeObserver: Any?
-		/// Used to prevent observer updating ``currentTime`` durin seek
+		/// Used to prevent observer updating ``currentTime`` during seek
 		private var isSeeking = false
 		
 		init(url: URL, item: Item) {
@@ -82,26 +82,34 @@ extension PlayerView {
 				playerItem.externalMetadata.append(image)
 			}
 			self.player = AVPlayer(playerItem: playerItem)
-			player.addPeriodicTimeObserver(
+			timeObserver = player.addPeriodicTimeObserver(
 				forInterval: CMTime(timeInterval: 1),
 				queue: nil
 			) { [weak self] cmTime in self?.update(time: cmTime.seconds) }
 			
-			// TODO: Theses tasks are creating a leak in `Player.Model`. They can also cause player to fail to load...
-			Task { [weak self] in self?.metadata = try? await MetadataLoader().metadata(url: url) }
-			Task { [weak self] in self?.playerAspectRatio = try? await self?.player.aspectRatio() }
-			Task { [weak self] in
-				if let content = item.content,
-				   let duration = try? await self?.player.duration() {
+			Task { @MainActor [weak self] in self?.metadata = try? await MetadataLoader().metadata(url: url) }
+			Task { @MainActor [weak self] in self?.playerAspectRatio = try? await self?.player.aspectRatio() }
+			Task { @MainActor [weak self] in
+				if let content = item.content {
 					self?.descriptionChapters = Array<Metadata.Chapter>(
-						description: content,
-						duration: duration
+						description: content
 					)
+					if let duration = try? await self?.player.duration() {
+						if let lastChapter = self?.descriptionChapters?.popLast() {
+							self?.descriptionChapters?.append(
+								lastChapter.ending(in: duration)
+							)
+						}
+					}
 				}
 			}
 		}
 		
 		deinit {
+			// TODO: The player is not getting deallocated, investigate the memory leak
+			player.pause()
+			player.seek(to: .zero)
+			player.replaceCurrentItem(with: nil)
 			if let timeObserver { player.removeTimeObserver(timeObserver) }
 		}
 		
@@ -129,7 +137,7 @@ extension PlayerView {
 			if let newCurrentChapter = chapters?
 				.first(where: { time < $0.endTime && time >= $0.startTime }) {
 				/// Set ``currentChapter`` manually, so that views
-				/// which dont display time don't have to redraw on every ``currentTime`` update
+				/// which do not display time don't have to redraw on every ``currentTime`` update
 				if newCurrentChapter != currentChapter { currentChapter = newCurrentChapter }
 			}
 		}

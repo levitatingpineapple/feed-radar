@@ -17,6 +17,9 @@ struct Metadata: Hashable, Equatable {
 }
 
 extension Metadata {
+	
+	/// A Struct representing a section in some time based media
+	/// It associates an optional title and artwork with a timerange
 	struct Chapter: Hashable, Equatable, Identifiable {
 		let startTime: TimeInterval
 		let endTime: TimeInterval
@@ -25,6 +28,16 @@ extension Metadata {
 		
 		var id: TimeInterval { startTime }
 		var duration: TimeInterval { endTime - startTime }
+
+		/// Returns a new chapter with a updated end time
+		func ending(in endTime: TimeInterval) -> Chapter {
+			Chapter(
+				startTime: self.startTime,
+				endTime: endTime,
+				title: self.title,
+				artwork: self.artwork
+			)
+		}
 	}
 }
 
@@ -75,7 +88,9 @@ extension DateComponentsFormatter {
 }
 
 extension Array where Element == Metadata.Chapter {
-	init?(description: String, duration: Double) {
+
+	/// Generates metadata chapters from a video `description`
+	init?(description: String) {
 		self = Array<Metadata.Chapter>()
 		let matches = description
 			.split(separator: "<br>", maxSplits: 200)
@@ -94,12 +109,7 @@ extension Array where Element == Metadata.Chapter {
 					}
 				} else if !isEmpty {
 					// Last chapter
-					if duration >= match.startTime {
-						append(Metadata.Chapter(match: match, endTime: duration))
-						return
-					} else {
-						return nil // Chapters that are longer than duration are invalid
-					}
+					append(Metadata.Chapter(match: match, endTime: match.startTime))
 				}
 			} else if !isEmpty {
 				return // Return on first line which is not chapter

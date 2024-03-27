@@ -45,7 +45,7 @@ final class Navigation {
 				self?.filter?.rawValue,
 				forKey: .filterKey
 			)
-			self?.itemId = nil
+			self?.itemId = nil // Changing filter deselects item
 			self?.persistFilter()
 		}
 	}

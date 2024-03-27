@@ -54,6 +54,7 @@
 		CEDEC5E82B06809000D83636 /* SafariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5E72B06809000D83636 /* SafariViewController.swift */; };
 		CEDEFFE72B17695000AC9623 /* NavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEFFE62B17695000AC9623 /* NavigationView.swift */; };
 		CEDFBB282B1D0BE9009607BC /* FilterSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDFBB272B1D0BE9009607BC /* FilterSettingsView.swift */; };
+		CEE1734D2BB41EF100F6B0BA /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE1734C2BB41EF100F6B0BA /* LogView.swift */; };
 		CEE41B412B0833C1005E0289 /* FeedImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE41B402B0833C1005E0289 /* FeedImportView.swift */; };
 		CEED7B8A2B0B9AB2004B29C6 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEED7B892B0B9AB2004B29C6 /* Store.swift */; };
 		CEF02BF32B432180007842A5 /* FeedKit in Frameworks */ = {isa = PBXBuildFile; productRef = CEF02BF22B432180007842A5 /* FeedKit */; };
@@ -125,6 +126,7 @@
 		CEDEC5E72B06809000D83636 /* SafariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariViewController.swift; sourceTree = "<group>"; };
 		CEDEFFE62B17695000AC9623 /* NavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationView.swift; sourceTree = "<group>"; };
 		CEDFBB272B1D0BE9009607BC /* FilterSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSettingsView.swift; sourceTree = "<group>"; };
+		CEE1734C2BB41EF100F6B0BA /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		CEE41B402B0833C1005E0289 /* FeedImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImportView.swift; sourceTree = "<group>"; };
 		CEED7B892B0B9AB2004B29C6 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CEF02BFA2B448A06007842A5 /* Readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = Readability.js; path = Submodules/Readability/Readability.js; sourceTree = SOURCE_ROOT; };
@@ -203,6 +205,7 @@
 				CE1D89EF2B232F2C00CC2CFF /* LoadingOverlayView.swift */,
 				CE32192F2B50A7E400490F02 /* PlayerViewController.swift */,
 				CEDEC5E72B06809000D83636 /* SafariViewController.swift */,
+				CEE1734C2BB41EF100F6B0BA /* LogView.swift */,
 			);
 			path = Representables;
 			sourceTree = "<group>";
@@ -510,6 +513,7 @@
 				CE351BF32B0D3873006FF948 /* Feed.swift in Sources */,
 				CEDEC5E82B06809000D83636 /* SafariViewController.swift in Sources */,
 				CE76F89F2B1262FE007ED642 /* Sync.swift in Sources */,
+				CEE1734D2BB41EF100F6B0BA /* LogView.swift in Sources */,
 				CEDEC5CD2B0650F700D83636 /* FeedRadarApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
