@@ -100,13 +100,12 @@ final class FeedTests: XCTestCase {
 	func testChaptersFromTextValid() {
 		XCTAssert(
 			Array<Metadata.Chapter>(
-				description: "0:00 A<br>0:01 B<br>0:02 C<br>0:03 D",
-				duration: 4
+				description: "0:00 A<br>0:01 B<br>0:02 C<br>0:03 D"
 			) == [
 				Metadata.Chapter(startTime: 0, endTime: 1, title: "A", artwork: nil),
 				Metadata.Chapter(startTime: 1, endTime: 2, title: "B", artwork: nil),
 				Metadata.Chapter(startTime: 2, endTime: 3, title: "C", artwork: nil),
-				Metadata.Chapter(startTime: 3, endTime: 4, title: "D", artwork: nil)
+				Metadata.Chapter(startTime: 3, endTime: 3, title: "D", artwork: nil)
 			],
 			"These chapters should be valid"
 		)
@@ -115,13 +114,12 @@ final class FeedTests: XCTestCase {
 	func testChaptersFromTextEmptyLine() {
 		XCTAssert(
 			Array<Metadata.Chapter>(
-				description: "0:00 A<br>0:01 B<br>0:02 C<br>0:03 D<br>NOT A CHAPTER<br>0:04 E",
-				duration: 4
+				description: "0:00 A<br>0:01 B<br>0:02 C<br>0:03 D<br>NOT A CHAPTER<br>0:04 E"
 			) == [
 				Metadata.Chapter(startTime: 0, endTime: 1, title: "A", artwork: nil),
 				Metadata.Chapter(startTime: 1, endTime: 2, title: "B", artwork: nil),
 				Metadata.Chapter(startTime: 2, endTime: 3, title: "C", artwork: nil),
-				Metadata.Chapter(startTime: 3, endTime: 4, title: "D", artwork: nil)
+				Metadata.Chapter(startTime: 3, endTime: 3, title: "D", artwork: nil)
 			],
 			"Decoding must stop at first line, which is not a chapter"
 		)
@@ -130,8 +128,7 @@ final class FeedTests: XCTestCase {
 	func testChaptersFromTextStartTime() {
 		XCTAssert(
 			Array<Metadata.Chapter>(
-				description: "0:01 A<br>0:02 B<br>0:03 C<br>0:04 D",
-				duration: 5
+				description: "0:01 A<br>0:02 B<br>0:03 C<br>0:04 D"
 			) == nil,
 			"Chapters must start from 0:00"
 		)
@@ -140,8 +137,7 @@ final class FeedTests: XCTestCase {
 	func testChaptersFromTextOrdering() {
 		XCTAssert(
 			Array<Metadata.Chapter>(
-				description: "0:01 A<br>0:03 B<br>0:02 C<br>0:04 D",
-				duration: 5
+				description: "0:01 A<br>0:03 B<br>0:02 C<br>0:04 D"
 			) == nil,
 			"Chapters must be ordered"
 		)
@@ -150,13 +146,12 @@ final class FeedTests: XCTestCase {
 	func testChaptersFromTextOrderingTimeFormatting() {
 		XCTAssert(
 			Array<Metadata.Chapter>(
-				description: "0:00 A<br>12:34 B<br>1:23:45 C<br>12:34:56 D",
-				duration: 50000
+				description: "0:00 A<br>12:34 B<br>1:23:45 C<br>12:34:56 D"
 			) == [
 				Metadata.Chapter(startTime: 0, endTime: 754, title: "A", artwork: nil),
 				Metadata.Chapter(startTime: 754, endTime: 5025, title: "B", artwork: nil),
 				Metadata.Chapter(startTime: 5025, endTime: 45296, title: "C", artwork: nil),
-				Metadata.Chapter(startTime: 45296, endTime: 50000, title: "D", artwork: nil)
+				Metadata.Chapter(startTime: 45296, endTime: 45296, title: "D", artwork: nil)
 			],
 			"Chapters can have various time formatting"
 		)
@@ -169,8 +164,7 @@ final class FeedTests: XCTestCase {
 		for (description, chaptersCount) in zip(descriptions, [42, 5, 7]) {
 			XCTAssert(
 				Array<Metadata.Chapter>(
-					description: description,
-					duration: .infinity
+					description: description
 				)?.count == chaptersCount,
 				"Description sample chapter count should match"
 			)
