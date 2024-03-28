@@ -70,14 +70,17 @@ final class FeedTests: XCTestCase {
 	func testDeleteFeed() throws {
 		if let feed = store.feeds.first {
 			store.delete(feed: feed)
-			XCTAssert(store.feeds.count == .zero)
+			XCTAssert(
+				store.feeds.count == .zero,
+				"Deleting Feed must remove it from database"
+			)
 			XCTAssert(
 				try store.queue.write { try Item.fetchCount($0) } == .zero,
-				"Items should be removed due to foreign key refrence to `Feed`"
+				"Items should be removed due to foreign key reference to `Feed`"
 			)
 			XCTAssert(
 				try store.queue.write { try Attachment.fetchCount($0) } == .zero,
-				"Atachments should be removed due to foreign key refrence to `Item`"
+				"Attachments should be removed due to foreign key reference to `Item`"
 			)
 		} else {
 			XCTFail("Missing Feed")
