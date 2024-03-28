@@ -36,23 +36,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CEDEC5C82B0650F700D83636"
-            BuildableName = "FeedRadar.app"
-            BlueprintName = "FeedRadar"
-            ReferencedContainer = "container:FeedRadar.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
-   </LaunchAction>
-   <ProfileAction
-      buildConfiguration = "Release"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      savedToolIdentifier = ""
-      useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES">
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
@@ -62,6 +45,13 @@
             ReferencedContainer = "container:FeedRadar.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+   </LaunchAction>
+   <ProfileAction
+      buildConfiguration = "Release"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      debugDocumentVersioning = "YES">
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
