@@ -5,17 +5,17 @@ import GRDBQuery
 
 struct AttachmentsView: View {
 	let item: Item
-	let scale: Double
+	@Binding var scale: Double
 	let invalidateSize: () -> Void
 	@Query<Attachment.Request> var attachments: Array<Attachment>
 	
 	init(
 		item: Item,
-		scale: Double,
+		scale: Binding<Double>,
 		invalidateSize: @escaping () -> Void = { }
 	) {
 		self.item = item
-		self.scale = scale
+		self._scale = scale
 		self.invalidateSize = invalidateSize
 		_attachments = Query(
 			Binding(
@@ -28,7 +28,7 @@ struct AttachmentsView: View {
 	
 	var body: some View {
 		VStack(alignment: .leading, spacing: 16) {
-			Text(item.title).font(.largeTitle).bold()
+			Text(item.title).font(.title).bold()
 			if attachments.isEmpty {
 				Divider()
 			} else {
@@ -43,7 +43,6 @@ struct AttachmentsView: View {
 				attachmentView(6)
 				attachmentView(7)
 				if attachments.count > 8 {
-		// }
 					ForEach(attachments[8...]) {
 						AttachmentView(
 							item: item,

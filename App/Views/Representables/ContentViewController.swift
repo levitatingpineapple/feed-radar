@@ -2,10 +2,16 @@ import UIKit
 import SwiftUI
 import WebKit
 
+// TODO: Filter out environment updates
+// The environment is used to infer the colors used by the `WebView`
+// Observing it however will cause many unneeded updates
+fileprivate var oldItem: Item? = nil
+fileprivate var oldHtml: Html? = nil
+
 struct ContentViewController: UIViewControllerRepresentable {
 	let display: ItemDetailView.Display
 	let item: Item
-	@Environment(\.self) var environmentValues
+	@Environment(\.self) var environment
 	@Binding var scale: Double
 	
 	func makeUIViewController(context: Context) -> ViewController {
@@ -16,21 +22,36 @@ struct ContentViewController: UIViewControllerRepresentable {
 		_ viewController: ViewController,
 		context: Context
 	) {
-		viewController.attachmentsController.rootView = AttachmentsView(
-			item: item,
-			scale: scale
-		) { [weak viewController] in
-			viewController?.attachmentsController.view.invalidateIntrinsicContentSize()
+		if oldItem != item {
+			viewController.attachmentsController.rootView = AttachmentsView(
+				item: item,
+				scale: $scale
+			) { [weak viewController] in
+				viewController?.attachmentsController.view.invalidateIntrinsicContentSize()
+			}
+			oldItem = item
 		}
-		viewController.webView.loadHTMLString(
-			Html(
-				scale: scale,
-				style: .style,
-				body: body ?? String(),
-				environmentValues: environmentValues
-			).string,
-			baseURL: item.url
+		
+		let html = Html(
+			scale: scale,
+			style: .style,
+			body: body ?? String(),
+			environmentValues: environment
 		)
+		
+		if oldHtml != html || item != oldItem {
+			viewController.webView.loadHTMLString(
+				html.string,
+				baseURL: item.url
+			)
+			viewController.webView.alpha = 0
+			oldHtml = html
+		}
+	}
+	
+	static func dismantleUIViewController(_ uiViewController: ViewController, coordinator: ()) {
+		oldItem = nil
+		oldHtml = nil
 	}
 	
 	private var body: String? {
@@ -52,14 +73,6 @@ extension ContentViewController {
 		
 		var webView: WKWebView { view as! WKWebView }
 		
-		deinit {
-			attachmentsController.rootView = .none
-			attachmentsController.removeFromParent()
-			observation = nil
-		}
-		
-		required init?(coder: NSCoder) { fatalError() }
-		
 		init() {
 			super.init(nibName: nil, bundle: nil)
 			super.viewDidLoad()
@@ -80,14 +93,30 @@ extension ContentViewController {
 			observation = attachmentsController.view.observe(\.bounds, options: [.new]) { [weak self] (view, change) in
 				if let webView = self?.webView,
 				   let webContentHeight = change.newValue?.height,
+				   webContentHeight != .zero,
 				   webContentHeight != webView.scrollView.contentInset.top {
 					webView.scrollView.contentInset.top = webContentHeight
 					webView.scrollView.setContentOffset(
 						CGPoint(x: .zero, y: -(webView.safeAreaInsets.top + webContentHeight)),
 						animated: false
 					)
+					
+					// There is a delay between setting inset and offset.
+					// This animation hides the initial few frames,
+					// where inset has been applied, but offset not
+					if webView.alpha == 0 {
+						UIView.animate(withDuration: 0.1, delay: 0.2) { webView.alpha = 1 }
+					}
 				}
 			}
+		}
+		
+		required init?(coder: NSCoder) { fatalError() }
+		
+		deinit {
+			attachmentsController.rootView = .none
+			attachmentsController.removeFromParent()
+			observation = nil
 		}
 	}
 	

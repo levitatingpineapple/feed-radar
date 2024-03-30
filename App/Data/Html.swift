@@ -48,3 +48,12 @@ struct Html {
 """
 	}
 }
+
+extension Html: Equatable {
+	static func == (lhs: Html, rhs: Html) -> Bool {
+		lhs.scale == rhs.scale &&
+		lhs.style == rhs.style &&
+		lhs.body == rhs.body &&
+		rhs.theme == rhs.theme
+	}
+}
