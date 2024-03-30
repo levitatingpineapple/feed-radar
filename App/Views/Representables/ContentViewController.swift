@@ -2,17 +2,11 @@ import UIKit
 import SwiftUI
 import WebKit
 
-// TODO: Filter out environment updates
-// The environment is used to infer the colors used by the `WebView`
-// Observing it however will cause many unneeded updates
-fileprivate var oldItem: Item? = nil
-fileprivate var oldHtml: Html? = nil
-
 struct ContentViewController: UIViewControllerRepresentable {
 	let display: ItemDetailView.Display
 	let item: Item
 	@Environment(\.self) var environment
-	@Binding var scale: Double
+	@State var cache = Cache()
 	
 	func makeUIViewController(context: Context) -> ViewController {
 		ViewController()
@@ -22,36 +16,35 @@ struct ContentViewController: UIViewControllerRepresentable {
 		_ viewController: ViewController,
 		context: Context
 	) {
-		if oldItem != item {
+		if cache.item != item {
 			viewController.attachmentsController.rootView = AttachmentsView(
-				item: item,
-				scale: $scale
+				item: item
 			) { [weak viewController] in
 				viewController?.attachmentsController.view.invalidateIntrinsicContentSize()
 			}
-			oldItem = item
+			cache.item = item
+			
+			viewController.webView.alpha = .zero
+			UIView.animate(withDuration: 0.2, delay: 0.1) {
+				viewController.webView.alpha = 1
+			}
 		}
 		
 		let html = Html(
-			scale: scale,
 			style: .style,
 			body: body ?? String(),
 			environmentValues: environment
 		)
 		
-		if oldHtml != html || item != oldItem {
+		// Item change is also checked, since two items can
+		// have the same content (empty for example)
+		if cache.html != html || cache.item != item {
 			viewController.webView.loadHTMLString(
 				html.string,
 				baseURL: item.url
 			)
-			viewController.webView.alpha = 0
-			oldHtml = html
+			cache.html = html
 		}
-	}
-	
-	static func dismantleUIViewController(_ uiViewController: ViewController, coordinator: ()) {
-		oldItem = nil
-		oldHtml = nil
 	}
 	
 	private var body: String? {
@@ -63,6 +56,17 @@ struct ContentViewController: UIViewControllerRepresentable {
 		case .webView:
 			nil
 		}
+	}
+}
+
+extension ContentViewController {
+	
+	// The `EnvironmentValues` is used to infer the colors used by the `WebView`s style
+	// Observing it however will cause many unneeded updates
+	// Cache helps to filter out updates, which does not affect the `ViewController`
+	class Cache {
+		var item: Item? = nil
+		var html: Html? = nil
 	}
 }
 
@@ -100,13 +104,6 @@ extension ContentViewController {
 						CGPoint(x: .zero, y: -(webView.safeAreaInsets.top + webContentHeight)),
 						animated: false
 					)
-					
-					// There is a delay between setting inset and offset.
-					// This animation hides the initial few frames,
-					// where inset has been applied, but offset not
-					if webView.alpha == 0 {
-						UIView.animate(withDuration: 0.1, delay: 0.2) { webView.alpha = 1 }
-					}
 				}
 			}
 		}
@@ -119,7 +116,6 @@ extension ContentViewController {
 			observation = nil
 		}
 	}
-	
 }
 
 extension ContentViewController.ViewController: WKNavigationDelegate {

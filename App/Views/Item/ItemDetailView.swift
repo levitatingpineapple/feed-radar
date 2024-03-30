@@ -6,7 +6,6 @@ struct ItemDetailView: View {
 	@Environment(\.store) var store: Store
 	@Environment(\.colorScheme) var colorScheme
 	@AppStorage var display: Display
-	@AppStorage(.contentScaleKey) private var scale: Double = 1
 	
 	init(item: Item) {
 		self.item = item
@@ -18,10 +17,6 @@ struct ItemDetailView: View {
 	
 	var displayView: some View {
 		HStack {
-			if display != .webView {
-				SystemImageButton(systemName: "plus.magnifyingglass") { scale += 0.1 }
-				SystemImageButton(systemName: "minus.magnifyingglass") { scale -= 0.1 }
-			}
 			Picker("Select Display", selection: $display) {
 				Image(systemName: "text.justify.leading").tag(Display.content)
 				Image(systemName: "doc.plaintext").tag(Display.extractedContent)
@@ -37,8 +32,7 @@ struct ItemDetailView: View {
 	func contentView(_ body: String) -> some View {
 		ContentViewController(
 			display: display,
-			item: item,
-			scale: $scale
+			item: item
 		)
 		.ignoresSafeArea()
 	}

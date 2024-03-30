@@ -3,7 +3,7 @@ import AVKit
 
 struct PlayerView: View {
 	let invalidateSize: () -> Void
-	let model: Model
+	@State var model: Model
 	
 	var body: some View {
 		VStack(spacing: .zero) {
@@ -39,6 +39,7 @@ extension PlayerView {
 				nil
 			}
 		}
+		
 		var aspectRatio: Double {
 			playerAspectRatio
 			?? artwork?.size.aspectRatio
@@ -87,8 +88,12 @@ extension PlayerView {
 				queue: nil
 			) { [weak self] cmTime in self?.update(time: cmTime.seconds) }
 			
-			Task { @MainActor [weak self] in self?.metadata = try? await MetadataLoader().metadata(url: url) }
-			Task { @MainActor [weak self] in self?.playerAspectRatio = try? await self?.player.aspectRatio() }
+			Task { @MainActor [weak self] in
+				self?.metadata = try? await MetadataLoader().metadata(url: url)
+			}
+			Task { @MainActor [weak self] in
+				self?.playerAspectRatio = try? await self?.player.aspectRatio()
+			}
 			Task { @MainActor [weak self] in
 				if let content = item.content {
 					self?.descriptionChapters = Array<Metadata.Chapter>(

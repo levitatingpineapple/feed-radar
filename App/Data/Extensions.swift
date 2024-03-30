@@ -23,7 +23,6 @@ extension String {
 		)!
 	)
 	static let filterKey = "filter"
-	static let contentScaleKey = "contentScale"
 	static let isReadFilteredKey = "isReadFiltered"
 	static func iconKey(source: URL) -> String { "icon:" + source.absoluteString }
 	static func displayKey(source: URL) -> String { "display:" + source.absoluteString }
@@ -137,6 +136,26 @@ extension View {
 			.frame(width: 32, height: 32)
 			.background(Color(.systemGray2).opacity(0.25))
 			.clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+	}
+}
+
+extension DynamicTypeSize {
+	var scale: Double {
+		switch self {
+		case .xSmall:         0.90
+		case .small:          0.95
+		case .medium:         1.00
+		case .large:          1.05
+		case .xLarge:         1.10
+		case .xxLarge:        1.15
+		case .xxxLarge:       1.20
+		case .accessibility1: 1.25
+		case .accessibility2: 1.30
+		case .accessibility3: 1.35
+		case .accessibility4: 1.40
+		case .accessibility5: 1.45
+		@unknown default:     1.50
+		}
 	}
 }
 
