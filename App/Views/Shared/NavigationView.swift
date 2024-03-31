@@ -2,7 +2,7 @@ import SwiftUI
 
 /// A View that handles ``Navigation``
 /// It explicitly switches to using `NavigationStack` in compact mode
-/// to address animation issues with related to `NavigationSplitView` ann Large Titles
+/// to address animation issues with related to `NavigationSplitView` and Large Titles
 struct NavigationView: View {
 	@Environment(\.store) var store: Store
 	@Environment(\.scenePhase) var scenePhase
@@ -62,5 +62,13 @@ struct NavigationView: View {
 				}
 		}
 		.environment(navigation)
+		.task { store.fetch(after: 300) }
+		.onChange(of: scenePhase) {
+			if scenePhase == .active {
+				store.fetch(after: 300)
+			} else {
+				if let id = navigation.itemId { store.markAsRead(itemId: id) }
+			}
+		}
 	}
 }
