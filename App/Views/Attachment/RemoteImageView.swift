@@ -5,7 +5,6 @@ import UniformTypeIdentifiers
 struct RemoteImageView: View {
 	let url: URL
 	let type: UTType
-	let invalidateSize: () -> Void
 	@State private var quickLook: URL?
 	@State private var downloader = Downloader()
 	
@@ -40,6 +39,5 @@ struct RemoteImageView: View {
 		}
 		.onAppear { downloader.load(from: url) }
 		.onChange(of: url) { downloader.load(from: url) }
-		.onChange(of: downloader.state) { invalidateSize() }
 	}
 }

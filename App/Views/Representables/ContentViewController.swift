@@ -1,6 +1,6 @@
 import UIKit
 import SwiftUI
-import WebKit
+@preconcurrency import WebKit
 
 struct ContentViewController: UIViewControllerRepresentable {
 	let display: ItemDetailView.Display
@@ -17,15 +17,11 @@ struct ContentViewController: UIViewControllerRepresentable {
 		context: Context
 	) {
 		if cache.item != item {
-			viewController.attachmentsController.rootView = AttachmentsView(
-				item: item
-			) { [weak viewController] in
-				viewController?.attachmentsController.view.invalidateIntrinsicContentSize()
-			}
+			viewController.headerController.rootView = AttachmentsView(item: item)
 			cache.item = item
 			
 			viewController.webView.alpha = .zero
-			UIView.animate(withDuration: 0.2, delay: 0.1) {
+			UIView.animate(withDuration: 0.5, delay: 0.1) {
 				viewController.webView.alpha = 1
 			}
 		}
@@ -57,9 +53,6 @@ struct ContentViewController: UIViewControllerRepresentable {
 			nil
 		}
 	}
-}
-
-extension ContentViewController {
 	
 	// The `EnvironmentValues` is used to infer the colors used by the `WebView`s style
 	// Observing it however will cause many unneeded updates
@@ -68,53 +61,63 @@ extension ContentViewController {
 		var item: Item? = nil
 		var html: Html? = nil
 	}
-}
-
-extension ContentViewController {
+	
 	class ViewController: UIViewController {
-		let attachmentsController = UIHostingController<AttachmentsView?>(rootView: .none)
-		private var observation: NSKeyValueObservation?
 		
-		var webView: WKWebView { view as! WKWebView }
-		
-		init() {
-			super.init(nibName: nil, bundle: nil)
-			super.viewDidLoad()
-			view = WKWebView()
-			webView.navigationDelegate = self
-			webView.isOpaque = false
-			webView.backgroundColor = .clear
-			view = webView
-			addChild(attachmentsController)
-			attachmentsController.view.backgroundColor = .clear
-			webView.scrollView.addSubview(attachmentsController.view)
-			attachmentsController.view.translatesAutoresizingMaskIntoConstraints = false
-			attachmentsController.view.bottomAnchor.constraint(equalTo: webView.scrollView.topAnchor).isActive = true
-			attachmentsController.view.widthAnchor.constraint(equalTo: webView.widthAnchor).isActive = true
-			attachmentsController.view.centerXAnchor.constraint(equalTo: webView.centerXAnchor).isActive = true
+		class HeaderController<Content: View>: UIHostingController<Content> {
+			override func viewWillLayoutSubviews() {
+				super.viewWillLayoutSubviews()
+				parent?.view.setNeedsLayout()
+			}
+		}
+
+		class HostingWebView: WKWebView {
+			weak var headerView: UIView?
 			
-			// Updates content inset based height of the attachments, as they load.
-			observation = attachmentsController.view.observe(\.bounds, options: [.new]) { [weak self] (view, change) in
-				if let webView = self?.webView,
-				   let webContentHeight = change.newValue?.height,
-				   webContentHeight != .zero,
-				   webContentHeight != webView.scrollView.contentInset.top {
-					webView.scrollView.contentInset.top = webContentHeight
-					webView.scrollView.setContentOffset(
-						CGPoint(x: .zero, y: -(webView.safeAreaInsets.top + webContentHeight)),
-						animated: false
+			override func layoutSubviews() {
+				super.layoutSubviews()
+				layoutHeader()
+			}
+			
+			private var retainedHeaderSize: CGSize?
+			
+			func layoutHeader() {
+				if let headerView {
+					let headerSize = headerView.systemLayoutSizeFitting(
+						CGSize(width: bounds.width, height: .infinity)
+					)
+					if retainedHeaderSize != headerSize {
+						retainedHeaderSize = headerSize
+					} else { return }
+					scrollView.contentInset.top = headerSize.height
+					scrollView.contentOffset.y += scrollView.contentInset.top - headerSize.height
+					headerView.frame = CGRect(
+						origin: CGPoint(x: .zero, y: -headerSize.height),
+						size: headerSize
 					)
 				}
 			}
 		}
 		
-		required init?(coder: NSCoder) { fatalError() }
+		let headerController = HeaderController<AttachmentsView?>(rootView: .none)
+		let webView = HostingWebView()
 		
-		deinit {
-			attachmentsController.rootView = .none
-			attachmentsController.removeFromParent()
-			observation = nil
+		init() {
+			super.init(nibName: nil, bundle: nil)
+			super.viewDidLoad()
+			view = webView
+			webView.navigationDelegate = self
+			webView.isOpaque = false
+			webView.backgroundColor = .clear
+			view = webView
+			addChild(headerController)
+			headerController.didMove(toParent: self)
+			headerController.view.backgroundColor = .clear
+			webView.scrollView.addSubview(headerController.view)
+			webView.headerView = headerController.view
 		}
+		
+		required init?(coder: NSCoder) { fatalError() }
 	}
 }
 

@@ -2,17 +2,14 @@ import SwiftUI
 import AVKit
 
 struct PlayerView: View {
-	let invalidateSize: () -> Void
 	@State var model: Model
 	
 	var body: some View {
 		VStack(spacing: .zero) {
 			PlayerViewController(player: model.player, artwork: model.artwork)
-			.aspectRatio(model.aspectRatio, contentMode: .fit)
+				.aspectRatio(model.aspectRatio, contentMode: .fit)
 			ChaptersView(playerModel: model)
 		}
-		.onChange(of: model.chapters) { invalidateSize() }
-		.onChange(of: model.aspectRatio) { invalidateSize() }
 	}
 }
 

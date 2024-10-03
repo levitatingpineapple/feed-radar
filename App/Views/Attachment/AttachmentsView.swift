@@ -5,16 +5,11 @@ import GRDBQuery
 
 struct AttachmentsView: View {
 	let item: Item
-	let invalidateSize: () -> Void
 	@Query<Attachment.Request> var attachments: Array<Attachment>
 	@Environment(\.dynamicTypeSize) var dynamicTypeSize
 	
-	init(
-		item: Item,
-		invalidateSize: @escaping () -> Void = { }
-	) {
+	init(item: Item) {
 		self.item = item
-		self.invalidateSize = invalidateSize
 		_attachments = Query(
 			Binding(
 				get: { Attachment.Request(itemId: item.id) },
@@ -33,15 +28,12 @@ struct AttachmentsView: View {
 				ForEach(attachments) { attachment in
 					AttachmentView(
 						item: item,
-						attachment: attachment,
-						invalidateSize: invalidateSize
+						attachment: attachment
 					)
 				}
 			}
 		}
 		.padding(.horizontal, 16)
 		.frame(maxWidth: 720 * dynamicTypeSize.scale)
-		.onChange(of: attachments) { invalidateSize() }
-		.onChange(of: dynamicTypeSize) { invalidateSize() }
 	}
 }

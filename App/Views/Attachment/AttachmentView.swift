@@ -4,7 +4,6 @@ import QuickLook
 struct AttachmentView: View {
 	let item: Item
 	let attachment: Attachment
-	let invalidateSize: () -> Void
 	@Environment(\.store) var store: Store
 	@State private var quickLook: URL?
 	@State private var downloader = Downloader()
@@ -65,16 +64,9 @@ struct AttachmentView: View {
 	var mediaPreview: some View {
 		Group {
 			if attachment.type.conforms(to: .image) {
-				RemoteImageView(
-					url: url,
-					type: attachment.type,
-					invalidateSize: invalidateSize
-				)
+				RemoteImageView(url: url, type: attachment.type)
 			} else if attachment.type.conforms(to: .audiovisualContent) {
-				PlayerView(
-					invalidateSize: invalidateSize,
-					model: PlayerView.Model(url: url, item: item)
-				)
+				PlayerView(model: PlayerView.Model(url: url, item: item))
 			}
 		}
 		.clipShape(UnevenRoundedRectangle(topLeadingRadius: 15, topTrailingRadius: 15))
