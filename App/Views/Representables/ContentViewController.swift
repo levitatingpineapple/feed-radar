@@ -1,6 +1,6 @@
 import UIKit
 import SwiftUI
-import WebKit
+@preconcurrency import WebKit
 
 struct ContentViewController: UIViewControllerRepresentable {
 	let display: ItemDetailView.Display

@@ -31,12 +31,13 @@ final class Navigation {
 			.data(forKey: .filterKey)
 			.flatMap { Filter(rawValue: $0) }
 		markDeselectedAsRead()
-		
-		Item.RequestCount(filter: Filter(isRead: false))
-			.publisher(in: self.store)
-			.replaceError(with: .zero)
-			.sink { UNUserNotificationCenter.current().setBadgeCount($0) }
-			.store(in: &bag)
+		Task { @MainActor in
+			Item.RequestCount(filter: Filter(isRead: false))
+				.publisher(in: self.store)
+				.replaceError(with: .zero)
+				.sink { UNUserNotificationCenter.current().setBadgeCount($0) }
+				.store(in: &bag)
+		}
 	}
 	
 	private func persistFilter() {
