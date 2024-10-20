@@ -13,7 +13,7 @@ body {
 	-webkit-text-size-adjust: none;
 	box-sizing: border-box;
 	word-wrap: break-word;
-	background-color: var(--background);
+	background-color: red;
 	color: var(--primary);
 	font-family: -apple-system;
 	padding: var(--large);

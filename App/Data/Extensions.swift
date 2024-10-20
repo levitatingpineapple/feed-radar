@@ -12,6 +12,11 @@ extension Logger {
 		subsystem: Bundle.main.bundleIdentifier!,
 		category: "Store"
 	)
+
+	static let ui = Logger(
+		subsystem: Bundle.main.bundleIdentifier!,
+		category: "UI"
+	)
 }
 
 extension String {

@@ -11,15 +11,6 @@ struct NavigationView: View {
 	@State var navigationSplitViewVisibility: NavigationSplitViewVisibility = .automatic
 
 	var body: some View {
-		switch horizontalSizeClass {
-			case .regular: splitView
-			case .compact: stack
-			default: EmptyView()
-		}
-	}
-
-	/// Regular mode navigation
-	private var splitView: some View {
 		NavigationSplitView(columnVisibility: $navigationSplitViewVisibility) {
 			FeedListView()
 		} content: {
@@ -41,28 +32,6 @@ struct NavigationView: View {
 				.requestAuthorization(options: .badge)
 		}
 		.environment(navigation)
-		.onChange(of: scenePhase) {
-			if scenePhase == .active {
-				store.fetch(after: 300)
-			} else {
-				if let id = navigation.itemId { store.markAsRead(itemId: id) }
-			}
-		}
-	}
-
-	/// Compact mode navigation
-	private var stack: some View {
-		NavigationStack(path: $navigation.path) {
-			FeedListView()
-				.navigationDestination(for: Filter.self) { filter in
-					ItemListView(filter: filter)
-				}
-				.navigationDestination(for: Item.ID.self) { id in
-					ItemDetailWrapperView(id: id)
-				}
-		}
-		.environment(navigation)
-		.task { store.fetch(after: 300) }
 		.onChange(of: scenePhase) {
 			if scenePhase == .active {
 				store.fetch(after: 300)

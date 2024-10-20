@@ -8,7 +8,7 @@ import SwiftUI
 /// as well as handling of elevated background color (split-screen, slide-over).
 struct Html {
 	let style: String
-	let body: String
+	let body: String?
 	let environmentValues: EnvironmentValues
 	
 	private func themeColor(name: String, color: Color) -> String {
@@ -45,11 +45,24 @@ struct Html {
 		</style>
 	</head>
 	<body>
-		\(body)
+		\(body ?? String())
 	</body>
 </html>
 """
 	}
+
+	static let blank =
+"""
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+	</head>
+	<body>
+		<div style="width: 200px; height: 200px;"></div>
+	</body>
+</html>
+"""
 }
 
 extension Html: Equatable {

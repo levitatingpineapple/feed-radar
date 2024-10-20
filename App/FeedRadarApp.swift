@@ -46,6 +46,9 @@ struct FeedRadarApp: App {
 						}
 					}
 				}
+				.onAppear() {
+					HeaderWebView.queue.prepare()
+				}
 		}
 	}
 }

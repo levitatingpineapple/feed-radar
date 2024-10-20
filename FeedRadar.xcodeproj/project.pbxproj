@@ -60,8 +60,8 @@
 		CEF02BF62B4321B8007842A5 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CEF02BF52B4321B8007842A5 /* GRDB */; };
 		CEF02BF92B4321E1007842A5 /* GRDBQuery in Frameworks */ = {isa = PBXBuildFile; productRef = CEF02BF82B4321E1007842A5 /* GRDBQuery */; };
 		CEF02BFB2B448A06007842A5 /* Readability.js in Resources */ = {isa = PBXBuildFile; fileRef = CEF02BFA2B448A06007842A5 /* Readability.js */; };
-		CEFEC7C62B0AF42200FF8728 /* AttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C52B0AF42200FF8728 /* AttachmentsView.swift */; };
-		CEFEC7C82B0AF43E00FF8728 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C72B0AF43E00FF8728 /* ContentViewController.swift */; };
+		CEFEC7C62B0AF42200FF8728 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C52B0AF42200FF8728 /* HeaderView.swift */; };
+		CEFEC7C82B0AF43E00FF8728 /* HeaderWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFEC7C72B0AF43E00FF8728 /* HeaderWebView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,8 +128,8 @@
 		CEE41B402B0833C1005E0289 /* FeedImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImportView.swift; sourceTree = "<group>"; };
 		CEED7B892B0B9AB2004B29C6 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CEF02BFA2B448A06007842A5 /* Readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = Readability.js; path = Submodules/Readability/Readability.js; sourceTree = SOURCE_ROOT; };
-		CEFEC7C52B0AF42200FF8728 /* AttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsView.swift; sourceTree = "<group>"; };
-		CEFEC7C72B0AF43E00FF8728 /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
+		CEFEC7C52B0AF42200FF8728 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
+		CEFEC7C72B0AF43E00FF8728 /* HeaderWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderWebView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,7 +199,7 @@
 		CE55747E2B0AC7BE00A91DA2 /* Representables */ = {
 			isa = PBXGroup;
 			children = (
-				CEFEC7C72B0AF43E00FF8728 /* ContentViewController.swift */,
+				CEFEC7C72B0AF43E00FF8728 /* HeaderWebView.swift */,
 				CE1D89EF2B232F2C00CC2CFF /* LoadingOverlayView.swift */,
 				CE32192F2B50A7E400490F02 /* PlayerViewController.swift */,
 				CEDEC5E72B06809000D83636 /* SafariViewController.swift */,
@@ -334,7 +334,7 @@
 			isa = PBXGroup;
 			children = (
 				CE351BE92B0D1D28006FF948 /* AttachmentView.swift */,
-				CEFEC7C52B0AF42200FF8728 /* AttachmentsView.swift */,
+				CEFEC7C52B0AF42200FF8728 /* HeaderView.swift */,
 				CEC1A0D62B4CA29600AC95D9 /* ChaptersView.swift */,
 				CE351BE52B0D007C006FF948 /* CircularProgressView.swift */,
 				CEC3F7A32B48633000DFD49D /* RemoteImageView.swift */,
@@ -483,14 +483,14 @@
 				CE351BF52B0D3880006FF948 /* Item.swift in Sources */,
 				CEED7B8A2B0B9AB2004B29C6 /* Store.swift in Sources */,
 				CE18F38A2B094EB700FE509C /* Extensions.swift in Sources */,
-				CEFEC7C62B0AF42200FF8728 /* AttachmentsView.swift in Sources */,
+				CEFEC7C62B0AF42200FF8728 /* HeaderView.swift in Sources */,
 				CEC3F7CA2B4B082900DFD49D /* Metadata.swift in Sources */,
 				CEA270A62B11788B00D220F0 /* Filter.swift in Sources */,
 				CEE41B412B0833C1005E0289 /* FeedImportView.swift in Sources */,
 				CE64CE2C2B07EF32006C9DB9 /* ItemDetailView.swift in Sources */,
 				CEC1A0DC2B4D5AD100AC95D9 /* ConditionalHeaders.swift in Sources */,
 				CE351BE62B0D007C006FF948 /* CircularProgressView.swift in Sources */,
-				CEFEC7C82B0AF43E00FF8728 /* ContentViewController.swift in Sources */,
+				CEFEC7C82B0AF43E00FF8728 /* HeaderWebView.swift in Sources */,
 				CEC3F7C82B4AF96600DFD49D /* MetadataLoader.swift in Sources */,
 				CE351BEA2B0D1D28006FF948 /* AttachmentView.swift in Sources */,
 				CEC1A0D72B4CA29600AC95D9 /* ChaptersView.swift in Sources */,

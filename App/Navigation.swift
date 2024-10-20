@@ -34,6 +34,7 @@ final class Navigation {
 		Task { @MainActor in
 			Item.RequestCount(filter: Filter(isRead: false))
 				.publisher(in: self.store)
+				.receive(on: DispatchQueue.global(qos: .userInitiated))
 				.replaceError(with: .zero)
 				.sink { UNUserNotificationCenter.current().setBadgeCount($0) }
 				.store(in: &bag)

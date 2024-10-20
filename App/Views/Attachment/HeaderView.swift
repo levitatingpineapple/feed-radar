@@ -3,7 +3,7 @@ import AVKit
 import UniformTypeIdentifiers
 import GRDBQuery
 
-struct AttachmentsView: View {
+struct HeaderView: View {
 	let item: Item
 	let invalidateSize: () -> Void
 	@Query<Attachment.Request> var attachments: Array<Attachment>
@@ -40,7 +40,7 @@ struct AttachmentsView: View {
 			}
 		}
 		.padding(.horizontal, 16)
-		.frame(maxWidth: 720 * dynamicTypeSize.scale)
+		.frame(maxWidth: 720 * dynamicTypeSize.scale, alignment: .center)
 		.onChange(of: attachments) { invalidateSize() }
 		.onChange(of: dynamicTypeSize) { invalidateSize() }
 	}

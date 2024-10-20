@@ -30,8 +30,8 @@ struct ItemDetailView: View {
 	}
 	
 	func contentView(_ body: String) -> some View {
-		ContentViewController(
-			display: display,
+		HeaderWebView(
+			extracted: display == .extractedContent,
 			item: item
 		)
 		.ignoresSafeArea()
