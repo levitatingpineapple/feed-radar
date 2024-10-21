@@ -75,7 +75,17 @@ struct HeaderWebView: UIViewRepresentable {
 				width: width,
 				height: sizeThatFits.height
 			)
-			scrollView.contentInset.top = sizeThatFits.height
+			switch traitCollection.horizontalSizeClass {
+			// Workaround for inset jumping, while loading web content in `.doubleColumn` visibility.
+			case .regular:
+				scrollView.contentInsetAdjustmentBehavior = .never
+				scrollView.contentInset = safeAreaInsets
+				scrollView.contentInset.top += sizeThatFits.height
+			default:
+				scrollView.contentInsetAdjustmentBehavior = .automatic
+				scrollView.contentInset.top = sizeThatFits.height
+				scrollView.contentOffset.y = -(safeAreaInsets.top + sizeThatFits.height)
+			}
 			scrollView.contentOffset.y = -(safeAreaInsets.top + sizeThatFits.height)
 		}
 
