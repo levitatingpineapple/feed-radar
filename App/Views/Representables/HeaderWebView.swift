@@ -14,24 +14,19 @@ struct HeaderWebView: UIViewRepresentable {
 	}
 
 	func updateUIView(_ webView: WebView, context: Context) {
+		let html = Html(
+			body: extracted ? item.extracted : item.content,
+			in: environment
+		)
+		if cache.html != html?.hashValue {
+			webView.loadHTMLString(html?.description ?? Html.blank, baseURL: item.url)
+			cache.html = html?.hashValue
+		}
 		if cache.item != item {
 			webView.headerController.rootView = HeaderView(
 				item: item
 			) { [weak webView] in webView?.setNeedsLayout() }
 			cache.item = item
-		}
-		
-		let html = Html(
-			style: .style,
-			body: extracted ? item.extracted : item.content,
-			environmentValues: environment
-		)
-		
-		// Item change is also checked, since two items can
-		// have the same content (empty for example)
-		if cache.html != html || cache.item != item {
-			webView.loadHTMLString(html.string, baseURL: item.url)
-			cache.html = html
 		}
 	}
 
@@ -44,7 +39,7 @@ struct HeaderWebView: UIViewRepresentable {
 	// Cache helps to filter out updates, which does not affect the `ViewController`
 	class Cache {
 		var item: Item? = nil
-		var html: Html? = nil
+		var html: Int? = nil
 	}
 
 	class WebView: WKWebView {
@@ -75,13 +70,12 @@ struct HeaderWebView: UIViewRepresentable {
 				width: width,
 				height: sizeThatFits.height
 			)
-			switch traitCollection.horizontalSizeClass {
 			// Workaround for inset jumping, while loading web content in `.doubleColumn` visibility.
-			case .regular:
+			if case .regular = traitCollection.horizontalSizeClass {
 				scrollView.contentInsetAdjustmentBehavior = .never
 				scrollView.contentInset = safeAreaInsets
 				scrollView.contentInset.top += sizeThatFits.height
-			default:
+			} else {
 				scrollView.contentInsetAdjustmentBehavior = .automatic
 				scrollView.contentInset.top = sizeThatFits.height
 				scrollView.contentOffset.y = -(safeAreaInsets.top + sizeThatFits.height)
@@ -90,29 +84,12 @@ struct HeaderWebView: UIViewRepresentable {
 		}
 
 		func prepareForReuse() {
+			resignFirstResponder()
+			removeFromSuperview()
 			headerController.rootView = nil
 			loadHTMLString(Html.blank, baseURL: nil)
-			removeFromSuperview()
 			scrollView.contentOffset = .zero
 			scrollView.contentInset = .zero
-		}
-	}
-}
-
-extension HeaderWebView.WebView: WKNavigationDelegate {
-	func webView(
-		_ webView: WKWebView,
-		decidePolicyFor navigationAction: WKNavigationAction,
-		decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
-	) {
-		switch navigationAction.navigationType {
-		case .linkActivated:
-			decisionHandler(.cancel)
-			if let url = navigationAction.request.url {
-				UIApplication.shared.open(url)
-			}
-		default:
-			decisionHandler(.allow)
 		}
 	}
 }
@@ -120,6 +97,7 @@ extension HeaderWebView.WebView: WKNavigationDelegate {
 extension HeaderWebView {
 	static let queue = Queue()
 
+	/// 
 	class Queue {
 		private var views = Array<WebView>()
 
@@ -144,6 +122,24 @@ extension HeaderWebView {
 				webView.prepareForReuse()
 				views.append(webView)
 			}
+		}
+	}
+}
+
+extension HeaderWebView.WebView: WKNavigationDelegate {
+	func webView(
+		_ webView: WKWebView,
+		decidePolicyFor navigationAction: WKNavigationAction,
+		decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+	) {
+		switch navigationAction.navigationType {
+		case .linkActivated:
+			decisionHandler(.cancel)
+			if let url = navigationAction.request.url {
+				UIApplication.shared.open(url)
+			}
+		default:
+			decisionHandler(.allow)
 		}
 	}
 }

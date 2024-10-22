@@ -21,12 +21,6 @@ extension Logger {
 
 extension String {
 	static let cloudKitStateSerializationKey = "cloudKitStateSerialization"
-	static let style: String = try! String(
-		contentsOf: Bundle.main.url(
-			forResource: "Style",
-			withExtension: "css"
-		)!
-	)
 	static let filterKey = "filter"
 	static let isReadFilteredKey = "isReadFiltered"
 	static func iconKey(source: URL) -> String { "icon:" + source.absoluteString }

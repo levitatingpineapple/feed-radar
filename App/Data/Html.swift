@@ -6,46 +6,42 @@ import SwiftUI
 /// and the theme colours are system colors, evaluated using the environment
 /// This enables toggling between dark and light modes
 /// as well as handling of elevated background color (split-screen, slide-over).
-struct Html {
-	let style: String
-	let body: String?
-	let environmentValues: EnvironmentValues
-	
-	private func themeColor(name: String, color: Color) -> String {
-		"--\(name): \(color.resolve(in: environmentValues).description);"
+struct Html: Hashable, CustomStringConvertible {
+	let scale: Double
+	let theme: Theme
+	let body: String
+
+	init?(body: String?, in environmentValues: EnvironmentValues) {
+		if let body {
+			self.scale = environmentValues.dynamicTypeSize.scale
+			self.theme = Theme(in: environmentValues)
+			self.body = body
+		} else { return nil }
 	}
+
+	static let style: String = try! String(
+		contentsOf: Bundle.main.url(
+			forResource: "Style",
+			withExtension: "css"
+		)!
+	)
 	
-	private var theme: String {
-		[
-			themeColor(name: "primary", color: Color.primary),
-			themeColor(name: "secondary", color: Color.secondary),
-			themeColor(name: "accent", color: Color.accentColor),
-			themeColor(name: "background", color: Color(.systemBackground)),
-			themeColor(name: "secondaryBackground", color: Color(.secondarySystemBackground)),
-			themeColor(name: "accentBackground", color: Color(.tertiarySystemBackground)),
-		].joined(separator: "\n")
-	}
-	
-	private var scale: String {
-		String(format: "%.2f", environmentValues.dynamicTypeSize.scale)
-	}
-	
-	var string: String {
+	var description: String {
 """
 <!DOCTYPE html>
 	<html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="initial-scale=\(scale)">
+		<meta name="viewport" content="initial-scale=\(String(format: "%.2f", scale))">
 		<style>
 			:root {
 				\(theme)
 			}
-			\(style)
+			\(Self.style)
 		</style>
 	</head>
 	<body>
-		\(body ?? String())
+		\(body)
 	</body>
 </html>
 """
@@ -65,11 +61,36 @@ struct Html {
 """
 }
 
-extension Html: Equatable {
-	static func == (lhs: Html, rhs: Html) -> Bool {
-		lhs.environmentValues.dynamicTypeSize == rhs.environmentValues.dynamicTypeSize &&
-		lhs.style == rhs.style &&
-		lhs.body == rhs.body &&
-		rhs.theme == rhs.theme
+extension Html {
+	struct Theme: Hashable, CustomStringConvertible {
+		private let primary: Color.Resolved
+		private let secondary: Color.Resolved
+		private let accent: Color.Resolved
+		private let background: Color.Resolved
+		private let secondaryBackground: Color.Resolved
+		private let accentBackground: Color.Resolved
+
+		init(in environmentValues: EnvironmentValues) {
+			func resolved(_ uiColor: UIColor) -> Color.Resolved {
+				Color(uiColor).resolve(in: environmentValues)
+			}
+			primary = resolved(.label)
+			secondary = resolved(.secondaryLabel)
+			accent = resolved(.tintColor)
+			background = resolved(.systemBackground)
+			secondaryBackground = resolved(.secondarySystemBackground)
+			accentBackground = resolved(.tertiarySystemBackground)
+		}
+
+		var description: String {
+"""
+--primary: \(primary.description);
+--secondary: \(secondary.description);
+--accent: \(accent.description);
+--background: \(background.description);
+--secondayBackground: \(secondaryBackground.description);
+--accentBackground: \(accentBackground.description);
+"""
+		}
 	}
 }
