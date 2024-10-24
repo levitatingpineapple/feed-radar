@@ -22,7 +22,10 @@ struct ItemListView: View {
 	var body: some View {
 		@Bindable var navigation = navigation
 		List(itemIds, id: \.self, selection: $navigation.itemId) { id in
-			LazyItemView(showsFeed: filter.feed == nil, id: id)
+			ZStack {
+				NavigationLink(value: id) { EmptyView() }.opacity(.zero)
+				ItemView(id: id, showsFeed: filter.feed == nil)
+			}
 		}
 		.refreshable { await store.fetch(feed: navigation.filter?.feed) }
 		.animation(.default, value: itemIds)

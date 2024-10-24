@@ -81,4 +81,40 @@ extension Item {
 				.eraseToAnyPublisher()
 		}
 	}
+
+	struct RequestRedacted: Queryable {
+		static let defaultValue: Item? = nil
+		let id: Item.ID
+
+		private static let columns: Array<Column> = [
+			.id, .source, .title, .time, .author, .url, .isRead, .isStarred
+		]
+
+		func publisher(in store: Store) -> AnyPublisher<Item?, Error> {
+			ValueObservation.tracking { database in
+				try Row
+					.fetchOne(
+						database,
+						Item.select(Self.columns.map { $0.column }).filter(key: id)
+					)
+					.map {
+						Item(
+							id: $0[Column.id.rawValue],
+							source: $0[Column.source.rawValue],
+							title: $0[Column.title.rawValue],
+							time: $0[Column.time.rawValue],
+							author: $0[Column.author.rawValue],
+							content: nil, // Redacted
+							url: $0[Column.url.rawValue],
+							isRead: $0[Column.isRead.rawValue],
+							isStarred: $0[Column.isStarred.rawValue],
+							sync: nil, // Redacted
+							extracted: nil // Redacted
+						)
+					}
+			}
+			.publisher(in: store.queue, scheduling: .immediate)
+			.eraseToAnyPublisher()
+		}
+	}
 }

@@ -25,6 +25,7 @@ final class Store {
 			configuration.prepareDatabase {
 				$0.trace { Logger.store.trace("\($0.description)") }
 			}
+			configuration.qos = .background
 			queue = try DatabaseQueue(named: testName, configuration: configuration)
 		} else {
 			queue = try DatabaseQueue(path: URL.documents.appendingPathComponent("feeds.db").path)

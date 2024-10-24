@@ -2,7 +2,6 @@ import SwiftUI
 import Combine
 
 /// Displays loading spinner
-///
 struct LoadingOverlayView: UIViewRepresentable {
 	@Environment(\.store) var store
 	
