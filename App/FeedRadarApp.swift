@@ -23,32 +23,13 @@ extension EnvironmentValues {
 
 /// The main app
 struct FeedRadarApp: App {
-	@State private var feedUrl: URL?
 	@Environment(\.store) private var store: Store
 	
 	var body: some Scene {
 		WindowGroup {
 			NavigationView()
-				.onOpenURL {
-					feedUrl = URL(string: $0.absoluteString.strippingPrefix("feed:"))
-				}
-				.alert(
-					"Import Feed?\n" + (feedUrl?.absoluteString ?? String()),
-					isPresented: Binding(
-						get: { feedUrl != nil },
-						set: { if !$0 { feedUrl = nil } }
-					)
-				) {
-					Button("Import") {
-						if let source = feedUrl {
-							Task { await store.add(feed: Feed(source: source)) }
-							feedUrl = nil
-						}
-					}
-				}
-				.onAppear() {
-					HeaderWebView.queue.prepare()
-				}
+				.modifier(OpenURL())
+				.onAppear() { HeaderWebView.queue.prepare() }
 		}
 	}
 }
