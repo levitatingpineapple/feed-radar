@@ -71,8 +71,8 @@ struct FilterView: View {
 	
 	func countView(filter: Filter, color: Color) -> some View {
 		CountView(filter: filter)
-		.background(color)
-		.clipShape(Capsule())
+			.background(color)
+			.clipShape(Capsule())
 	}
 	
 	var body: some View {

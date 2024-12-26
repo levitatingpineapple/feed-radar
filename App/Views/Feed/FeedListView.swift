@@ -22,11 +22,11 @@ struct FeedListView: View {
 			Section {
 				ForEach(feeds, id: \.source) { feed in
 					link(filter: Filter(feed: feed))
-					.swipeActions(edge: .leading, allowsFullSwipe: true) {
-						Button("Fetch") {
-							Task { await store.fetch(feed: feed) }
-						}.tint(.accentColor)
-					}
+						.swipeActions(edge: .leading, allowsFullSwipe: true) {
+							Button("Fetch") {
+								Task { await store.fetch(feed: feed) }
+							}.tint(.accentColor)
+						}
 				}
 				.onDelete {
 					$0.forEach { store.delete(feed: feeds[$0]) }
@@ -37,9 +37,8 @@ struct FeedListView: View {
 			ToolbarItem {
 				SystemImageButton(systemName: "plus", color: .accentColor) {
 					isImportPresented = true
-				}.popover(isPresented: $isImportPresented) {
-					FeedImportView()
 				}
+				.popover(isPresented: $isImportPresented) { FeedImportView() }
 			}
 		}
 		.refreshable { await store.fetch() }
