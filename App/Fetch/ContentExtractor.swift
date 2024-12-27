@@ -8,24 +8,19 @@ actor ContentExtractor {
 	static let shared = ContentExtractor()
 	private var readability: Readability?
 	
-	init() {
-		
-	}
-	
-	init() async {
-		readability = await Readability()
-	}
-	
 	/// Attampts to extract content form item's url and stores it
 	func extract(item: Item, into store: Store) async throws {
-		let r = await Readability()
-		readability = r
-		if let url = item.url {
-			if var fetchedItem = store.item(id: item.id),
-			   fetchedItem.extracted == nil {
-				fetchedItem.extracted = try await r.extract(from: url)
-				store.update(item: fetchedItem)
+		if let readability {
+			if let url = item.url {
+				if var fetchedItem = store.item(id: item.id),
+				   fetchedItem.extracted == nil {
+					fetchedItem.extracted = try await readability.extract(from: url)
+					store.update(item: fetchedItem)
+				}
 			}
+		} else {
+			readability = await Readability()
+			try await extract(item: item, into: store)
 		}
 	}
 }
