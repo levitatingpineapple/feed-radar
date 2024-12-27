@@ -10,10 +10,11 @@ protocol Storable:
 	PersistableRecord { }
 
 /// A class that provides a typed interface for all database operations
-final class Store {
+final class Store: Sendable {
 	let queue: DatabaseQueue
 	let fetcher = FeedFetcher()
 	var sync: SyncDelegate?
+	
 	/// Last time when all feeds were fetched, since the app launch
 	var lastFullFetch: TimeInterval?
 	

@@ -6,22 +6,33 @@ actor ContentExtractor {
 	
 	/// Global instance
 	static let shared = ContentExtractor()
-	private let readability = Readability()
+	private var readability: Readability?
+	
+	init() {
+		
+	}
+	
+	init() async {
+		readability = await Readability()
+	}
 	
 	/// Attampts to extract content form item's url and stores it
 	func extract(item: Item, into store: Store) async throws {
+		let r = await Readability()
+		readability = r
 		if let url = item.url {
 			if var fetchedItem = store.item(id: item.id),
 			   fetchedItem.extracted == nil {
-				fetchedItem.extracted = try await readability.extract(from: url)
+				fetchedItem.extracted = try await r.extract(from: url)
 				store.update(item: fetchedItem)
 			}
 		}
 	}
 }
 
+@MainActor
 private class Readability: NSObject {
-	let webView = WKWebView()
+	private let webView = WKWebView()
 	var continuation: CheckedContinuation<String, Error>?
 	
 	enum ReadabilityError: Error {
@@ -45,7 +56,7 @@ private class Readability: NSObject {
 	}
 	
 	public func extract(from url: URL) async throws -> String {
-		await webView.load(URLRequest(url: url))
+		webView.load(URLRequest(url: url))
 		return try await withCheckedThrowingContinuation { continuation = $0 }
 	}
 }

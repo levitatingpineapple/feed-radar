@@ -7,16 +7,31 @@ import SwiftUI
 /// The navigation state is persisted in user defaults.
 /// Additionally this class is responsible for marking deselected items as read
 /// and updating the badge count.
+@MainActor
 @Observable
 final class Navigation {
-	
 	/// Filters items displayed in ``ItemListView``
 	/// Various filters can be selected from the sidebar
 	/// and further tweaked from ``FilterSettingsView``
-	var filter: Filter?
+	var filter: Filter? {
+		didSet {
+			UserDefaults.standard.setValue(
+				filter?.rawValue,
+				forKey: .filterKey
+			)
+			itemId = nil // Changing filter deselects item
+		}
+	}
 	
 	/// Determines content of the ``ItemDetailView``
-	var itemId: Item.ID?
+	var itemId: Item.ID? {
+		didSet {
+			if let deselected {
+				store.markAsRead(itemId: deselected)
+			}
+			deselected = itemId
+		}
+	}
 
 	private var deselected: Item.ID?
 	
@@ -26,39 +41,15 @@ final class Navigation {
 	/// - Parameter store: Used for persisting read items
 	init(store: Store) {
 		self.store = store
-		persistFilter()
+		
 		filter = UserDefaults.standard
 			.data(forKey: .filterKey)
 			.flatMap { Filter(rawValue: $0) }
-		markDeselectedAsRead()
-		Task { @MainActor in
-			Item.RequestCount(filter: Filter(isRead: false))
-				.publisher(in: self.store)
-				.receive(on: DispatchQueue.global(qos: .userInitiated))
-				.replaceError(with: .zero)
-				.sink { UNUserNotificationCenter.current().setBadgeCount($0) }
-				.store(in: &bag)
-		}
-	}
-	
-	private func persistFilter() {
-		_ = withObservationTracking { filter } onChange: { [weak self] in
-			UserDefaults.standard.setValue(
-				self?.filter?.rawValue,
-				forKey: .filterKey
-			)
-			self?.itemId = nil // Changing filter deselects item
-			self?.persistFilter()
-		}
-	}
-	
-	private func markDeselectedAsRead() {
-		_ = withObservationTracking { itemId } onChange: { [weak self] in
-			if let deselected = self?.deselected {
-				self?.store.markAsRead(itemId: deselected)
-			}
-			self?.deselected = self?.itemId
-			self?.markDeselectedAsRead()
-		}
+		Item.RequestCount(filter: Filter(isRead: false))
+			.publisher(in: self.store)
+			.receive(on: DispatchQueue.global(qos: .userInitiated))
+			.replaceError(with: .zero)
+			.sink { UNUserNotificationCenter.current().setBadgeCount($0) }
+			.store(in: &bag)
 	}
 }

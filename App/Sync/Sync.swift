@@ -148,7 +148,7 @@ extension Sync: CKSyncEngineDelegate {
 				.filter { context.options.scope.contains($0) }
 		) { recordID in
 			Logger.sync.info("Dequeued \(recordID.recordName)")
-			return await store.item(id: recordID.itemId)?.record
+			return store.item(id: recordID.itemId)?.record
 		}
 	}
 }

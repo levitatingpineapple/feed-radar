@@ -34,14 +34,16 @@ struct LoadingOverlayView: UIViewRepresentable {
 		}
 		
 		private func display(isLoading: Bool) {
-			if isLoading {
-				spinner.startAnimating()
-				alpha = 0.8
-				effect = UIBlurEffect(style: .prominent)
-			} else {
-				spinner.stopAnimating()
-				alpha = 0
-				effect = nil
+			Task { @MainActor in
+				if isLoading {
+					spinner.startAnimating()
+					alpha = 0.8
+					effect = UIBlurEffect(style: .prominent)
+				} else {
+					spinner.stopAnimating()
+					alpha = 0
+					effect = nil
+				}
 			}
 		}
 		

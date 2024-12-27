@@ -53,6 +53,7 @@ extension Metadata.Chapter {
 			.first
 	}
 	
+	nonisolated(unsafe)
 	static private let regex = Regex {
 		Optionally {
 			Capture { Repeat(.digit, (1...2)) }
@@ -120,7 +121,7 @@ extension Array where Element == Metadata.Chapter {
 }
 
 extension Metadata.Chapter {
-	struct Match {
+	struct Match: Sendable {
 		private let hours: TimeInterval
 		private let minutes: TimeInterval
 		private let seconds: TimeInterval
@@ -128,7 +129,8 @@ extension Metadata.Chapter {
 		
 		var startTime: TimeInterval { 3600 * hours + 60 * minutes + seconds }
 		
-		static let regex = Regex {
+		nonisolated(unsafe)
+		static private let regex = Regex {
 			Optionally {
 				Capture { Repeat(.digit, (1...2)) }
 				":"

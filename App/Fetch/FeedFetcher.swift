@@ -3,7 +3,7 @@ import os.log
 import Combine
 
 /// Handles feed fetching state and order.
-actor FeedFetcher {
+actor FeedFetcher: Sendable {
 	private var loadingSubjects = Dictionary<URL, CurrentValueSubject<Bool, Never>>()
 	
 	/// Returns a publisher that emits download status for a given feed.
@@ -31,9 +31,7 @@ actor FeedFetcher {
 		await withTaskGroup(of: Result<(Data, URL), any Error>.self) { taskGroup in
 			func addWorker(taskGroup: inout TaskGroup<Result<(Data, URL), any Error>>) {
 				if let source = toFetch.popLast() {
-					Task { @MainActor in
-						await self.isLoading(source: source).send(true)
-					}
+					self.isLoading(source: source).send(true)
 					taskGroup.addTask {
 						do {
 							let (data, response) = try await URLSession.shared.data(
@@ -52,13 +50,11 @@ actor FeedFetcher {
 			while let next = await taskGroup.next() {
 				switch next {
 				case let .success((data, source)):
-					Task { @MainActor in
-						// Wait a bit to make sure loading spinner has faded in
-						try? await Task.sleep(for: .milliseconds(200))
-						await self.isLoading(source: source).send(false)
-					}
+					try? await Task.sleep(for: .milliseconds(200))
+					self.isLoading(source: source).send(false)
 					await partialCompletion(data, source)
-				case let .failure(error): Logger.store.debug("Failed to Download \(error)")
+				case let .failure(error):
+					Logger.store.debug("Failed to Download \(error)")
 				}
 				addWorker(taskGroup: &taskGroup)
 			}

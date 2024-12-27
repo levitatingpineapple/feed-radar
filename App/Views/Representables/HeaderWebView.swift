@@ -1,7 +1,7 @@
 import UIKit
 import SwiftUI
 import os.log
-@preconcurrency import WebKit
+import WebKit
 
 struct HeaderWebView: UIViewRepresentable {
 	let extracted: Bool
@@ -96,8 +96,9 @@ struct HeaderWebView: UIViewRepresentable {
 
 extension HeaderWebView {
 	static let queue = Queue()
-
-	/// 
+	
+	/// WebViews take long time to initialize.
+	@MainActor
 	class Queue {
 		private var views = Array<WebView>()
 
@@ -111,7 +112,7 @@ extension HeaderWebView {
 			if views.count == 1 {
 				Task {
 					try? await Task.sleep(for: .milliseconds(200))
-					await views.append(WebView())
+					views.append(WebView())
 				}
 			}
 			return views.removeFirst()
@@ -127,19 +128,15 @@ extension HeaderWebView {
 }
 
 extension HeaderWebView.WebView: WKNavigationDelegate {
-	func webView(
-		_ webView: WKWebView,
-		decidePolicyFor navigationAction: WKNavigationAction,
-		decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
-	) {
+	func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
 		switch navigationAction.navigationType {
 		case .linkActivated:
-			decisionHandler(.cancel)
 			if let url = navigationAction.request.url {
-				UIApplication.shared.open(url)
+				await UIApplication.shared.open(url)
 			}
+			return .cancel
 		default:
-			decisionHandler(.allow)
+			return .allow
 		}
 	}
 }
