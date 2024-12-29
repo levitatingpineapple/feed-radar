@@ -84,3 +84,66 @@ extension Downloader {
 		case error(String)
 	}
 }
+
+public func downloadFile(from url: URL) -> AsyncStream<DownloadState> {
+	AsyncStream { continuation in
+		continuation.yield(.loading(progress: 0))
+		URLSession(
+			configuration: .default,
+			delegate: DownloadDelegate(continuation: continuation),
+			delegateQueue: nil
+		)
+		.downloadTask(with: url)
+		.resume()
+	}
+}
+
+public enum DownloadState: Sendable {
+	case loading(progress: Double)
+	case success(Data)
+	case error(String)
+}
+
+private final class DownloadDelegate: NSObject, URLSessionDownloadDelegate {
+	let continuation: AsyncStream<DownloadState>.Continuation
+	
+	init(continuation: AsyncStream<DownloadState>.Continuation) {
+		self.continuation = continuation
+	}
+	
+	func urlSession(
+		_ session: URLSession,
+		downloadTask: URLSessionDownloadTask,
+		didWriteData bytesWritten: Int64,
+		totalBytesWritten: Int64,
+		totalBytesExpectedToWrite: Int64
+	) {
+		let progress = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
+		continuation.yield(.loading(progress: progress))
+	}
+	
+	func urlSession(
+		_ session: URLSession,
+		downloadTask: URLSessionDownloadTask,
+		didFinishDownloadingTo location: URL
+	) {
+		do {
+			let data = try Data(contentsOf: location)
+			continuation.yield(.success(data))
+		} catch {
+			continuation.yield(.error(error.localizedDescription))
+		}
+		continuation.finish()
+	}
+	
+	func urlSession(
+		_ session: URLSession,
+		task: URLSessionTask,
+		didCompleteWithError error: Error?
+	) {
+		if let error {
+			continuation.yield(.error(error.localizedDescription))
+		}
+		continuation.finish()
+	}
+}

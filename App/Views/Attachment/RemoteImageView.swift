@@ -7,13 +7,13 @@ struct RemoteImageView: View {
 	let type: UTType
 	let invalidateSize: () -> Void
 	@State private var quickLook: URL?
-	@State private var downloader = Downloader()
+	@State private var downloadState: DownloadState?
 	
 	var body: some View {
 		Group {
-			switch downloader.state {
-			case .ready:
-				Button("Load Preview") { downloader.load(from: url) }
+			switch downloadState {
+			case nil:
+				Button("Load Preview") { Task { await load() } }
 					.padding()
 			case let .loading(progress):
 				ProgressView(value: progress)
@@ -34,12 +34,24 @@ struct RemoteImageView: View {
 				VStack {
 					Text(error)
 						.foregroundStyle(Color.red)
-					Button("Load Preview") { downloader.load(from: url) }
+					Button("Load Preview") { Task { await load() } }
 				}.padding()
 			}
 		}
-		.onAppear { downloader.load(from: url) }
-		.onChange(of: url) { downloader.load(from: url) }
-		.onChange(of: downloader.state) { invalidateSize() }
+		.task {
+			invalidateSize()
+			await load()
+		}
+	}
+	
+	private func load() async {
+		for await state in downloadFile(from: url) {
+			if case .loading = state  {
+				downloadState = state
+			} else {
+				downloadState = state
+				invalidateSize()
+			}
+		}
 	}
 }
