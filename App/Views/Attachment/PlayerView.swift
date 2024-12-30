@@ -1,5 +1,6 @@
 import SwiftUI
 import AVKit
+import os.log
 
 struct PlayerView: View {
 	let invalidateSize: () -> Void
@@ -89,6 +90,10 @@ extension PlayerView {
 			) { [weak self] cmTime in self?.update(time: cmTime.seconds) }
 			
 			Task { @MainActor [weak self] in
+				switch await loadMetadata(from: url) {
+				case let .success(metadata): self?.metadata = metadata
+				case let .failure(error): Logger.ui.log("Metadata loading failed: \(error)")
+				}
 				self?.metadata = try? await loadMetadata(from: url).get()
 			}
 			Task { @MainActor [weak self] in
