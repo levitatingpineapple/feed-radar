@@ -89,7 +89,7 @@ extension PlayerView {
 			) { [weak self] cmTime in self?.update(time: cmTime.seconds) }
 			
 			Task { @MainActor [weak self] in
-				self?.metadata = try? await MetadataLoader().metadata(url: url)
+				self?.metadata = try? await loadMetadata(from: url).get()
 			}
 			Task { @MainActor [weak self] in
 				self?.playerAspectRatio = try? await self?.player.aspectRatio()

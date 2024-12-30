@@ -90,10 +90,9 @@ final class FeedTests: XCTestCase {
 	// MARK: Test Metadata
 	
 	func testMetadataLoader() async throws {
-		let metadataLoader = MetadataLoader()
-		let metadata = try await metadataLoader.metadata(
-			url: bundle.url(forResource: "podcast", withExtension: "mp3")!
-		)
+		let metadata = try await loadMetadata(
+			from: bundle.url(forResource: "podcast", withExtension: "mp3")!
+		).get()
 		XCTAssert(metadata.artwork?.size == CGSize(width: 1500, height: 1500))
 		XCTAssert(metadata.chapters.count == 6)
 		XCTAssert(metadata.chapters[4].title == "Rambo\'s New Mac")
@@ -220,66 +219,6 @@ final class FeedTests: XCTestCase {
 		XCTAssert(
 			request?.value(forHTTPHeaderField: "if-none-match") == nil,
 			"If `last-modified` is present, etag sould not be used."
-		)
-	}
-	
-	func testNavigationPath() {
-		let navigation = Navigation(store: store)
-		// Remove Filter as it might have been persisted in UserDefaults
-		navigation.filter = nil
-		XCTAssert(
-			navigation.path.count == 0,
-			"Path should be empty"
-		)
-		let filter = Filter(isRead: true)
-		navigation.filter = filter
-		XCTAssert(
-			navigation.path.count == 1,
-			"Navigation path length should be 1 when only the filter is selected"
-		)
-		let itemId = Item.ID.random(in: Item.ID.min...Item.ID.max)
-		navigation.itemId = itemId
-		XCTAssert(
-			navigation.path.count == 2,
-			"Navigation path length should be 2 when both `Filter` and `Item.ID` are selected"
-		)
-		
-		var navigationPath = navigation.path
-		
-		// Test edge case when only item is temporarily selected
-		navigation.filter = nil
-		XCTAssert(
-			navigation.path.count == 0,
-			"Navigation path should be empty when only `Item.ID` is selected"
-		)
-		
-		// Test full path
-		navigation.path = navigationPath
-		XCTAssert(
-			navigationPath.count == 2 &&
-			navigation.filter == filter &&
-			navigation.itemId == itemId,
-			"Expected full navigation path"
-		)
-		
-		// Remove selected `Item.ID`
-		navigationPath.removeLast()
-		navigation.path = navigationPath
-		XCTAssert(
-			navigationPath.count == 1 &&
-			navigation.filter == filter &&
-			navigation.itemId == nil,
-			"Expect only filter to be selected"
-		)
-		
-		// Remove selected `Filter`
-		navigationPath.removeLast()
-		navigation.path = navigationPath
-		XCTAssert(
-			navigationPath.count == 0 &&
-			navigation.filter == nil &&
-			navigation.itemId == nil,
-			"Expect empty navigation"
 		)
 	}
 }

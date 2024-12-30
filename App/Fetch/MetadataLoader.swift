@@ -3,42 +3,33 @@ import OutcastID3
 
 enum MetadataLoaderError: Error { case headerNotFound }
 
-final class MetadataLoader: NSObject {
-	fileprivate var continuation: CheckedContinuation<Metadata, Error>?
-	fileprivate var dataTask: URLSessionDataTask?
-	fileprivate var buffer = Data()
-	fileprivate var size: UInt32?
-	
-	/// Loads ID3 metadata, assuming it's located at the beginning of the file
-	func metadata(url: URL) async throws -> Metadata {
-		dataTask = URLSession(
-			configuration: .default,
-			delegate: self,
-			delegateQueue: nil
-		).dataTask(with: url)
-		dataTask?.resume()
-		return try await withCheckedThrowingContinuation { continuation = $0 }
-	}
-}
-
-extension MetadataLoader: URLSessionDataDelegate {
-	func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+/// Loads metadata without downloading the entire file
+func loadMetadata(from url: URL) async -> Result<Metadata, Error> {
+	let (stream, continuation) = AsyncStream.makeStream(of: Data.self)
+	var buffer = Data(capacity: 1024)
+	var metadataSize: UInt32?
+	let dataTask = URLSession(
+		configuration: .default,
+		delegate: DataDelegate(continuation: continuation),
+		delegateQueue: nil
+	).dataTask(with: url)
+	dataTask.resume()
+	for await data in stream {
 		buffer.append(data)
-		if let size {
-			if buffer.count > size {
+		if let metadataSize {
+			if buffer.count > metadataSize {
 				dataTask.cancel()
 				let localUrl = URL.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 				do {
 					try buffer.write(to: localUrl)
-					continuation?.resume(
-						returning: Metadata(
-							frames: try OutcastID3
-								.MP3File(localUrl: localUrl)
-								.readID3Tag().tag.frames
+					return .success(
+						Metadata(frames: try OutcastID3
+							.MP3File(localUrl: localUrl)
+							.readID3Tag().tag.frames
 						)
 					)
 				} catch {
-					continuation?.resume(throwing: error)
+					return .failure(error)
 				}
 			}
 		} else if buffer.count > 10 {
@@ -49,15 +40,32 @@ extension MetadataLoader: URLSessionDataDelegate {
 				buffer[7] <= 0x7F &&
 				buffer[8] <= 0x7F &&
 				buffer[9] <= 0x7F {
-				size =
+				metadataSize =
 					(UInt32(buffer[6]) << 21) +
 					(UInt32(buffer[7]) << 14) +
 					(UInt32(buffer[8]) << 7) +
 					(UInt32(buffer[9]) << 0)
 			} else {
 				dataTask.cancel()
-				continuation?.resume(throwing: MetadataLoaderError.headerNotFound)
+				return .failure(MetadataLoaderError.headerNotFound)
 			}
 		}
+	}
+	return .failure(MetadataLoaderError.headerNotFound)
+}
+
+private final class DataDelegate: NSObject, URLSessionDataDelegate {
+	let continuation: AsyncStream<Data>.Continuation
+	
+	init(continuation:AsyncStream<Data>.Continuation) {
+		self.continuation = continuation
+	}
+	
+	func urlSession(
+		_ session: URLSession,
+		dataTask: URLSessionDataTask,
+		didReceive data: Data
+	) {
+		continuation.yield(data)
 	}
 }
