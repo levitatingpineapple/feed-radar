@@ -17,22 +17,11 @@ final class FeedTests: XCTestCase {
 		store.item(id: (feedSource.absoluteString + "0").stableHash)!
 	}
 	
-	private lazy var store: Store = {
-		let store = try! Store(testName: "A")
-		let group = DispatchGroup()
-		group.enter()
-		Task {
-			await store.add(feed: Feed(source: feedSource))
-			// TODO: Fetch is returning before result has been stored?
-			try! await Task.sleep(nanoseconds: 100_000_000)
-			group.leave()
-		}
-		group.wait()
-		return store
-	}()
+	var store: Store!
 	
 	override func setUp() async throws {
-		
+		store = try Store(testName: "A")
+		await store.add(feed: Feed(source: feedSource))
 	}
 	
 	func testFeeds() {
