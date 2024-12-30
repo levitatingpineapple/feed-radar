@@ -88,3 +88,21 @@ extension Attachment {
 		}
 	}
 }
+
+
+extension Attachment {
+	enum Preview {
+		case image
+		case video
+	}
+	
+	var preview: Preview? {
+		if type.conforms(to: .image) {
+			.image
+		} else if type.conforms(to: .audiovisualContent) {
+			.video
+		} else {
+			nil
+		}
+	}
+}

@@ -42,8 +42,7 @@
 		CEC1A0D72B4CA29600AC95D9 /* ChaptersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC1A0D62B4CA29600AC95D9 /* ChaptersView.swift */; };
 		CEC1A0DA2B4CC00300AC95D9 /* podcast.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CEC1A0D82B4CBFCA00AC95D9 /* podcast.mp3 */; };
 		CEC1A0DC2B4D5AD100AC95D9 /* ConditionalHeaders.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC1A0DB2B4D5AD000AC95D9 /* ConditionalHeaders.swift */; };
-		CEC3F7A22B485DDD00DFD49D /* Downloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3F7A02B485DA100DFD49D /* Downloader.swift */; };
-		CEC3F7A52B48639F00DFD49D /* RemoteImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3F7A32B48633000DFD49D /* RemoteImageView.swift */; };
+		CEC3F7A22B485DDD00DFD49D /* DownloadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3F7A02B485DA100DFD49D /* DownloadState.swift */; };
 		CEC3F7C52B4AEDFC00DFD49D /* OutcastID3 in Frameworks */ = {isa = PBXBuildFile; productRef = CEC3F7C42B4AEDFC00DFD49D /* OutcastID3 */; };
 		CEC3F7C82B4AF96600DFD49D /* MetadataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3F7C62B4AF00100DFD49D /* MetadataLoader.swift */; };
 		CEC3F7CA2B4B082900DFD49D /* Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3F7C92B4B082900DFD49D /* Metadata.swift */; };
@@ -113,8 +112,7 @@
 		CEC1A0D62B4CA29600AC95D9 /* ChaptersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChaptersView.swift; sourceTree = "<group>"; };
 		CEC1A0D82B4CBFCA00AC95D9 /* podcast.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = podcast.mp3; sourceTree = "<group>"; };
 		CEC1A0DB2B4D5AD000AC95D9 /* ConditionalHeaders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionalHeaders.swift; sourceTree = "<group>"; };
-		CEC3F7A02B485DA100DFD49D /* Downloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloader.swift; sourceTree = "<group>"; };
-		CEC3F7A32B48633000DFD49D /* RemoteImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImageView.swift; sourceTree = "<group>"; };
+		CEC3F7A02B485DA100DFD49D /* DownloadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadState.swift; sourceTree = "<group>"; };
 		CEC3F7C62B4AF00100DFD49D /* MetadataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataLoader.swift; sourceTree = "<group>"; };
 		CEC3F7C92B4B082900DFD49D /* Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metadata.swift; sourceTree = "<group>"; };
 		CED4617B2B3DA56C00AA8B96 /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
@@ -268,7 +266,7 @@
 			children = (
 				CE7618132B1E5BDC00C80C25 /* FeedFetcher.swift */,
 				CE0931A12B1FEDC3008FD706 /* ContentExtractor.swift */,
-				CEC3F7A02B485DA100DFD49D /* Downloader.swift */,
+				CEC3F7A02B485DA100DFD49D /* DownloadState.swift */,
 				CEC3F7C62B4AF00100DFD49D /* MetadataLoader.swift */,
 			);
 			path = Fetch;
@@ -340,7 +338,6 @@
 				CEFEC7C52B0AF42200FF8728 /* HeaderView.swift */,
 				CEC1A0D62B4CA29600AC95D9 /* ChaptersView.swift */,
 				CE351BE52B0D007C006FF948 /* CircularProgressView.swift */,
-				CEC3F7A32B48633000DFD49D /* RemoteImageView.swift */,
 				CE32192D2B509EEE00490F02 /* PlayerView.swift */,
 			);
 			path = Attachment;
@@ -472,8 +469,7 @@
 			files = (
 				CEB155B52B1A419400AB785C /* Html.swift in Sources */,
 				CE1D89F02B232F2C00CC2CFF /* LoadingOverlayView.swift in Sources */,
-				CEC3F7A52B48639F00DFD49D /* RemoteImageView.swift in Sources */,
-				CEC3F7A22B485DDD00DFD49D /* Downloader.swift in Sources */,
+				CEC3F7A22B485DDD00DFD49D /* DownloadState.swift in Sources */,
 				CE9BC1752B45CDB90073735D /* Store.Migrations.swift in Sources */,
 				CEA91A8C2B40E81C003DC50A /* Documentation.docc in Sources */,
 				CE351BE02B0BE7C6006FF948 /* ItemListView.swift in Sources */,

@@ -7,7 +7,7 @@ struct AttachmentView: View {
 	let invalidateSize: () -> Void
 	@Environment(\.store) var store: Store
 	@State private var quickLook: URL?
-	@State private var downloader = Downloader()
+	@State private var downloadState: DownloadState?
 	
 	var body: some View {
 		VStack(spacing: .zero) {
@@ -22,75 +22,111 @@ struct AttachmentView: View {
 		}
 		.background(Color(.secondarySystemBackground))
 		.cornerRadius(16)
+		.task {
+			invalidateSize()
+			if FileManager.default.fileExists(atPath: attachment.localUrl.path) {
+				downloadState = .success(localUrl: attachment.localUrl)
+			} else if attachment.preview == .image {
+				await load()
+			}
+		}
 	}
 	
-	var quickLookButton: some View {
-		Button {
-			quickLook = attachment.localUrl
-		} label: {
-			Image(systemName: "eye").resizable().scaledToFit()
-		}.quickLookPreview($quickLook)
-	}
-	
-	var progressButton: some View {
+	private var progressButton: some View {
 		Group {
-			if url == attachment.url {
-				switch downloader.state {
-				case .ready:
-					Button {
-						downloader.load(from: attachment.url, localUrl: attachment.localUrl)
-					} label: {
-						Image(systemName: "arrow.down.circle").resizable().scaledToFit()
-					}
-				case let .loading(progress):
-					CircularProgressView(width: 24 / 10, progress: progress)
-						.contentShape(Rectangle())
-						.onTapGesture { downloader.cancel() }
-				case .success:
-					quickLookButton
-				case .error:
-					Button {
-						downloader.load(from: attachment.url, localUrl: attachment.localUrl)
-					} label: {
-						Image(systemName: "exclamationmark.circle").resizable().scaledToFit()
-							.foregroundColor(.red)
+			switch downloadState {
+			case nil:
+				Button(action: load) {
+					Image(systemName: "arrow.down.circle")
+						.resizable()
+						.scaledToFit()
+				}
+			case let .loading(progress, downloadTask):
+				CircularProgressView(width: 24 / 10, progress: progress)
+					.contentShape(Rectangle())
+					.onTapGesture { downloadTask.cancel() }
+			case .success:
+				Button {
+					quickLook = attachment.localUrl
+				} label: {
+					Image(systemName: "eye").resizable().scaledToFit()
+				}
+				.quickLookPreview($quickLook)
+			case .error:
+				Button(action: load) {
+					Image(systemName: "exclamationmark.circle")
+						.resizable()
+						.scaledToFit()
+						.foregroundColor(.red)
+				}
+			}
+		}
+		.frame(width: 24, height: 24)
+	}
+	
+	private var mediaPreview: some View {
+		Group {
+			switch downloadState {
+			case nil:
+				if let preview = attachment.preview {
+					switch preview {
+					case .image:
+						Button("Load Preview", action: load).padding()
+					case .video:
+						PlayerView(
+							invalidateSize: invalidateSize,
+							model: PlayerView.Model(
+								url: attachment.url,
+								item: item
+							)
+						)
 					}
 				}
-			} else {
-				quickLookButton
-			}
-		}.frame(width: 24, height: 24)
-	}
-	
-	var mediaPreview: some View {
-		Group {
-			if attachment.type.conforms(to: .image) {
-				RemoteImageView(
-					url: url,
-					type: attachment.type,
-					invalidateSize: invalidateSize
-				)
-			} else if attachment.type.conforms(to: .audiovisualContent) {
-				PlayerView(
-					invalidateSize: invalidateSize,
-					model: PlayerView.Model(url: url, item: item)
-				)
+			case let .loading(progress, _):
+				ProgressView(value: progress)
+			case let .success(url):
+				if let preview = attachment.preview {
+					switch preview {
+					case .image:
+						if let data = try? Data(contentsOf: url),
+						   let uiImage = UIImage(data: data) {
+							Image(uiImage: uiImage)
+								.resizable()
+								.aspectRatio(contentMode: .fit)
+								.quickLookPreview($quickLook)
+								.onTapGesture { quickLook = url }
+						}
+					case .video:
+						PlayerView(
+							invalidateSize: invalidateSize,
+							model: PlayerView.Model(
+								url: url,
+								item: item
+							)
+						)
+					}
+				}
+			case let .error(string):
+				VStack {
+					Text(string).foregroundStyle(Color.red)
+					Button("Load Preview", action: load).padding()
+				}
+				.padding()
 			}
 		}
 		.clipShape(UnevenRoundedRectangle(topLeadingRadius: 15, topTrailingRadius: 15))
 		.padding(1)
 	}
 	
-	var url: URL {
-		switch downloader.state {
-		case .loading:
-			attachment.url
-		default:
-			if FileManager.default.fileExists(atPath: attachment.localUrl.path) {
-				attachment.localUrl
-			} else {
-				attachment.url
-			}
+	private func load() {
+		Task { await load() }
+	}
+	
+	private func load() async {
+		for await state in downloadFile(from: attachment.url, to: attachment.localUrl)  {
+			let skipLayout = state.isLoading && downloadState?.isLoading == true
+			downloadState = state
+			if !skipLayout { invalidateSize() }
 		}
 	}
 }

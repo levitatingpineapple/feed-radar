@@ -24,12 +24,14 @@ struct LoadingOverlayView: UIViewRepresentable {
 			super.init(effect: nil)
 			self.alpha = 0
 			self.contentView.addSubview(spinner)
-			Task { @MainActor in
+			Task {
 				isLoading = await fetcher.isLoading(source: source)
-				isLoading?.sink { [weak self] isLoading in
-					UIView.animate(withDuration: 0.2) { self?.display(isLoading: isLoading) }
-				}
-				.store(in: &bag)
+				isLoading?
+					.receive(on: DispatchQueue.main)
+					.sink { [weak self] isLoading in
+						self?.display(isLoading: isLoading)
+					}
+					.store(in: &bag)
 			}
 		}
 		
