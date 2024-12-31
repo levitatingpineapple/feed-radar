@@ -96,7 +96,9 @@ extension Store {
 				if let source = toFetch.popLast() {
 					taskGroup.addTask {
 						do {
-							let _ = await MainActor.run { LoadingModel.shared.loading.insert(source) }
+							let _ = await MainActor.run {
+								LoadingManager.shared.start(source: source)
+							}
 							let (data, response) = try await URLSession.shared.data(
 								for: ConditionalHeaders(source: source)?.request
 								?? URLRequest(url: source)
@@ -114,8 +116,8 @@ extension Store {
 				switch next {
 				case let .success((data, source)):
 					Task { @MainActor in
-						try? await Task.sleep(for: .milliseconds(200))
-						LoadingModel.shared.loading.remove(source)
+						try? await Task.sleep(for: .milliseconds(500))
+						LoadingManager.shared.stop(source: source)
 					}
 					await partialCompletion(data, source)
 				case let .failure(error):

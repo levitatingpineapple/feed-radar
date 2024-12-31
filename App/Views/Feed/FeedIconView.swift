@@ -11,8 +11,7 @@ struct FeedIconView: View {
 	}
 
 	var body: some View {
-		Self._printChanges()
-		return ZStack {
+		ZStack {
 			icon.resizable()
 			LoadingView(source: source)
 		}
