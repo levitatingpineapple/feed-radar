@@ -82,18 +82,53 @@ extension Store {
 		}
 	}
 	
-	/// Fetches all feeds if last fetch was more than `elapsed` seconds ago.
-	/// Used for triggering fetch after the app enters foreground
-	func fetch(after elapsed: TimeInterval) {
-		if Date.now.timeIntervalSince1970 - (lastFullFetch ?? .zero) > elapsed {
-			Task { await fetch() }
+	/// Concurrently and consecutively fetches feeds.
+	/// Runs a partial completion after each worker finishes.
+	///
+	/// - Parameters:
+	///   - sources: List of feed URLs to fetch
+	///   - workers: Number of concurrent workers to use
+	///   - partialCompletion: Completion that runs after each worker finishes
+	func fetch(sources: Array<URL>, workers: UInt, partialCompletion: (Data, URL) async -> Void) async {
+		var toFetch = sources // TODO: Filter already loading
+		await withTaskGroup(of: Result<(Data, URL), any Error>.self) { taskGroup in
+			func addWorker(taskGroup: inout TaskGroup<Result<(Data, URL), any Error>>) {
+				if let source = toFetch.popLast() {
+					taskGroup.addTask {
+						do {
+							let _ = await MainActor.run { LoadingModel.shared.loading.insert(source) }
+							let (data, response) = try await URLSession.shared.data(
+								for: ConditionalHeaders(source: source)?.request
+								?? URLRequest(url: source)
+							)
+							ConditionalHeaders(response: response, source: source)?.store()
+							return Result.success((data, source))
+						} catch {
+							return Result.failure(error)
+						}
+					}
+				}
+			}
+			(0..<workers).forEach { _ in addWorker(taskGroup: &taskGroup) }
+			while let next = await taskGroup.next() {
+				switch next {
+				case let .success((data, source)):
+					Task { @MainActor in
+						try? await Task.sleep(for: .milliseconds(200))
+						LoadingModel.shared.loading.remove(source)
+					}
+					await partialCompletion(data, source)
+				case let .failure(error):
+					Logger.store.debug("Failed to Download \(error)")
+				}
+				addWorker(taskGroup: &taskGroup)
+			}
 		}
 	}
 	
 	/// Fetches feed and updates the database. If no feed is provided - fetches all feeds
 	func fetch(feed: Feed? = nil) async {
-		if feed == nil { lastFullFetch = Date.now.timeIntervalSince1970 }
-		await fetcher.fetch(
+		await fetch(
 			sources: feed.flatMap { [$0.source] } ?? self.feeds.map { $0.source },
 			workers: 8
 		) { data, source in

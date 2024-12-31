@@ -18,7 +18,6 @@ struct PlayerView: View {
 }
 
 extension PlayerView {
-	
 	/// Coordinates interactions between ``PlayerViewController`` and ``ChaptersView``
 	@Observable
 	final class Model {

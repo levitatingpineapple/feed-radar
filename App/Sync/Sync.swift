@@ -20,9 +20,9 @@ protocol SyncDelegate: Actor {
 
 /// A class that handles syncing using CloudKit
 /// Implements ``SyncDelegate``
-final actor Sync {
-	fileprivate let itemUpdateBatcher: ItemUpdateBatcher
-	fileprivate let store: Store
+actor Sync {
+	fileprivate var itemUpdateBatcher: ItemUpdateBatcher!
+	fileprivate var store: Store!
 	fileprivate var engine: CKSyncEngine!
 	fileprivate var orphanedRecords = Set<CKRecord>()
 	fileprivate var stateSerialization: CKSyncEngine.State.Serialization? {
@@ -41,15 +41,9 @@ final actor Sync {
 		}
 	}
 	
-	/// Creates an instance of ``Sync``
-	/// - Parameter store: For storing incomming changes
-	init(store: Store) {
+	func start(store: Store) {
 		self.store = store
 		self.itemUpdateBatcher = ItemUpdateBatcher(store: store)
-		Task { await start() }
-	}
-	
-	private func start() {
 		let configuration = CKSyncEngine.Configuration(
 			database: CKContainer.default().privateCloudDatabase,
 			stateSerialization: stateSerialization,
@@ -148,7 +142,7 @@ extension Sync: CKSyncEngineDelegate {
 				.filter { context.options.scope.contains($0) }
 		) { recordID in
 			Logger.sync.info("Dequeued \(recordID.recordName)")
-			return store.item(id: recordID.itemId)?.record
+			return await store.item(id: recordID.itemId)?.record
 		}
 	}
 }

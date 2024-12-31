@@ -1,57 +1,48 @@
 import SwiftUI
 import Combine
 
-/// Displays loading spinner
-struct LoadingOverlayView: UIViewRepresentable {
-	@Environment(\.store) var store
-	
+@Observable
+@MainActor
+class LoadingModel {
+	static let shared: LoadingModel = LoadingModel()
+	var loading = Set<URL>()
+}
+
+struct LoadingView: View {
 	let source: URL
+	let testModel = LoadingModel.shared
 	
-	func makeUIView(context: Context) -> some UIView {
-		LoadingOverlayView(source: source, fetcher: store.fetcher)
+	var body: some View {
+		if testModel.loading.contains(source) {
+			GradientSpinner()
+		}
 	}
-	
-	func updateUIView(_ uiView: UIViewType, context: Context) { }
-	
-	class LoadingOverlayView: UIVisualEffectView {
-		private var isLoading: CurrentValueSubject<Bool, Never>?
-		private var bag = Set<AnyCancellable>()
-		private let spinner = UIActivityIndicatorView(
-			frame: CGRect(origin: .zero, size: CGSize(width: 32, height: 32))
-		)
-		
-		init(source: URL, fetcher: FeedFetcher) {
-			super.init(effect: nil)
-			self.alpha = 0
-			self.contentView.addSubview(spinner)
-			Task {
-				isLoading = await fetcher.isLoading(source: source)
-				isLoading?
-					.receive(on: DispatchQueue.main)
-					.sink { [weak self] isLoading in
-						self?.display(isLoading: isLoading)
-					}
-					.store(in: &bag)
+}
+
+private struct GradientSpinner: View {
+	@State private var rotation: Double = 0
+
+	var body: some View {
+		Circle()
+			.fill(
+				AngularGradient(
+					gradient: Gradient(colors: [.clear, .accentColor, .clear]),
+					center: .center,
+					angle: .degrees(rotation)
+				)
+			)
+			.padding(-16)
+			.onAppear {
+				withAnimation(
+					.linear(duration: 1)
+					.repeatForever(autoreverses: false)
+				) { rotation = 360 }
 			}
-		}
-		
-		private func display(isLoading: Bool) {
-			Task { @MainActor in
-				if isLoading {
-					spinner.startAnimating()
-					alpha = 0.8
-					effect = UIBlurEffect(style: .prominent)
-				} else {
-					spinner.stopAnimating()
-					alpha = 0
-					effect = nil
-				}
-			}
-		}
-		
-		required init(coder: NSCoder) {
-			fatalError("init(coder:) has not been implemented")
-		}
+			.mask(
+				RoundedRectangle(cornerRadius: 6, style: .continuous)
+					.stroke(lineWidth: 4)
+					.frame(width: 28, height: 28)
+			)
 	}
 }
 

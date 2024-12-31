@@ -7,8 +7,8 @@ struct ChaptersView: View {
 		if let chapters = playerModel.chapters, !chapters.isEmpty {
 			VStack(alignment: .leading, spacing: .zero) {
 				ForEach(chapters) { chapter in
-					HStack
-						{// TODO: Line limit might not be needed after implementing custom layout
+					HStack {
+						// TODO: Line limit might not be needed after implementing custom layout
 						Text((chapter.title ?? "Chapter")).lineLimit(1)
 						Spacer()
 						if let time = playerModel.time(of: chapter) {
@@ -28,6 +28,7 @@ struct ChaptersView: View {
 								GeometryReader { geometry in
 									if let progress = playerModel.progress(of: chapter) {
 										Color.accentColor.opacity(0.6)
+											// TODO: Invalid frame dimension
 											.frame(width: progress * geometry.size.width)
 											.animation(.default, value: playerModel.currentTime)
 									}

@@ -12,11 +12,7 @@ protocol Storable:
 /// A class that provides a typed interface for all database operations
 final class Store: Sendable {
 	let queue: DatabaseQueue
-	let fetcher = FeedFetcher()
-	var sync: SyncDelegate?
-	
-	/// Last time when all feeds were fetched, since the app launch
-	var lastFullFetch: TimeInterval?
+	let sync: SyncDelegate?
 	
 	/// - Parameter testName: Name, used in unit tests to create in memory database without sync
 	init(testName: String? = nil) throws {
@@ -28,10 +24,14 @@ final class Store: Sendable {
 			}
 			configuration.qos = .background
 			queue = try DatabaseQueue(named: testName, configuration: configuration)
+			sync = nil
 		} else {
 			queue = try DatabaseQueue(path: URL.documents.appendingPathComponent("feeds.db").path)
-			sync = Sync(store: self)
+			sync = Sync()
 		}
 		try databaseMigrator.migrate(queue)
+		
+		// TODO: Refactor after swift 6 migration
+		Task { await (sync as? Sync)!.start(store: self) }
 	}
 }

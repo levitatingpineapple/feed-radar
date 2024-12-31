@@ -9,6 +9,7 @@ struct NavigationView: View {
 	@Environment(\.horizontalSizeClass) var horizontalSizeClass
 	@State var navigation = Navigation(store: StoreKey.defaultValue)
 	@State var navigationSplitViewVisibility: NavigationSplitViewVisibility = .automatic
+	@State var lastFullFetch: TimeInterval = .zero
 
 	var body: some View {
 		NavigationSplitView(columnVisibility: $navigationSplitViewVisibility) {
@@ -23,7 +24,7 @@ struct NavigationView: View {
 			}
 		}
 		.task {
-			store.fetch(after: 300)
+			fetch()
 			navigationSplitViewVisibility = horizontalSizeClass == .regular
 			? .all
 			: .automatic
@@ -34,10 +35,21 @@ struct NavigationView: View {
 		.environment(navigation)
 		.onChange(of: scenePhase) {
 			if scenePhase == .active {
-				store.fetch(after: 300)
+				fetch()
 			} else {
 				if let id = navigation.itemId { store.markAsRead(itemId: id) }
 			}
+		}
+	}
+	
+	/// Fetches all feeds when the scene becomes active,
+	/// and at least 5 minutes have passed
+	private func fetch() {
+		let fiveMinutes: TimeInterval = 300
+		let now = Date.now.timeIntervalSince1970
+		if now - lastFullFetch > fiveMinutes {
+			lastFullFetch = now
+			Task { await store.fetch() }
 		}
 	}
 }

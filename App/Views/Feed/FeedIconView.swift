@@ -3,7 +3,7 @@ import SwiftUI
 struct FeedIconView: View {
 	private static let cache = NSCache<NSString, UIImage>()
 	private let source: URL
-	@AppStorage private var data: Data?
+	@AppStorage private var data: Data? // TODO: Move to the Store
 
 	init(source: URL) {
 		self.source = source
@@ -11,9 +11,10 @@ struct FeedIconView: View {
 	}
 
 	var body: some View {
-		ZStack {
+		Self._printChanges()
+		return ZStack {
 			icon.resizable()
-			LoadingOverlayView(source: source)
+			LoadingView(source: source)
 		}
 	}
 
