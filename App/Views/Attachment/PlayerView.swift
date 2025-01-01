@@ -9,16 +9,63 @@ struct PlayerView: View {
 	var body: some View {
 		VStack(spacing: .zero) {
 			PlayerViewController(player: model.player, artwork: model.artwork)
-			.aspectRatio(model.aspectRatio, contentMode: .fit)
-			ChaptersView(playerModel: model)
+				.aspectRatio(model.aspectRatio, contentMode: .fit)
+			chapters
+			Text("\(model.currentTime)")
 		}
 		.onChange(of: model.chapters) { invalidateSize() }
 		.onChange(of: model.aspectRatio) { invalidateSize() }
 	}
+	
+	private var chapters: some View {
+		Self._printChanges()
+		return Group {
+			if let chapters = model.chapters, !chapters.isEmpty {
+				VStack(alignment: .leading, spacing: .zero) {
+					ForEach(chapters) { chapter in
+						HStack {
+							// TODO: Line limit might not be needed after implementing custom layout
+							Text((chapter.title ?? "Chapter")).lineLimit(1)
+							Spacer()
+							if let time = model.time(of: chapter) {
+								Text(time).bold()
+									.monospacedDigit()
+									.foregroundStyle(.secondary)
+							}
+						}
+						.contentShape(Rectangle())
+						.onTapGesture { Task { await model.seek(to: chapter) } }
+						.padding(.vertical, 4)
+						.padding(.horizontal, 8)
+						.background {
+							if chapter == model.currentChapter {
+								ZStack(alignment: .leading) {
+									Color(uiColor: .tertiarySystemBackground)
+									GeometryReader { geometry in
+										if let progress = model.progress(of: chapter) {
+											Color.accentColor.opacity(0.6)
+											// TODO: Invalid frame dimension
+												.frame(width: progress * geometry.size.width)
+												.animation(.default, value: model.currentTime)
+										}
+									}
+								}
+							}
+						}
+						.clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+					}
+				}
+				.padding(10)
+				Divider()
+			}
+		}
+	}
+	
 }
 
 extension PlayerView {
 	/// Coordinates interactions between ``PlayerViewController`` and ``ChaptersView``
+	@MainActor
 	@Observable
 	final class Model {
 		let item: Item
@@ -64,8 +111,11 @@ extension PlayerView {
 		}
 		
 		private var playerAspectRatio: Double?
+		
 		/// Observes player position and updates ``currentTime`` and ``currentChapter``
+		nonisolated(unsafe)
 		private var timeObserver: Any?
+		
 		/// Used to prevent observer updating ``currentTime`` during seek
 		private var isSeeking = false
 		
@@ -86,31 +136,44 @@ extension PlayerView {
 			timeObserver = player.addPeriodicTimeObserver(
 				forInterval: CMTime(timeInterval: 1),
 				queue: nil
-			) { [weak self] cmTime in self?.update(time: cmTime.seconds) }
-			
-			Task { @MainActor [weak self] in
+			) { cmTime in
+				print(cmTime.seconds)
+				DispatchQueue.main.async {
+					self.update(time: cmTime.seconds)
+				}
+			}
+
+			// Load metadata
+			Task {
 				switch await loadMetadata(from: url) {
-				case let .success(metadata): self?.metadata = metadata
+				case let .success(metadata): self.metadata = metadata
 				case let .failure(error): Logger.ui.log("Metadata loading failed: \(error)")
 				}
-				self?.metadata = try? await loadMetadata(from: url).get()
 			}
-			Task { @MainActor [weak self] in
-				self?.playerAspectRatio = try? await self?.player.aspectRatio()
+			
+			// Set aspect ratio
+			Task {
+				playerAspectRatio = try? await player.aspectRatio()
 			}
-			Task { @MainActor [weak self] in
+			
+			// Load chapters
+			Task {
 				if let content = item.content {
-					self?.descriptionChapters = Array<Metadata.Chapter>(
+					descriptionChapters = Array<Metadata.Chapter>(
 						description: content
 					)
-					if let duration = try? await self?.player.duration() {
-						if let lastChapter = self?.descriptionChapters?.popLast() {
-							self?.descriptionChapters?.append(
+					if let duration = try? await player.duration() {
+						if let lastChapter = descriptionChapters?.popLast() {
+							descriptionChapters?.append(
 								lastChapter.ending(in: duration)
 							)
 						}
 					}
 				}
+			}
+			
+			func test() async {
+				playerAspectRatio = try? await player.aspectRatio()
 			}
 		}
 		
@@ -122,21 +185,17 @@ extension PlayerView {
 			if let timeObserver { player.removeTimeObserver(timeObserver) }
 		}
 		
-		/// Seeks to the beginning of the chapter.
-		/// Applies chapter art and triggers playback
-		func seekTo(chapter: Metadata.Chapter) {
+		func seek(to chapter: Metadata.Chapter) async {
 			currentChapter = chapter
 			currentTime = chapter.startTime
 			isSeeking = true
-			player.seek(
+			if await player.seek(
 				to: CMTime(timeInterval: chapter.startTime),
 				toleranceBefore: .zero,
 				toleranceAfter: CMTime(timeInterval: 0.5)
-			) { [weak self] success in
-				if success {
-					self?.isSeeking = false
-					self?.player.play()
-				}
+			) {
+				isSeeking = false
+				player.play()
 			}
 		}
 		
@@ -153,15 +212,22 @@ extension PlayerView {
 	}
 }
 
+// Assume track to be sendable
+extension AVAssetTrack: @retroactive @unchecked Sendable { }
+
 extension AVPlayer {
 	func aspectRatio() async throws -> Double? {
+		var ratio: Double?
 		if let tracks = try await currentItem?.asset.load(.tracks) {
 			for track in tracks {
 				let naturalSize = try await track.load(.naturalSize)
-				if let aspectRatio = naturalSize.aspectRatio { return aspectRatio }
+				if let aspectRatio = naturalSize.aspectRatio {
+					ratio = aspectRatio
+					break
+				}
 			}
 		}
-		return nil
+		return ratio
 	}
 	
 	func duration() async throws -> Double? {

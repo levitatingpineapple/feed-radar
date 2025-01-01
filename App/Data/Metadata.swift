@@ -53,7 +53,6 @@ extension Metadata.Chapter {
 			.first
 	}
 	
-	nonisolated(unsafe)
 	static private let regex = Regex {
 		Optionally {
 			Capture { Repeat(.digit, (1...2)) }
@@ -129,7 +128,6 @@ extension Metadata.Chapter {
 		
 		var startTime: TimeInterval { 3600 * hours + 60 * minutes + seconds }
 		
-		nonisolated(unsafe)
 		static private let regex = Regex {
 			Optionally {
 				Capture { Repeat(.digit, (1...2)) }
@@ -169,3 +167,8 @@ extension Metadata.Chapter {
 		self.artwork = nil
 	}
 }
+
+// Regex macros are not sendable (yet?)
+// Discussion: https://forums.swift.org/t/should-regex-be-sendable/69529
+// Assume safe since `CustomConsumingRegexComponent` is not used
+extension Regex: @unchecked @retroactive Sendable { }
