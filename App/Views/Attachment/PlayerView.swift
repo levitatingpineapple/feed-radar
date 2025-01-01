@@ -11,53 +11,50 @@ struct PlayerView: View {
 			PlayerViewController(player: model.player, artwork: model.artwork)
 				.aspectRatio(model.aspectRatio, contentMode: .fit)
 			chapters
-			Text("\(model.currentTime)")
 		}
 		.onChange(of: model.chapters) { invalidateSize() }
 		.onChange(of: model.aspectRatio) { invalidateSize() }
 	}
 	
+	@ViewBuilder
 	private var chapters: some View {
-		Self._printChanges()
-		return Group {
-			if let chapters = model.chapters, !chapters.isEmpty {
-				VStack(alignment: .leading, spacing: .zero) {
-					ForEach(chapters) { chapter in
-						HStack {
-							// TODO: Line limit might not be needed after implementing custom layout
-							Text((chapter.title ?? "Chapter")).lineLimit(1)
-							Spacer()
-							if let time = model.time(of: chapter) {
-								Text(time).bold()
-									.monospacedDigit()
-									.foregroundStyle(.secondary)
-							}
+		if let chapters = model.chapters, !chapters.isEmpty {
+			VStack(alignment: .leading, spacing: .zero) {
+				ForEach(chapters) { chapter in
+					HStack {
+						// TODO: Line limit might not be needed after implementing custom layout
+						Text((chapter.title ?? "Chapter")).lineLimit(1)
+						Spacer()
+						if let time = model.time(of: chapter) {
+							Text(time).bold()
+								.monospacedDigit()
+								.foregroundStyle(.secondary)
 						}
-						.contentShape(Rectangle())
-						.onTapGesture { Task { await model.seek(to: chapter) } }
-						.padding(.vertical, 4)
-						.padding(.horizontal, 8)
-						.background {
-							if chapter == model.currentChapter {
-								ZStack(alignment: .leading) {
-									Color(uiColor: .tertiarySystemBackground)
-									GeometryReader { geometry in
-										if let progress = model.progress(of: chapter) {
-											Color.accentColor.opacity(0.6)
-											// TODO: Invalid frame dimension
-												.frame(width: progress * geometry.size.width)
-												.animation(.default, value: model.currentTime)
-										}
+					}
+					.contentShape(Rectangle())
+					.onTapGesture { Task { await model.seek(to: chapter) } }
+					.padding(.vertical, 4)
+					.padding(.horizontal, 8)
+					.background {
+						if chapter == model.currentChapter {
+							ZStack(alignment: .leading) {
+								Color(uiColor: .tertiarySystemBackground)
+								GeometryReader { geometry in
+									if let progress = model.progress(of: chapter) {
+										Color.accentColor.opacity(0.6)
+										// TODO: Invalid frame dimension
+											.frame(width: progress * geometry.size.width)
+											.animation(.default, value: model.currentTime)
 									}
 								}
 							}
 						}
-						.clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 					}
+					.clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 				}
-				.padding(10)
-				Divider()
 			}
+			.padding(10)
+			Divider()
 		}
 	}
 	
