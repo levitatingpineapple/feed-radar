@@ -68,14 +68,14 @@ Supported platforms:
 
 ## Documentation
 
-To learn more check out the generated [**Documentation**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar)\
+To learn more check out the generated [**Documentation**](https://levitatingpineapple.github.io/feed-radar/documentation/core)\
 A high level overview is available in following articles:
 
-- [**Fetching Feeds**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar/fetchingfeeds)\
+- [**Fetching Feeds**](https://levitatingpineapple.github.io/feed-radar/documentation/core/fetchingfeeds)\
 How feeds are fetched and mapped
-- [**Storing Feeds**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar/storingfeeds)\
+- [**Storing Feeds**](https://levitatingpineapple.github.io/feed-radar/documentation/core/storingfeeds)\
 How feeds are persisted in database
-- [**Syncing**](https://levitatingpineapple.github.io/feed-radar/documentation/feedradar/syncing)\
+- [**Syncing**](https://levitatingpineapple.github.io/feed-radar/documentation/core/syncing)\
 How the app syncs between multiple devices
 
 ## Dependencies
