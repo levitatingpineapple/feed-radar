@@ -19,7 +19,7 @@ jobs:
           swift package generate-documentation \
             --target Core \
             --symbol-graph-minimum-access-level internal \
-            --hosting-base-path https://github.com/levitatingpineapple/feed-radar \
+            --hosting-base-path https://github.io/levitatingpineapple/feed-radar \
             --disable-indexing \
             --transform-for-static-hosting \
             --warnings-as-errors
