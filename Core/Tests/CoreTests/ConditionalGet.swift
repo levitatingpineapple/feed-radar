@@ -54,9 +54,4 @@ struct ConditionalGet {
 		)
 		UserDefaults.standard.removePersistentDomain(forName: source.absoluteString)
 	}
-	
-	@Test
-	func failingTest() {
-		#expect(2 != 2)
-	}
 }
