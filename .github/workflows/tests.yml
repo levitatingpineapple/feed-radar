@@ -14,9 +14,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Initialise Submodule
         run: git submodule init && git submodule update
-      - name: Change Directory
-        run: cd Core
-      - name: Build
-        run: swift build
       - name: Test
+        working-directory: ./Core
         run: swift test
