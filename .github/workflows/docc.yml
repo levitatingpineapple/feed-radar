@@ -1,50 +1,44 @@
-# name: Compile and Deploy Documentation
+name: Deploy Documentation
 
-# on:
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
-
-# jobs:
-#   build:
-#     runs-on: macos-13
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
-#       - name: Initialise Submodule
-#         run: git submodule init && git submodule update
-#       - name: Select Xcode 15.1
-#         run: sudo xcode-select -s /Applications/Xcode_15.1.app/Contents/Developer
-#       - name: Create Documentation Archive
-#         run: >
-#           xcrun xcodebuild docbuild \
-#             -scheme FeedRadar \
-#             -destination 'generic/platform=iOS Simulator' \
-#             -derivedDataPath .derivedData
-#       - name: Transform Archive for Static Hosting
-#         run: >
-#           xcrun docc process-archive transform-for-static-hosting \
-#             .derivedData/Build/Products/Debug-iphonesimulator/FeedRadar.doccarchive \
-#             --output-path .docs \
-#             --hosting-base-path feed-radar
-#       - name: Setup Pages
-#         id: pages
-#         uses: actions/configure-pages@v4
-#       - name: Upload artifact
-#         uses: actions/upload-pages-artifact@v3
-#         with:
-#           path: .docs
-#   deploy:
-#     needs: build
-#     permissions:
-#       pages: write
-#       id-token: write
-#     environment:
-#       name: github-pages
-#       url: ${{ steps.deployment.outputs.page_url }}
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Deploy to GitHub Pages
-#         id: deployment
-#         uses: actions/deploy-pages@v4
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Initialise Submodule
+        run: git submodule init && git submodule update
+      - name: Generate Documentation
+        working-directory: ./Core
+        run: |
+          swift package generate-documentation \
+            --target Core \
+            --symbol-graph-minimum-access-level internal \
+            --disable-indexing \
+            --transform-for-static-hosting \
+            --warnings-as-errors
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: Core/.build/plugins/Swift-DocC/outputs/Core.doccarchive
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
