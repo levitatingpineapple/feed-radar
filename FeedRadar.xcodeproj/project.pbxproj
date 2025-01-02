@@ -8,22 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		CED6CC872D2619F1002A9239 /* UI in Frameworks */ = {isa = PBXBuildFile; productRef = CED6CC862D2619F1002A9239 /* UI */; };
-		CEDEC5CD2B0650F700D83636 /* FeedRadarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5CC2B0650F700D83636 /* FeedRadarApp.swift */; };
+		CEDEC5CD2B0650F700D83636 /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEC5CC2B0650F700D83636 /* Main.swift */; };
 		CEDEC5D32B0650F800D83636 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDEC5D22B0650F800D83636 /* Assets.xcassets */; };
-		CEDEC5E62B067CA500D83636 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = CEDEC5E52B067CA500D83636 /* Style.css */; };
-		CEF02BFB2B448A06007842A5 /* Readability.js in Resources */ = {isa = PBXBuildFile; fileRef = CEF02BFA2B448A06007842A5 /* Readability.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		CE19A1D82D25D97300AE380F /* Core */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Core; sourceTree = "<group>"; };
 		CE2287692D26182400629373 /* UI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = UI; sourceTree = "<group>"; };
-		CEA06C122B0FC9E100B3C516 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CEA06C122B0FC9E100B3C516 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = App/Info.plist; sourceTree = SOURCE_ROOT; };
 		CEDEC5C92B0650F700D83636 /* FeedRadar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeedRadar.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEDEC5CC2B0650F700D83636 /* FeedRadarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedRadarApp.swift; sourceTree = "<group>"; };
+		CEDEC5CC2B0650F700D83636 /* Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
 		CEDEC5D22B0650F800D83636 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CEDEC5D42B0650F800D83636 /* Entitlements.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Entitlements.entitlements; sourceTree = "<group>"; };
-		CEDEC5E52B067CA500D83636 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
-		CEF02BFA2B448A06007842A5 /* Readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = Readability.js; path = Submodules/Readability/Readability.js; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,24 +34,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		CE18F3862B094B8600FE509C /* Support */ = {
-			isa = PBXGroup;
-			children = (
-				CEA06C122B0FC9E100B3C516 /* Info.plist */,
-				CEDEC5D22B0650F800D83636 /* Assets.xcassets */,
-				CEDEC5D42B0650F800D83636 /* Entitlements.entitlements */,
-				CEDEC5E52B067CA500D83636 /* Style.css */,
-				CEF02BFA2B448A06007842A5 /* Readability.js */,
-			);
-			path = Support;
-			sourceTree = "<group>";
-		};
 		CEDEC5C02B0650F700D83636 = {
 			isa = PBXGroup;
 			children = (
+				CEDEC5CB2B0650F700D83636 /* App */,
 				CE2287692D26182400629373 /* UI */,
 				CE19A1D82D25D97300AE380F /* Core */,
-				CEDEC5CB2B0650F700D83636 /* App */,
 				CEDEC5CA2B0650F700D83636 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,8 +55,10 @@
 		CEDEC5CB2B0650F700D83636 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				CEDEC5CC2B0650F700D83636 /* FeedRadarApp.swift */,
-				CE18F3862B094B8600FE509C /* Support */,
+				CEDEC5CC2B0650F700D83636 /* Main.swift */,
+				CEDEC5D22B0650F800D83636 /* Assets.xcassets */,
+				CEDEC5D42B0650F800D83636 /* Entitlements.entitlements */,
+				CEA06C122B0FC9E100B3C516 /* Info.plist */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -94,7 +80,6 @@
 			);
 			name = FeedRadar;
 			packageProductDependencies = (
-				CE19A1DD2D25DCD300AE380F /* Core */,
 				CED6CC862D2619F1002A9239 /* UI */,
 			);
 			productName = Rss;
@@ -142,8 +127,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEDEC5D32B0650F800D83636 /* Assets.xcassets in Resources */,
-				CEF02BFB2B448A06007842A5 /* Readability.js in Resources */,
-				CEDEC5E62B067CA500D83636 /* Style.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,7 +137,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEDEC5CD2B0650F700D83636 /* FeedRadarApp.swift in Sources */,
+				CEDEC5CD2B0650F700D83636 /* Main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,6 +197,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -271,6 +255,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -284,7 +269,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = App/Support/Entitlements.entitlements;
+				CODE_SIGN_ENTITLEMENTS = App/Entitlements.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -295,7 +280,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = App/Support/Info.plist;
+				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Feed Radar";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -308,7 +293,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
@@ -332,7 +317,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = App/Support/Entitlements.entitlements;
+				CODE_SIGN_ENTITLEMENTS = App/Entitlements.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -343,7 +328,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = App/Support/Info.plist;
+				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Feed Radar";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -356,7 +341,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
@@ -399,10 +384,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CE19A1DD2D25DCD300AE380F /* Core */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Core;
-		};
 		CED6CC862D2619F1002A9239 /* UI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = UI;

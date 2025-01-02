@@ -41,7 +41,7 @@ private class Readability: NSObject {
 		webView.configuration.userContentController.addUserScript(
 			WKUserScript(
 				source: try! String(
-					contentsOf: Bundle.main.url(forResource: "Readability", withExtension: "js")!,
+					contentsOf: Bundle.module.url(forResource: "Readability", withExtension: "js")!,
 					encoding: .utf8
 				),
 				injectionTime: .atDocumentStart,

@@ -21,7 +21,7 @@ struct Html: Hashable, CustomStringConvertible {
 	}
 
 	static let style: String = try! String(
-		contentsOf: Bundle.main.url(
+		contentsOf: Bundle.module.url(
 			forResource: "Style",
 			withExtension: "css"
 		)!,

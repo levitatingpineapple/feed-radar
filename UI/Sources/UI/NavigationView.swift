@@ -11,20 +11,26 @@ extension EnvironmentValues {
 	}
 }
 
+public struct FeedRadarApp: App {
+	public init() { }
+	
+	public var body: some Scene {
+		WindowGroup { NavigationView() }
+	}
+}
+
 /// A View that handles ``Navigation``
 /// It explicitly switches to using `NavigationStack` in compact mode
 /// to address animation issues with related to `NavigationSplitView` and Large Titles
-public struct NavigationView: View {
+struct NavigationView: View {
 	@Environment(\.store) var store: Store
 	@Environment(\.scenePhase) var scenePhase
 	@Environment(\.horizontalSizeClass) var horizontalSizeClass
 	@State var navigation = Navigation(store: StoreKey.defaultValue)
 	@State var navigationSplitViewVisibility: NavigationSplitViewVisibility = .automatic
 	@State var lastFullFetch: TimeInterval = .zero
-	
-	public init() { }
 
-	public var body: some View {
+	var body: some View {
 		NavigationSplitView(columnVisibility: $navigationSplitViewVisibility) {
 			FeedListView()
 		} content: {
