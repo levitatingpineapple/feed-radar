@@ -24,11 +24,6 @@ All foreign key references are set to cascade on delete.
 
 ## Topics
 
-### Essentials
-
-- <doc:FetchingFeeds>
-- <doc:Syncing>
-
 ### Integration
 
 - ``Store``

@@ -1,13 +1,5 @@
 # Fetching Feeds
 
-<!--toc:start-->
-- [Fetching Feeds](#fetching-feeds)
-  - [Overview](#overview)
-    - [Parallel Fetch](#parallel-fetch)
-    - [Conditional Requests](#conditional-requests)
-    - [Additional Resources](#additional-resources)
-<!--toc:end-->
-
 Various Optimizations for fetching feeds  
 
 @Metadata {
@@ -48,3 +40,9 @@ Feeds often reference additional contents which can be handled separately:
 - ``ContentExtractor`` Used to extract full article from URL.\
 Useful for feeds that only include their abstract.
 
+## Topics
+
+### Integration
+
+- ``Mapped``
+- ``ConditionalHeaders``

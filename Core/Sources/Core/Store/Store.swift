@@ -2,6 +2,8 @@ import Foundation
 import GRDB
 import os.log
 
+/// Empty composed protocol that defines requirement for types,
+/// which are stored in the database. Conformed by ``Feed``, ``Item`` and ``Attachment``
 public protocol Storable:
 	Hashable,
 	Identifiable,
@@ -38,6 +40,8 @@ public final class Store: Sendable {
 }
 
 // TODO: Refactor after swift 6 migration
+
+/// Model for driving UI loading indicators
 @MainActor
 public class LoadingManager {
 	@Observable
@@ -48,11 +52,16 @@ public class LoadingManager {
 		//	}
 		public var isLoading = false
 	}
-	
+
+	/// Public Instance
 	public static let shared: LoadingManager = LoadingManager()
 	
 	private var models = Dictionary<URL, Model>()
-	
+
+	/// Creates and 
+	///
+	/// - Parameter source: Feeds are identified by their source URL
+	/// - Returns: Observable loading model
 	public func model(source: URL) -> Model {
 		if let model = models[source] {
 			return model
@@ -61,10 +70,11 @@ public class LoadingManager {
 			return model(source: source)
 		}
 	}
-	
+
 	func start(source: URL) {
 		model(source: source).isLoading = true
 	}
+
 	
 	func stop(source: URL) {
 		model(source: source).isLoading = false
