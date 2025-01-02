@@ -16,7 +16,9 @@ struct ConditionalHeaders: Codable {
 	}
 	
 	/// Extracts ``ConditionalHeaders`` from a `URLResponse`
-	/// - Parameter response: Response must be `HTTPURLResponse`
+	/// - Parameters:
+	///   - response: Response must be `HTTPURLResponse`
+	///   - source: source, for which the headers where previously stored
 	init?(response: URLResponse, source: URL) {
 		if let httpResponse = response as? HTTPURLResponse {
 			self.source = source

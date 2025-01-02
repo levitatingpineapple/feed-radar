@@ -27,7 +27,7 @@ The good news is that with few widely supported optimizations, the experience ca
 ### Parallel Fetch
 
 Since feeds are fully independent, they can be fetched in parallel.\
-``FeedFetcher`` **concurrently** and **consecutively** fetches feeds while providing combine publishers which drive the user interface.
+The app creates set amount of workers that **concurrently** and **consecutively** fetches feeds.
 
 ### Conditional Requests
 
