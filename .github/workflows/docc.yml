@@ -19,7 +19,7 @@ jobs:
           swift package generate-documentation \
             --target Core \
             --symbol-graph-minimum-access-level internal \
-            --hosting-base-path https://github.io/levitatingpineapple/feed-radar \
+            --hosting-base-path feed-radar \
             --disable-indexing \
             --transform-for-static-hosting \
             --warnings-as-errors
@@ -31,6 +31,7 @@ jobs:
         with:
           path: Core/.build/plugins/Swift-DocC/outputs/Core.doccarchive
   deploy:
+    runs-on: ubuntu-latest
     needs: build
     permissions:
       pages: write
@@ -38,7 +39,6 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
