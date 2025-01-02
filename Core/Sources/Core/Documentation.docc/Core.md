@@ -1,4 +1,4 @@
-# ``FeedRadar``
+# ``Core``
 
 A modern Feed reader for Apple's platforms with good media support.
 

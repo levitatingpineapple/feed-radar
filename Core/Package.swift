@@ -11,6 +11,7 @@ let package = Package(
 		.package(url: "https://github.com/groue/GRDB.swift.git", .upToNextMajor(from: "7.0.0-beta.6")),
 		.package(url: "https://github.com/CrunchyBagel/OutcastID3.git", .upToNextMajor(from: "0.7.1")),
 		.package(url: "https://github.com/nmdias/FeedKit.git", .upToNextMajor(from: "9.1.2")),
+		 .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
 	],
 	targets: [
 		.target(

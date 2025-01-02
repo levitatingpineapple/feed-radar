@@ -6,3 +6,13 @@ DerivedData/
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
+
+# Ignore submodule
+/Readability/
+
+# Dependencies are resolved in
+# `project.xcworkspace/xcshareddata/swiftpm/Package.resolved`
+/Package.resolved
+
+# Ignore docs buid
+.docc-build

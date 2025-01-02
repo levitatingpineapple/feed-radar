@@ -1,6 +1,14 @@
 # Fetching Feeds
 
-Various Optimisations for  
+<!--toc:start-->
+- [Fetching Feeds](#fetching-feeds)
+  - [Overview](#overview)
+    - [Parallel Fetch](#parallel-fetch)
+    - [Conditional Requests](#conditional-requests)
+    - [Additional Resources](#additional-resources)
+<!--toc:end-->
+
+Various Optimizations for fetching feeds  
 
 @Metadata {
 	@PageImage(purpose: icon, source: "fetchIcon")
@@ -10,15 +18,15 @@ Various Optimisations for
 
 ## Overview
 
-One of the main challenges with creating any decentralised feed is having to fetch new items form each source individually. This is especially true on iOS, which does not support any long running background processes that could pre-fetch contents in the background.
+One of the main challenges with creating any decentralized feed is having to fetch new items from each source individually. This is especially true on iOS, which does not support any long-running background processes that could pre-fetch contents in the background.
 
 While these days the bandwidth might not be an issue anymore, we still want to reduce the time from opening the app till seeing latest published items as much as possible.
 
-The good news is that with few widely supported optimisations, the experience can be very close to fetching feed items from a centralised platform.
+The good news is that with few widely supported optimizations, the experience can be very close to fetching feed items from a centralized platform.
 
 ### Parallel Fetch
 
-Since feeds are  fully independent, they can be fetched in parallel.\
+Since feeds are fully independent, they can be fetched in parallel.\
 ``FeedFetcher`` **concurrently** and **consecutively** fetches feeds while providing combine publishers which drive the user interface.
 
 ### Conditional Requests
@@ -35,8 +43,8 @@ The app handles this using ``ConditionalHeaders`` in the following order:
 ### Additional Resources
 
 Feeds often reference additional contents which can be handled separately:
-- ``Downloader`` A progress publishing object for downloading attachments
-- ``MetadataLoader`` Loads ID3 Chapters from a media files
+- ``downloadFile(from:to:)`` 
+- ``loadMetadata(from:)`` Loads ID3 Chapters from a media files
 - ``ContentExtractor`` Used to extract full article from URL.\
 Useful for feeds that only include their abstract.
 
