@@ -135,7 +135,6 @@ extension PlayerView {
 				forInterval: CMTime(timeInterval: 1),
 				queue: nil
 			) { cmTime in
-				print(cmTime.seconds)
 				DispatchQueue.main.async {
 					self.update(time: cmTime.seconds)
 				}

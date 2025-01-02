@@ -20,7 +20,7 @@ let package = Package(
 				"FeedKit",
 				"OutcastID3",
 			],
-			resources: [.copy("../../../Submodules/Readability/Readability.js")]
+			resources: [.copy("../../Readability/Readability.js")]
 		),
 		.testTarget(
 			name: "CoreTests",
