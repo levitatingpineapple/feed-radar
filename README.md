@@ -1,3 +1,6 @@
+> [!WARNING]
+> Archived as I moved to using [miniflux](https://miniflux.app/). For a media ritch iOS/macOS reader check out [Reeder](https://apps.apple.com/us/app/reeder/id6475002485).
+
 ![License](https://img.shields.io/github/license/levitatingpineapple/feed-radar)
 ![Tests](https://img.shields.io/github/actions/workflow/status/levitatingpineapple/feed-radar/tests.yml?label=tests)
 ![Documentation](https://img.shields.io/github/actions/workflow/status/levitatingpineapple/feed-radar/docc.yml?label=docc)
